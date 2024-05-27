@@ -3,6 +3,7 @@ import json
 import torch
 import argparse
 from tqdm import tqdm
+import polars as pl
 
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
@@ -90,7 +91,7 @@ def main():
     print(args)
 
     from transformers import LlamaTokenizer, LlamaForCausalLM
-    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto", cache_dir='../cache', output_hidden_states=True)
+    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto", cache_dir='../cache', output_hidden_states=True, torch_dtype= torch.float16)
     tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
 
     model.eval()
@@ -101,8 +102,11 @@ def main():
         print('save_path exists!')
         raise Exception
 
-    with open(args.data_path, "r") as f:
-        data = json.load(f)
+    if "parquet" in args.data_path:
+        data = pl.read_parquet(args.data_path).to_dicts()
+    else:
+        with open(args.data_path, "r") as f:
+            data = json.load(f)
 
     start_idx = args.start_idx
     end_idx = args.end_idx if args.end_idx != -1 else len(data)
