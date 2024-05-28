@@ -8,7 +8,7 @@ import polars as pl
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
-os.environ['CUDA_VISIBLE_DEVICES'] = '5'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 if torch.cuda.is_available():
     device = "cuda"
