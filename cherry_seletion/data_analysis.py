@@ -8,6 +8,7 @@ import polars as pl
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 if torch.cuda.is_available():
     device = "cuda"
@@ -32,6 +33,7 @@ def parse_args():
     parser.add_argument("--data_path", type=str, required=True)
     parser.add_argument("--save_path", type=str, required=True)
     parser.add_argument("--model_name_or_path", type=str, required=True)
+    parser.add_argument("--adapter", type=str, default=None)
     parser.add_argument("--max_length", type=int, default=512)
     parser.add_argument("--start_idx", type=int, default=0)
     parser.add_argument("--end_idx", type=int, default=-1)
@@ -90,9 +92,10 @@ def main():
     args = parse_args()
     print(args)
 
-    from transformers import LlamaTokenizer, LlamaForCausalLM
-    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, device_map="auto", cache_dir='../cache', output_hidden_states=True, torch_dtype= torch.float16)
-    tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
+    from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
+    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16).to(device)
+    if args.adapter != None: model.load_adapter(args.adapter)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
 
     model.eval()
 
