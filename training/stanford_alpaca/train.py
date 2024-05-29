@@ -22,6 +22,10 @@ import transformers
 import utils
 from torch.utils.data import Dataset
 from transformers import Trainer
+from unsloth import FastLanguageModel 
+from unsloth import is_bfloat16_supported
+import os
+os.environ["TOKENIZERS_PARALLELISM"]="true"
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -183,17 +187,40 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
+    # model = transformers.AutoModelForCausalLM.from_pretrained(
+    #     model_args.model_name_or_path,
+    #     cache_dir=training_args.cache_dir,
+    # )
+    # tokenizer = transformers.AutoTokenizer.from_pretrained(
+    #     model_args.model_name_or_path,
+    #     cache_dir=training_args.cache_dir,
+    #     model_max_length=training_args.model_max_length,
+    #     padding_side="right",
+    #     use_fast=False,
+    # )
+    max_seq_length = 2048
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name = "/mnt/bn/data-tns-live-llm/leon/datasets/llama-2-7b-bnb-4bit",
+        max_seq_length = max_seq_length,
+        dtype = None,
+        load_in_4bit = True,
     )
 
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
-        model_max_length=training_args.model_max_length,
-        padding_side="right",
-        use_fast=False,
+    # Do model patching and add fast LoRA weights
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r = 32,
+        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                        "gate_proj", "up_proj", "down_proj",],
+        lora_alpha = 64,
+        lora_dropout = 0.05, # Supports any, but = 0 is optimized
+        bias = "none",    # Supports any, but = "none" is optimized
+        # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+        use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+        random_state = 3407,
+        max_seq_length = max_seq_length,
+        use_rslora = False,  # We support rank stabilized LoRA
+        loftq_config = None, # And LoftQ
     )
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
@@ -213,7 +240,8 @@ def train():
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
-    trainer.train()
+    with torch.autocast("cuda"): 
+        trainer.train()
     trainer.save_state()
     trainer.save_model(output_dir=training_args.output_dir)
 

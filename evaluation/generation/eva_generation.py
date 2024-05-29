@@ -74,7 +74,7 @@ def main():
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
+    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/", torch_dtype=torch.float16)
     tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
 
     model.to(device)
@@ -103,12 +103,16 @@ def main():
     elif(args.dataset_name=="lima"):
         dataset_path = 'evaluation/test_data/lima_test_set.jsonl'
         prompt_key = 'conversations'
+    elif(args.dataset_name=="math"):
+        dataset_path = "/mnt/bn/data-tns-live-llm/leon/datasets/gsm8k/main/test.jsonl"
+        prompt_key = "question"
 
     with open(dataset_path) as f:
         results = []
-        dataset = list(f)
+        dataset = list(f)[:50]
         for point in tqdm(dataset):
             point = json.loads(point)
+            # print(point)
             instruction = point[prompt_key]
             if(args.dataset_name=="sinstruct"):
                 instances = point['instances']
@@ -121,13 +125,14 @@ def main():
                 prompt = prompt_no_input.format_map({"instruction":instruction})
             inputs = tokenizer(prompt, return_tensors="pt")
             input_ids = inputs.input_ids.to(device)
-            generate_ids = model.generate(input_ids, max_length=args.max_length)
+            generate_ids = model.generate(input_ids, max_length=args.max_length, do_sample=True)
             outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
             point['raw_output'] = outputs
             if args.prompt in ['alpaca','wiz']:
                 point['response'] = outputs.split("Response:")[1]
             elif args.prompt in ['vicuna']:
                 point['response'] = outputs.split("ASSISTANT:")[1]
+            print(point['raw_output'])
             results.append(point)
 
     output_dir =  os.path.join(args.model_name_or_path, 'test_inference')
