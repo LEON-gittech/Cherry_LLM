@@ -128,7 +128,7 @@ def main():
                 prompt = prompt_no_input.format_map({"instruction":instruction})
             inputs = tokenizer(prompt, return_tensors="pt")
             input_ids = inputs.input_ids.to(device)
-            generate_ids = model.generate(input_ids, max_length=args.max_length, do_sample=True, repetition_penalty=1.1)
+            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1)
             outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
             point['raw_output'] = outputs
             if args.prompt in ['alpaca','wiz']:
