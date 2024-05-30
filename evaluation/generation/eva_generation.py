@@ -5,6 +5,7 @@ import json
 import os
 from tqdm import tqdm
 from unsloth import FastLanguageModel 
+os.environ["TOKENIZERS_PARALLELISM"] = "true"
 
 PROMPT_DICT_ALPACA = {
     "prompt_input": (
@@ -75,9 +76,9 @@ def main():
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, dtype=torch.float16)
-    model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/", torch_dtype=torch.float16)
-    tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
+    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, dtype=torch.float16)
+    # model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/", torch_dtype=torch.float16)
+    # tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
 
     # model.to(device)
     model.eval()
