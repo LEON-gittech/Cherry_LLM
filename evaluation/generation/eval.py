@@ -148,6 +148,8 @@ if __name__ == "__main__":
         prompt_key = 'conversations'
     elif(dataset_name=="math"):
         prompt_key = "question"
+    elif(dataset_name=="human_eval"):
+        prompt_key = "prompt"
 
     total_len = len(qa_jsons)
     question_idx_list = list(range(total_len))
