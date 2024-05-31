@@ -55,7 +55,6 @@ async def dispatch_openai_requests(
             response = requests.post(url, data=data, headers=headers).json()
             if "choices" not in response.keys(): 
                 print("not a good reply")
-                pass
             else: return response
 
     async_responses = [fetch_message(x) for x in messages_list]
@@ -134,7 +133,7 @@ if __name__ == "__main__":
     wraped_info = json.load(open(args.wraped_file))
     meta_info = wraped_info['Meta_Info']
     dataset_name = meta_info['dataset_name']
-    qa_jsons = wraped_info['data'][:10]
+    qa_jsons = wraped_info['data']
 
     if(dataset_name=="vicuna"):
         prompt_key = 'text'
