@@ -109,6 +109,9 @@ def main():
     elif(args.dataset_name=="math"):
         dataset_path = "/mnt/bn/data-tns-live-llm/leon/datasets/gsm8k/main/test.jsonl"
         prompt_key = "question"
+    elif(args.dataset_name=="human_eval"):
+        dataset_path = "/mnt/bn/data-tns-live-llm/leon/datasets/openai_humaneval/openai_humaneval/test.jsonl"
+        prompt_key = "prompt"
 
     with open(dataset_path) as f:
         results = []
@@ -128,7 +131,7 @@ def main():
                 prompt = prompt_no_input.format_map({"instruction":instruction})
             inputs = tokenizer(prompt, return_tensors="pt")
             input_ids = inputs.input_ids.to(device)
-            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1)
+            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.05)
             outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
             point['raw_output'] = outputs
             if args.prompt in ['alpaca','wiz']:

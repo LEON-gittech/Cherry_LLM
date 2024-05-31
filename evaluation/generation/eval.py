@@ -10,12 +10,15 @@ import asyncio
 from typing import Any
 import logging
 from typing import List, Dict, Any
+import requests
+import aiohttp
 
 import tiktoken
 gpt_encoder = tiktoken.get_encoding("cl100k_base")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 async def dispatch_openai_requests(
     messages_list: List[List[Dict[str,Any]]],
     model: str,
@@ -35,16 +38,37 @@ async def dispatch_openai_requests(
     Returns:
         List of responses from OpenAI API.
     """
-    async_responses = [
-        openai.ChatCompletion.acreate(
-            model=model,
-            messages=x,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            top_p=top_p,
-        )
-        for x in messages_list
-    ]
+    headers = {'Content-Type': 'application/json', 'Caller': 'leon.kepler'}
+    url = f"https://swzkkd0h.us-east-fn.bytedance.net/gpt/openapi/online/v2/crawl"
+    async def fetch_message(message):
+        while True:
+            data = {
+                "model": model,
+                "messages": message,
+                "temperature": temperature,
+                "top_p": top_p,
+                "stream": False,
+                "max_tokens": max_tokens,
+            }
+            data = {k: v for k, v in data.items() if v is not None}
+            data = json.dumps(data)
+            response = requests.post(url, data=data, headers=headers).json()
+            if "choices" not in response.keys(): 
+                print("not a good reply")
+                pass
+            else: return response
+
+    async_responses = [fetch_message(x) for x in messages_list]
+    # async_responses = [
+    #     openai.ChatCompletion.acreate(
+    #         model=model,
+    #         messages=x,
+    #         temperature=temperature,
+    #         max_tokens=max_tokens,
+    #         top_p=top_p,
+    #     )
+    #     for x in messages_list
+    # ]
     return await asyncio.gather(*async_responses)
 
 def parse_score(review):
@@ -110,7 +134,7 @@ if __name__ == "__main__":
     wraped_info = json.load(open(args.wraped_file))
     meta_info = wraped_info['Meta_Info']
     dataset_name = meta_info['dataset_name']
-    qa_jsons = wraped_info['data']
+    qa_jsons = wraped_info['data'][:10]
 
     if(dataset_name=="vicuna"):
         prompt_key = 'text'
@@ -122,6 +146,8 @@ if __name__ == "__main__":
         prompt_key = 'Instruction'
     elif(dataset_name=="lima"):
         prompt_key = 'conversations'
+    elif(dataset_name=="math"):
+        prompt_key = "question"
 
     total_len = len(qa_jsons)
     question_idx_list = list(range(total_len))
@@ -161,6 +187,7 @@ if __name__ == "__main__":
         error = 0
         pbar = tqdm(total=len(message_list))
         batch_size = args.batch_size
+        # print(batch_size)
         while(i<len(message_list)):
             token_limit_in_current_batch = min(args.max_tokens,4070-max(token_len_list[i:i+batch_size]))
             try:
@@ -178,7 +205,8 @@ if __name__ == "__main__":
                 i += batch_size
                 wait_base = 10
                 pbar.update(batch_size)
-            except:
+            except Exception as e:
+                print(e)
                 retry += 1
                 error += 1
                 print("Batch error: ",i, i+batch_size)
@@ -189,12 +217,18 @@ if __name__ == "__main__":
         pbar.close()
         predictions_all.append(predictions)
 
+    with open("/mnt/bn/data-tns-live-llm/leon/datasets/gpt_response.json", "w") as f:
+        f.write(json.dumps(predictions_all, ensure_ascii=False, indent=4))
+    # with open("/mnt/bn/data-tns-live-llm/leon/datasets/gpt_response.json", "r") as f:
+    #     predictions_all = json.loads(f.read())
     all_scores = []
     for reverse in range(2):
         scores_list = []
         predictions = predictions_all[reverse]
+        print(len(predictions))
         for idx, prediction in enumerate(predictions):
-            review = prediction['choices'][0]['message']['content']
+            if "choices" not in prediction.keys(): print(reverse, idx)
+            review = prediction["choices"][0]['message']['content']
             scores = parse_score(review)
             review_key = 'review' if not reverse else 'review_reverse'
             scores_key = 'scores' if not reverse else 'scores_reverse'

@@ -40,6 +40,10 @@ elif(args.dataset_name=="wizardlm"):
     prompt_key = 'Instruction'
 elif(args.dataset_name=="lima"):
     prompt_key = 'conversations'
+elif(args.dataset_name=="math"):
+    prompt_key = "question"
+elif(args.dataset_name=="human_eval"):
+    prompt_key = "prompt"
 
 new_data = []
 for i, sample_i in enumerate(data1):
