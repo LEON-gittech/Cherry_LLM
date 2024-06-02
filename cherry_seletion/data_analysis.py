@@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
+from vllm import LLM, SamplingParams
 # os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 
 if torch.cuda.is_available():
@@ -96,6 +97,7 @@ def main():
 
     from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
     model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, load_in_4bit=True, device_map="auto")
+    # model = LLM(model=args.model_name_or_path)
     # model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16, device_map="auto")
     # if args.adapter != None: model.load_adapter(args.adapter)
     # tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
