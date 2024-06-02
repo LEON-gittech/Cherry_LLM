@@ -5,7 +5,8 @@ import argparse
 from tqdm import tqdm
 import polars as pl
 from unsloth import FastLanguageModel
-
+from datasets import load_dataset
+from torch.utils.data import DataLoader
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
@@ -95,7 +96,7 @@ def main():
 
     from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
     model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, load_in_4bit=True, device_map="auto")
-    # model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16)
+    # model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16, device_map="auto")
     # if args.adapter != None: model.load_adapter(args.adapter)
     # tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
 
@@ -112,6 +113,12 @@ def main():
     else:
         with open(args.data_path, "r") as f:
             data = json.load(f)
+    # if "parquet" in args.data_path:
+    #     data = load_dataset("parquet", data_files=args.data_path)
+    # else:
+    #     data = load_dataset("json", data_files=args.data_path)["train"]
+    #     print(len(data))
+    # data_loader = DataLoader(data)
 
     start_idx = args.start_idx
     end_idx = args.end_idx if args.end_idx != -1 else len(data)
@@ -121,7 +128,6 @@ def main():
     strat_time = time.time()
     new_data = []
     for i in tqdm(range(len(sampled_data))):
-
         data_i = sampled_data[i]
         instruct_i = data_i['instruction']
         output_i = data_i['output']
