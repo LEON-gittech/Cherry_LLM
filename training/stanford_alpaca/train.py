@@ -25,6 +25,13 @@ from transformers import Trainer
 from unsloth import FastLanguageModel 
 from unsloth import is_bfloat16_supported
 import os
+from peft import (
+    LoraConfig,
+    get_peft_model,
+    get_peft_model_state_dict,
+    prepare_model_for_kbit_training,
+    set_peft_model_state_dict,
+)
 os.environ["TOKENIZERS_PARALLELISM"]="true"
 
 IGNORE_INDEX = -100
@@ -44,12 +51,15 @@ PROMPT_DICT = {
         "### Instruction:\n{instruction}\n\n### Response:"
     ),
 }
-
+@dataclass
+class ScriptArguments:
+    lora_r: Optional[int] = field(default=8, metadata={"help": "the r parameter of the LoRA adapters"})
+    lora_alpha: Optional[int] = field(default=16, metadata={"help": "the alpha parameter of the LoRA adapters"})
+    lora_target_modules: Optional[list[str]] = field(default=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj",], metadata={"help": "target_modules"})
 
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
-
 
 @dataclass
 class DataArguments:
@@ -182,46 +192,63 @@ def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, dat
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
     return dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
 
+def get_quant_model(model_args, training_args, script_args):
+    model = transformers.AutoModelForCausalLM.from_pretrained(
+        model_args.model_name_or_path,
+        cache_dir=training_args.cache_dir,
+    )
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+        model_args.model_name_or_path,
+        cache_dir=training_args.cache_dir,
+        model_max_length=training_args.model_max_length,
+        padding_side="right",
+        use_fast=False,
+    )
+    model = prepare_model_for_kbit_training(model)
+    config = LoraConfig(
+        r=script_args.lora_r,
+        lora_alpha=script_args.lora_alpha,
+        target_modules=script_args.lora_target_modules,
+        lora_dropout=0.05,
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+    model = get_peft_model(model, config)
+    model.config.use_cache = False
+    return model, tokenizer
+
 
 def train():
-    parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
-    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments))
+    model_args, data_args, training_args, script_args = parser.parse_args_into_dataclasses()
 
-    # model = transformers.AutoModelForCausalLM.from_pretrained(
-    #     model_args.model_name_or_path,
-    #     cache_dir=training_args.cache_dir,
-    # )
-    # tokenizer = transformers.AutoTokenizer.from_pretrained(
-    #     model_args.model_name_or_path,
-    #     cache_dir=training_args.cache_dir,
-    #     model_max_length=training_args.model_max_length,
-    #     padding_side="right",
-    #     use_fast=False,
-    # )
-    max_seq_length = 2048
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name = "/mnt/bn/data-tns-live-llm/leon/datasets/llama-2-7b-bnb-4bit",
-        max_seq_length = max_seq_length,
-        dtype = None,
-        load_in_4bit = True,
-    )
+    if "yahma/llama-7b-hf" in model_args.model_name_or_path:
+        model, tokenizer = get_quant_model(model_args, training_args, script_args)
+    else:
+        max_seq_length = 2048
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name = model_args.model_name_or_path,
+            max_seq_length = max_seq_length,
+            dtype = None,
+            load_in_4bit = True,
+        )
+        # Do model patching and add fast LoRA weights
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r = 32,
+            target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj",],
+            lora_alpha = 64,
+            lora_dropout = 0.05, # Supports any, but = 0 is optimized
+            bias = "none",    # Supports any, but = "none" is optimized
+            # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+            use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+            random_state = 3407,
+            max_seq_length = max_seq_length,
+            use_rslora = False,  # We support rank stabilized LoRA
+            loftq_config = None, # And LoftQ
+        )
 
-    # Do model patching and add fast LoRA weights
-    model = FastLanguageModel.get_peft_model(
-        model,
-        r = 32,
-        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj",],
-        lora_alpha = 64,
-        lora_dropout = 0.05, # Supports any, but = 0 is optimized
-        bias = "none",    # Supports any, but = "none" is optimized
-        # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-        use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
-        random_state = 3407,
-        max_seq_length = max_seq_length,
-        use_rslora = False,  # We support rank stabilized LoRA
-        loftq_config = None, # And LoftQ
-    )
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
         special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
