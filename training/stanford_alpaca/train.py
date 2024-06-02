@@ -12,10 +12,11 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+from array import array
 import copy
 import logging
 from dataclasses import dataclass, field
-from typing import Dict, Optional, Sequence
+from typing import Dict, List, Optional, Sequence
 
 import torch
 import transformers
@@ -55,7 +56,7 @@ PROMPT_DICT = {
 class ScriptArguments:
     lora_r: Optional[int] = field(default=8, metadata={"help": "the r parameter of the LoRA adapters"})
     lora_alpha: Optional[int] = field(default=16, metadata={"help": "the alpha parameter of the LoRA adapters"})
-    lora_target_modules: Optional[list[str]] = field(default=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj",], metadata={"help": "target_modules"})
+    lora_target_modules: Optional[List[str]] = field(default_factory=list, metadata={"help": "target_modules"})
 
 @dataclass
 class ModelArguments:

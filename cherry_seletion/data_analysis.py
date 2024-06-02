@@ -4,6 +4,7 @@ import torch
 import argparse
 from tqdm import tqdm
 import polars as pl
+from unsloth import FastLanguageModel
 
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
@@ -93,9 +94,10 @@ def main():
     print(args)
 
     from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
-    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16).to(device)
-    if args.adapter != None: model.load_adapter(args.adapter)
-    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
+    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, load_in_4bit=True, device_map="auto")
+    # model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16)
+    # if args.adapter != None: model.load_adapter(args.adapter)
+    # tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
 
     model.eval()
 
