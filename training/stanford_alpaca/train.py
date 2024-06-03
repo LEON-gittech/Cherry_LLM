@@ -234,21 +234,24 @@ def train():
             load_in_4bit = True,
         )
         # Do model patching and add fast LoRA weights
-        model = FastLanguageModel.get_peft_model(
-            model,
-            r = 32,
-            target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                            "gate_proj", "up_proj", "down_proj",],
-            lora_alpha = 64,
-            lora_dropout = 0.05, # Supports any, but = 0 is optimized
-            bias = "none",    # Supports any, but = "none" is optimized
-            # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-            use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
-            random_state = 3407,
-            max_seq_length = max_seq_length,
-            use_rslora = False,  # We support rank stabilized LoRA
-            loftq_config = None, # And LoftQ
-        )
+        try:
+            model = FastLanguageModel.get_peft_model(
+                model,
+                r = 32,
+                target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                                "gate_proj", "up_proj", "down_proj",],
+                lora_alpha = 64,
+                lora_dropout = 0.05, # Supports any, but = 0 is optimized
+                bias = "none",    # Supports any, but = "none" is optimized
+                # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+                use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+                random_state = 3407,
+                max_seq_length = max_seq_length,
+                use_rslora = False,  # We support rank stabilized LoRA
+                loftq_config = None, # And LoftQ
+            )
+        except Exception as e:
+            print(e)
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
