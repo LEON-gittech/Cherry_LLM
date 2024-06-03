@@ -12,7 +12,7 @@ log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
 from vllm import LLM, SamplingParams
 # os.environ['CUDA_VISIBLE_DEVICES'] = '5'
-
+os.environ["TOKENIZERS_PARALLELISM"]="true"
 if torch.cuda.is_available():
     device = "cuda"
 else:
