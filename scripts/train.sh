@@ -7,4 +7,5 @@ CUDA_VISIBLE_DEVICES=2 python3 /opt/tiger/Cherry_LLM/training/stanford_alpaca/tr
   --num_train_epochs 3 \
   --learning_rate 2e-5 \
   --warmup_ratio 0.03 \
-  --output_dir /mnt/bn/data-tns-live-llm/leon/datasets/repetition/cherry-alpaca
+  --output_dir /mnt/bn/data-tns-live-llm/leon/datasets/repetition/cherry-alpaca \
+  --logging_steps 100

@@ -227,14 +227,21 @@ def train():
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
     else:
         max_seq_length = 2048
-        model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name = model_args.model_name_or_path,
-            max_seq_length = max_seq_length,
-            dtype = None,
-            load_in_4bit = True,
-        )
+        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
+            model, tokenizer = FastLanguageModel.from_pretrained(
+                model_name = model_args.model_name_or_path,
+                max_seq_length = max_seq_length,
+                dtype = None,
+                load_in_4bit = True,
+            )
+        else:
+            model, tokenizer = FastLanguageModel.from_pretrained(
+                model_name = model_args.model_name_or_path,
+                dtype=torch.bfloat16,
+                load_in_4bit=True
+            )
         # Do model patching and add fast LoRA weights
-        try:
+        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
             model = FastLanguageModel.get_peft_model(
                 model,
                 r = 32,
@@ -250,8 +257,6 @@ def train():
                 use_rslora = False,  # We support rank stabilized LoRA
                 loftq_config = None, # And LoftQ
             )
-        except Exception as e:
-            print(e)
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
