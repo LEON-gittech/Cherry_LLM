@@ -231,7 +231,7 @@ def train():
             model, tokenizer = FastLanguageModel.from_pretrained(
                 model_name = model_args.model_name_or_path,
                 max_seq_length = max_seq_length,
-                dtype = None,
+                dtype = torch.bfloat16,
                 load_in_4bit = True,
             )
         else:

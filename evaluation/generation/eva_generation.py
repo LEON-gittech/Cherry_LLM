@@ -76,7 +76,10 @@ def main():
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path)
+    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path,dtype = torch.bfloat16,load_in_4bit=True)
+    FastLanguageModel.for_inference(model) # Enable native 2x faster inference
+    from transformers import TextStreamer
+    text_streamer = TextStreamer(tokenizer)
     # model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/", torch_dtype=torch.float16)
     # tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
 
@@ -131,7 +134,7 @@ def main():
                 prompt = prompt_no_input.format_map({"instruction":instruction})
             inputs = tokenizer(prompt, return_tensors="pt")
             input_ids = inputs.input_ids.to(device)
-            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.05)
+            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1, streamer = text_streamer)
             outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
             point['raw_output'] = outputs
             if args.prompt in ['alpaca','wiz']:
