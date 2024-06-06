@@ -431,3 +431,27 @@
 图片下载失败，状态码: 404
 图片下载失败，状态码: 404
 图片下载失败，状态码: 404
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/usr/lib/python3.9/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "/opt/tiger/Cherry_LLM/../moco/download.py", line 18, in get_img_roomid
+    if(len(os.lisdir(f'{root}/{data["room_id"]}/{data["object1"]}'))>0 and len(os.lisdir(f'{root}/{data["room_id"]}/{data["object2"]}'))>0): return None
+AttributeError: module 'os' has no attribute 'lisdir'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/tiger/Cherry_LLM/../moco/download.py", line 61, in <module>
+    download_images(data)
+  File "/opt/tiger/Cherry_LLM/../moco/download.py", line 58, in download_images
+    pool.map(get_img_roomid, data)
+  File "/usr/lib/python3.9/multiprocessing/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/usr/lib/python3.9/multiprocessing/pool.py", line 771, in get
+    raise self._value
+AttributeError: module 'os' has no attribute 'lisdir'

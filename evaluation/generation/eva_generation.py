@@ -76,7 +76,7 @@ def main():
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path,dtype = torch.bfloat16,load_in_4bit=True)
+    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, dtype = torch.bfloat16, load_in_4bit=True)
     FastLanguageModel.for_inference(model) # Enable native 2x faster inference
     from transformers import TextStreamer
     text_streamer = TextStreamer(tokenizer)
