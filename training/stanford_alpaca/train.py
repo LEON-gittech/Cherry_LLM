@@ -237,8 +237,8 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
 
-    # gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
-    # training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
+    gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
+    training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
 
     # quantization_config = BitsAndBytesConfig(
     #     load_in_4bit=True,
