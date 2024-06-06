@@ -254,7 +254,7 @@ def train():
         bnb_4bit_quant_type="nf4",
     )
 
-    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config, torch_dtype=torch.bfloat16)
+    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config, attn_implementation="flash_attention_2")
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
     model.config.use_cache = False
     special_tokens_dict = dict()
@@ -276,10 +276,12 @@ def train():
     lora_config = LoraConfig(
         r=8,
         lora_alpha=16,
-        target_modules="all-linear",
+        lora_dropout=0.1,
+        target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
         bias="none",
         task_type="CAUSAL_LM",
     )
+    model.add_adapter(lora_config)
 
     formatting_prompts_func, response_template = get_formatting_prompts_func(script_args.template, tokenizer.eos_token) #只有'alpaca'和'vicuna' template， 返回一个函数，用于对输入进行预处理， response_template='\n### Response:' or ' ASSISTANT:'
     response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)[2:]   # Now we have it like in the dataset texts: `[2277, 29937, 4007, 22137, 29901]` for Llama2
@@ -323,7 +325,7 @@ def train():
     #         )
 
     # data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
-    trainer = SFTTrainer(model=model, tokenizer=tokenizer, args=training_args, peft_config=lora_config, train_dataset=train_dataset,data_collator=data_collator, formatting_func=formatting_prompts_func, max_seq_length=training_args.model_max_length)
+    trainer = SFTTrainer(model=model, tokenizer=tokenizer, args=training_args, peft_config=lora_config, train_dataset=train_dataset,data_collator=data_collator, formatting_func=formatting_prompts_func, max_seq_length=training_args.model_max_length, )
     # with torch.autocast("cuda"): 
     trainer.train()
     trainer.save_state()
