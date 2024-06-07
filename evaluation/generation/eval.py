@@ -55,6 +55,7 @@ async def dispatch_openai_requests(
             response = requests.post(url, data=data, headers=headers).json()
             if "choices" not in response.keys(): 
                 print("not a good reply")
+                print(response)
             else: return response
 
     async_responses = [fetch_message(x) for x in messages_list]
@@ -254,4 +255,3 @@ if __name__ == "__main__":
         pass
 
     print('Finish:',args.wraped_file)
-
