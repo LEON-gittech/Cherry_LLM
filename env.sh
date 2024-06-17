@@ -11,3 +11,5 @@ pip install torch torchvision torchaudio flash-attn
 pip install openai==0.28.0
 pip install promptsource
 pip install sentence-transformers
+pip install matplotlib
+pip install pygwalker
