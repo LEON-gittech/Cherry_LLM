@@ -10,3 +10,4 @@ cp -r /mnt/bn/data-tns-live-llm/leon/datasets/unsloth /home/tiger/.local/lib/pyt
 pip install torch torchvision torchaudio flash-attn
 pip install openai==0.28.0
 pip install promptsource
+pip install sentence-transformers
