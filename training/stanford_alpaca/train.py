@@ -279,17 +279,22 @@ def train():
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
     else:
         max_seq_length = 2048
+        if torch.cuda.is_bf16_supported():
+            dtype = torch.bfloat16
+        else:
+            dtype = torch.float16
+            
         if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
             model, tokenizer = FastLanguageModel.from_pretrained(
                 model_name = model_args.model_name_or_path,
                 max_seq_length = max_seq_length,
-                dtype = torch.bfloat16,
+                dtype = dtype,
                 load_in_4bit = True,
             )
         else:
             model, tokenizer = FastLanguageModel.from_pretrained(
                 model_name = model_args.model_name_or_path,
-                dtype=torch.bfloat16,
+                dtype = dtype,
                 load_in_4bit=True
             )
         # Do model patching and add fast LoRA weights
