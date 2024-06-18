@@ -242,8 +242,8 @@ def train():
     else:
         dtype = torch.float16
 
-    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype, model_max_).cuda()
-    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype).cuda()
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
