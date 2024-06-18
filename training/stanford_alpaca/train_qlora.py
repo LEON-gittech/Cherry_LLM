@@ -237,13 +237,83 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
 
-    if torch.cuda.is_bf16_supported():
-        dtype = torch.bfloat16
-    else:
-        dtype = torch.float16
+    # gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
+    # training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
 
-    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype, model_max_).cuda()
-    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    # quantization_config = BitsAndBytesConfig(
+    #     load_in_4bit=True,
+    #     bnb_4bit_compute_dtype=torch.bfloat16,
+    #     bnb_4bit_quant_type="nf4",
+    #     bnb_4bit_quant_storage = bnb_args.bnb_4bit_quant_storage_dtype,
+    #     bnb_4bit_use_double_quant = bnb_args.use_nested_quant
+    # )
+
+    # quantization_config = BitsAndBytesConfig(
+    #     load_in_4bit=True,
+    #     bnb_4bit_compute_dtype=torch.bfloat16,
+    #     bnb_4bit_quant_type="nf4",
+    # )
+
+    # model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config, attn_implementation="flash_attention_2")
+    # tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
+    # model.config.use_cache = False
+
+    # lora_config = LoraConfig(
+    #     r=8,
+    #     lora_alpha=16,
+    #     lora_dropout=0.1,
+    #     target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
+    #     bias="none",
+    #     task_type="CAUSAL_LM",
+    # )
+    # model.add_adapter(lora_config)
+
+    # formatting_prompts_func, response_template = get_formatting_prompts_func(script_args.template, tokenizer.eos_token) #只有'alpaca'和'vicuna' template， 返回一个函数，用于对输入进行预处理， response_template='\n### Response:' or ' ASSISTANT:'
+    # response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)[2:]   # Now we have it like in the dataset texts: `[2277, 29937, 4007, 22137, 29901]` for Llama2
+    # data_collator = DataCollatorForCompletionOnlyLM(response_template_ids, tokenizer=tokenizer)
+    # train_dataset = load_dataset("json", data_files=data_args.data_path)["train"]
+    # if data_args.dataset_name=="alpaca":
+    #     train_dataset = train_dataset.rename_column("output", "response")
+
+    if "yahma/llama-7b-hf" in model_args.model_name_or_path:
+        model, tokenizer = get_quant_model(model_args, training_args, script_args)
+    else:
+        max_seq_length = 2048
+        if torch.cuda.is_bf16_supported():
+            dtype = torch.bfloat16
+        else:
+            dtype = torch.float16
+            
+        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
+            model, tokenizer = FastLanguageModel.from_pretrained(
+                model_name = model_args.model_name_or_path,
+                max_seq_length = max_seq_length,
+                dtype = dtype,
+                load_in_4bit = True,
+            )
+        else:
+            model, tokenizer = FastLanguageModel.from_pretrained(
+                model_name = model_args.model_name_or_path,
+                dtype = dtype,
+                load_in_4bit=True
+            )
+        # Do model patching and add fast LoRA weights
+        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
+            model = FastLanguageModel.get_peft_model(
+                model,
+                r = 16,
+                target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                                "gate_proj", "up_proj", "down_proj",],
+                lora_alpha = 16,
+                lora_dropout = 0.05, # Supports any, but = 0 is optimized
+                bias = "none",    # Supports any, but = "none" is optimized
+                # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+                use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+                random_state = 3407,
+                max_seq_length = max_seq_length,
+                use_rslora = False,  # We support rank stabilized LoRA
+                loftq_config = None, # And LoftQ
+            )
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
@@ -268,8 +338,10 @@ def train():
     # with torch.autocast("cuda"): 
     trainer.train()
 
-    trainer.save_state()
-    trainer.save_model(output_dir=training_args.output_dir)
+    model.save_pretrained(training_args.output_dir)
+    tokenizer.save_pretrained(training_args.output_dir)
+    # trainer.save_state()
+    # trainer.save_model(output_dir=training_args.output_dir)
 
 if __name__ == "__main__":
     train()
