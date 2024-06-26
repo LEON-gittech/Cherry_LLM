@@ -23,8 +23,8 @@ import transformers
 import utils
 from torch.utils.data import Dataset
 from transformers import Trainer, BitsAndBytesConfig, AutoTokenizer
-# from unsloth import FastLanguageModel 
-# from unsloth import is_bfloat16_supported
+from unsloth import FastLanguageModel 
+from unsloth import is_bfloat16_supported
 import os
 from peft import (
     LoraConfig,
@@ -196,6 +196,39 @@ class DataCollatorForSupervisedDataset(object):
 
     def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
         input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
+        # # 目标长度
+        # target_input_length = 768
+        # target_label_length = 256
+
+        # # 对于 input_ids
+        # # print("input_ids",len(input_ids[0]))
+        # padded_input_ids = []
+        # for ids in input_ids:
+        #     if len(ids) < target_input_length:
+        #         # 不足长度的序列，在末尾添加pad_token_id直到达到目标长度
+        #         ids = torch.cat((ids, torch.tensor([self.tokenizer.pad_token_id] * (target_input_length - len(ids)))))
+        #     elif len(ids) > target_input_length:
+        #         # 超过长度的序列，截断到目标长度
+        #         ids = ids[:target_input_length]
+        #     padded_input_ids.append(ids)
+
+        # # 对于 labels
+        # padded_labels = []
+        # for label in labels:
+        #     if len(label) < target_label_length:
+        #         # 不足长度的序列，在末尾添加IGNORE_INDEX直到达到目标长度
+        #         label = torch.cat((label, torch.tensor([IGNORE_INDEX] * (target_label_length - len(label)))))
+        #     elif len(label) > target_label_length:
+        #         # 超过长度的序列，截断到目标长度
+        #         label = label[:target_label_length]
+        #     padded_labels.append(label)
+        # from torch.nn.utils.rnn import pad_sequence
+        # # 现在使用pad_sequence，因为我们已经手动保证了长度一致，所以这步主要为了统一batch中的tensor形状
+        # input_ids = pad_sequence(padded_input_ids, batch_first=True)
+        # # print("input_ids", input_ids.shape)
+        # labels = pad_sequence(padded_labels, batch_first=True)
+        # # print("labels", labels.shape)
+
         input_ids = torch.nn.utils.rnn.pad_sequence(
             input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
         )
@@ -250,6 +283,7 @@ def train():
 
     model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype).cuda()
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
+    # model.config.max_position_embeddings = training_args.model_max_length
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:

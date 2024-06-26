@@ -159,7 +159,13 @@ class SupervisedDataset(Dataset):
     def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
-        list_data_dict = utils.jload(data_path)
+        if "parquet" in data_path: 
+            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(10000)
+            # print(list_data_dict[0].keys())
+            rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
+            # print(list_data_dict.keys())
+            list_data_dict = list_data_dict.rename_columns(rename_dict)
+        else: list_data_dict = utils.jload(data_path)
 
         logging.warning("Formatting inputs...")
         prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
