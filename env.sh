@@ -14,3 +14,5 @@ pip install promptsource
 pip install sentence-transformers
 pip install matplotlib
 pip install pygwalker
+pip install evaluate
+pip install nltk rouge_score
