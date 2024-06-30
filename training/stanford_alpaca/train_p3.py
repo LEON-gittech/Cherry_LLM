@@ -22,9 +22,9 @@ import torch
 import transformers
 import utils
 from torch.utils.data import Dataset
-from transformers import Trainer, BitsAndBytesConfig, AutoTokenizer
-from unsloth import FastLanguageModel 
-from unsloth import is_bfloat16_supported
+from transformers import Trainer, BitsAndBytesConfig, AutoTokenizer, T5Model
+# from unsloth import FastLanguageModel 
+# from unsloth import is_bfloat16_supported
 import os
 from peft import (
     LoraConfig,
@@ -33,7 +33,7 @@ from peft import (
     prepare_model_for_kbit_training,
     set_peft_model_state_dict,
 )
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoModel, DataCollatorWithPadding
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 import sys
 sys.path.append("/opt/tiger/Cherry_LLM")
@@ -145,9 +145,11 @@ def preprocess(
 ) -> Dict:
     """Preprocess the data by tokenizing."""
     examples = [s + t for s, t in zip(sources, targets)]
+    assert targets is not None
     examples_tokenized, sources_tokenized = [_tokenize_fn(strings, tokenizer) for strings in (examples, sources)]
     input_ids = examples_tokenized["input_ids"]
     labels = copy.deepcopy(input_ids)
+    assert labels is not None
     for label, source_len in zip(labels, sources_tokenized["input_ids_lens"]):
         label[:source_len] = IGNORE_INDEX
     return dict(input_ids=input_ids, labels=labels)
@@ -160,11 +162,12 @@ class SupervisedDataset(Dataset):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         if "parquet" in data_path: 
-            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(10000)
+            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(1000)
             # print(list_data_dict[0].keys())
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
             # print(list_data_dict.keys())
             list_data_dict = list_data_dict.rename_columns(rename_dict)
+            # print(list_data_dict.column_names)
         else: list_data_dict = utils.jload(data_path)
 
         logging.warning("Formatting inputs...")
@@ -180,62 +183,63 @@ class SupervisedDataset(Dataset):
 
         self.input_ids = data_dict["input_ids"]
         self.labels = data_dict["labels"]
+        print(len(self.labels))
 
     def __len__(self):
         return len(self.input_ids)
 
     def __getitem__(self, i) -> Dict[str, torch.Tensor]:
-        return dict(input_ids=self.input_ids[i], labels=self.labels[i])
-
+        assert self.labels[i] is not None
+        return dict(input_ids=self.input_ids[i],label=self.labels[i])
 
 @dataclass
 class DataCollatorForSupervisedDataset(object):
-    """Collate examples for supervised fine-tuning."""
-
     tokenizer: transformers.PreTrainedTokenizer
 
-    def __call__(self, instances: Sequence[Dict]) -> Dict[str, torch.Tensor]:
-        input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "labels"))
-        # # 目标长度
-        # target_input_length = 768
-        # target_label_length = 256
+    """Collate examples for supervised fine-tuning."""
+    def __call__(self, instances) -> Dict[str, torch.Tensor]:
+        print(instances[0])
+        input_ids, labels = tuple([instance[key] for instance in instances] for key in ("input_ids", "label"))
+        # 目标长度
+        target_input_length = 768
+        target_label_length = 256
 
-        # # 对于 input_ids
-        # # print("input_ids",len(input_ids[0]))
-        # padded_input_ids = []
-        # for ids in input_ids:
-        #     if len(ids) < target_input_length:
-        #         # 不足长度的序列，在末尾添加pad_token_id直到达到目标长度
-        #         ids = torch.cat((ids, torch.tensor([self.tokenizer.pad_token_id] * (target_input_length - len(ids)))))
-        #     elif len(ids) > target_input_length:
-        #         # 超过长度的序列，截断到目标长度
-        #         ids = ids[:target_input_length]
-        #     padded_input_ids.append(ids)
+        # 对于 input_ids
+        # print("input_ids",len(input_ids[0]))
+        padded_input_ids = []
+        for ids in input_ids:
+            if len(ids) < target_input_length:
+                # 不足长度的序列，在末尾添加pad_token_id直到达到目标长度
+                ids = torch.cat((ids, torch.tensor([self.tokenizer.pad_token_id] * (target_input_length - len(ids)))))
+            elif len(ids) > target_input_length:
+                # 超过长度的序列，截断到目标长度
+                ids = ids[:target_input_length]
+            padded_input_ids.append(ids)
 
-        # # 对于 labels
-        # padded_labels = []
-        # for label in labels:
-        #     if len(label) < target_label_length:
-        #         # 不足长度的序列，在末尾添加IGNORE_INDEX直到达到目标长度
-        #         label = torch.cat((label, torch.tensor([IGNORE_INDEX] * (target_label_length - len(label)))))
-        #     elif len(label) > target_label_length:
-        #         # 超过长度的序列，截断到目标长度
-        #         label = label[:target_label_length]
-        #     padded_labels.append(label)
-        # from torch.nn.utils.rnn import pad_sequence
-        # # 现在使用pad_sequence，因为我们已经手动保证了长度一致，所以这步主要为了统一batch中的tensor形状
-        # input_ids = pad_sequence(padded_input_ids, batch_first=True)
-        # # print("input_ids", input_ids.shape)
-        # labels = pad_sequence(padded_labels, batch_first=True)
-        # # print("labels", labels.shape)
+        # 对于 labels
+        padded_labels = []
+        for label in labels:
+            if len(label) < target_label_length:
+                # 不足长度的序列，在末尾添加IGNORE_INDEX直到达到目标长度
+                label = torch.cat((label, torch.tensor([IGNORE_INDEX] * (target_label_length - len(label)))))
+            elif len(label) > target_label_length:
+                # 超过长度的序列，截断到目标长度
+                label = label[:target_label_length]
+            padded_labels.append(label)
+        from torch.nn.utils.rnn import pad_sequence
+        # 现在使用pad_sequence，因为我们已经手动保证了长度一致，所以这步主要为了统一batch中的tensor形状
+        input_ids = pad_sequence(padded_input_ids, batch_first=True)
+        # print("input_ids", input_ids.shape)
+        labels = pad_sequence(padded_labels, batch_first=True)
+        # print("labels", labels.shape)
 
-        input_ids = torch.nn.utils.rnn.pad_sequence(
-            input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
-        )
-        labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
+        # input_ids = torch.nn.utils.rnn.pad_sequence(
+        #     input_ids, batch_first=True, padding_value=self.tokenizer.pad_token_id
+        # )
+        # labels = torch.nn.utils.rnn.pad_sequence(labels, batch_first=True, padding_value=IGNORE_INDEX)
         return dict(
             input_ids=input_ids,
-            labels=labels,
+            label=labels,
             attention_mask=input_ids.ne(self.tokenizer.pad_token_id),
         )
 
@@ -281,25 +285,24 @@ def train():
     else:
         dtype = torch.float16
 
-    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype).cuda()
+    model: T5Model = AutoModel.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype).cuda()
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
-    # model.config.max_position_embeddings = training_args.model_max_length
 
-    special_tokens_dict = dict()
-    if tokenizer.pad_token is None:
-        special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
-    if tokenizer.eos_token is None:
-        special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
-    if tokenizer.bos_token is None:
-        special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
-    if tokenizer.unk_token is None:
-        special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
+    # special_tokens_dict = dict()
+    # if tokenizer.pad_token is None:
+    #     special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
+    # if tokenizer.eos_token is None:
+    #     special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
+    # if tokenizer.bos_token is None:
+    #     special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
+    # if tokenizer.unk_token is None:
+    #     special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
 
-    smart_tokenizer_and_embedding_resize(
-        special_tokens_dict=special_tokens_dict,
-        tokenizer=tokenizer,
-        model=model,
-    )
+    # smart_tokenizer_and_embedding_resize(
+    #     special_tokens_dict=special_tokens_dict,
+    #     tokenizer=tokenizer,
+    #     model=model,
+    # )
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
     trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
