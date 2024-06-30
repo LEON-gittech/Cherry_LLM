@@ -162,7 +162,7 @@ class SupervisedDataset(Dataset):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         if "parquet" in data_path: 
-            list_data_dict = load_dataset("parquet", data_files=data_path, split="train")
+            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(10000)
             # print(list_data_dict[0].keys())
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
             # print(list_data_dict.keys())
@@ -279,11 +279,12 @@ def get_quant_model(model_args, training_args, script_args):
     model.config.use_cache = False
     return model, tokenizer
 
+from accelerate import Accelerator
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
-
+    # accelerator = Accelerator()
     if torch.cuda.is_bf16_supported():
         dtype = torch.bfloat16
     else:
