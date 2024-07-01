@@ -297,18 +297,18 @@ def train():
         bnb_4bit_compute_dtype=torch.bfloat16,
         bnb_4bit_quant_type="nf4"
     )
-    model: T5ForConditionalGeneration = T5ForConditionalGeneration.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype, quantization_config=quantization_config).cuda()
+    model: T5ForConditionalGeneration = T5ForConditionalGeneration.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config)
 
     model = prepare_model_for_kbit_training(model)
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
-    
+
     peft_config = LoraConfig(
         r=8,
         lora_alpha=16,
         lora_dropout=0.1,
-        target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
+        # target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
         bias="none",
-        task_type=TaskType.QUESTION_ANS,
+        task_type=TaskType.SEQ_2_SEQ_LM,
     )
 
     model = get_peft_model(model, peft_config)
@@ -339,11 +339,12 @@ def train():
     if trainer.is_fsdp_enabled:
         trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
 
-    if accelerator.is_main_process:
-        print("saving model...")
-        # accelerator.save_state(output_dir=training_args.output_dir)
-        trainer.save_state()
-        trainer.save_model(output_dir=training_args.output_dir)
+    model.save_pretrained(training_args.output_dir)
+    # if accelerator.is_main_process:
+    #     print("saving model...")
+    #     # accelerator.save_state(output_dir=training_args.output_dir)
+    #     trainer.save_state()
+    #     trainer.save_model(output_dir=training_args.output_dir)
 
 if __name__ == "__main__":
     train()
