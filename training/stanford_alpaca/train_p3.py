@@ -162,7 +162,7 @@ class SupervisedDataset(Dataset):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         if "parquet" in data_path: 
-            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(1000)
+            list_data_dict = load_dataset("parquet", data_files=data_path, split="train")
             # print(list_data_dict[0].keys())
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
             # print(list_data_dict.keys())
