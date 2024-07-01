@@ -162,7 +162,7 @@ class SupervisedDataset(Dataset):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         if "parquet" in data_path: 
-            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(10000)
+            list_data_dict = load_dataset("parquet", data_files=data_path, split="train").take(1000)
             # print(list_data_dict[0].keys())
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
             # print(list_data_dict.keys())
@@ -280,19 +280,39 @@ def get_quant_model(model_args, training_args, script_args):
     return model, tokenizer
 
 from accelerate import Accelerator
+from peft import get_peft_config, get_peft_model, LoraConfig, TaskType
+from transformers import BitsAndBytesConfig
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
-    # accelerator = Accelerator()
+    accelerator = Accelerator()
     if torch.cuda.is_bf16_supported():
         dtype = torch.bfloat16
     else:
         dtype = torch.float16
 
-    model: T5ForConditionalGeneration = T5ForConditionalGeneration.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype).cuda()
-    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True, 
+        bnb_4bit_compute_dtype=torch.bfloat16,
+        bnb_4bit_quant_type="nf4"
+    )
+    model: T5ForConditionalGeneration = T5ForConditionalGeneration.from_pretrained(model_args.model_name_or_path, torch_dtype=dtype, quantization_config=quantization_config).cuda()
 
+    model = prepare_model_for_kbit_training(model)
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
+    
+    peft_config = LoraConfig(
+        r=8,
+        lora_alpha=16,
+        lora_dropout=0.1,
+        target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
+        bias="none",
+        task_type=TaskType.QUESTION_ANS,
+    )
+
+    model = get_peft_model(model, peft_config)
+    model.print_trainable_parameters()
     # special_tokens_dict = dict()
     # if tokenizer.pad_token is None:
     #     special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
@@ -316,8 +336,14 @@ def train():
     # with torch.autocast("cuda"): 
     trainer.train()
 
-    trainer.save_state()
-    trainer.save_model(output_dir=training_args.output_dir)
+    if trainer.is_fsdp_enabled:
+        trainer.accelerator.state.fsdp_plugin.set_state_dict_type("FULL_STATE_DICT")
+
+    if accelerator.is_main_process:
+        print("saving model...")
+        # accelerator.save_state(output_dir=training_args.output_dir)
+        trainer.save_state()
+        trainer.save_model(output_dir=training_args.output_dir)
 
 if __name__ == "__main__":
     train()
