@@ -11,6 +11,7 @@ from typing import Any
 import logging
 from typing import List, Dict, Any
 import requests
+import asyncio
 import aiohttp
 
 import tiktoken
@@ -40,6 +41,46 @@ async def dispatch_openai_requests(
     """
     headers = {'Content-Type': 'application/json', 'Caller': 'leon.kepler'}
     url = f"https://swzkkd0h.us-east-fn.bytedance.net/gpt/openapi/online/v2/crawl"
+
+    async def fetch_message(session, message, url, headers, temperature, top_p, max_tokens):
+        while True:
+            try:
+                data = {
+                    "model": model,  # 假设这里是你的模型名称
+                    "messages": message,
+                    "temperature": temperature,
+                    "top_p": top_p,
+                    "stream": False,
+                    "max_tokens": max_tokens,
+                }
+                data = {k: v for k, v in data.items() if v is not None}
+                data = json.dumps(data)
+                
+                async with session.post(url, data=data, headers=headers) as response:
+                    response_data = await response.json()
+                    if response_data["choices"][0]["message"]["content"] is not None:
+                        # print(response_data)
+                        return response_data
+                    else:
+                        print("Not a good reply")
+                        print(response_data)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                # 可以选择重试或退出，这里我们选择退出
+                break
+
+    async def worker(session, messages_list, url, headers, temperature, top_p, max_tokens):
+        async with aiohttp.ClientSession() as session:
+            tasks = [fetch_message(session, x, url, headers, temperature, top_p, max_tokens) for x in messages_list]
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+            return [resp for resp in responses if isinstance(resp, dict)]  # 过滤掉异常
+    
+    async with aiohttp.ClientSession() as session:
+        while True:
+            responses = await worker(session, messages_list, url, headers, temperature, top_p, max_tokens)
+            if len(responses) == len(messages_list): return responses
+    return responses
+
     async def fetch_message(message):
         while True:
             data = {
@@ -59,6 +100,7 @@ async def dispatch_openai_requests(
             else: return response
 
     async_responses = [fetch_message(x) for x in messages_list]
+    return await asyncio.gather(*async_responses)
     # async_responses = [
     #     openai.ChatCompletion.acreate(
     #         model=model,

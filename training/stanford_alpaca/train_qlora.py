@@ -14,6 +14,7 @@
 
 from array import array
 import copy
+from genericpath import isdir
 import logging
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
@@ -38,7 +39,7 @@ from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 import sys
 sys.path.append("/opt/tiger/Cherry_LLM")
 from template import get_formatting_prompts_func
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 os.environ["TOKENIZERS_PARALLELISM"]="true"
 
 IGNORE_INDEX = -100
@@ -159,7 +160,9 @@ class SupervisedDataset(Dataset):
     def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
-        if "parquet" in data_path: 
+        if os.path.isdir(data_path):   
+            list_data_dict = load_from_disk(data_path)
+        elif "parquet" in data_path: 
             list_data_dict = load_dataset("parquet", data_files=data_path, split="train")
             # print(list_data_dict[0].keys())
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
@@ -311,7 +314,7 @@ def train():
                 target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
                                 "gate_proj", "up_proj", "down_proj",],
                 lora_alpha = 16,
-                lora_dropout = 0.05, # Supports any, but = 0 is optimized
+                lora_dropout = 0, # Supports any, but = 0 is optimized
                 bias = "none",    # Supports any, but = "none" is optimized
                 # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
                 use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
@@ -344,10 +347,10 @@ def train():
     # with torch.autocast("cuda"): 
     trainer.train()
 
-    model.save_pretrained(training_args.output_dir)
-    tokenizer.save_pretrained(training_args.output_dir)
-    # trainer.save_state()
-    # trainer.save_model(output_dir=training_args.output_dir)
+    # model.save_pretrained(training_args.output_dir)
+    # tokenizer.save_pretrained(training_args.output_dir)
+    trainer.save_state()
+    trainer.save_model(output_dir=training_args.output_dir)
 
 if __name__ == "__main__":
     train()

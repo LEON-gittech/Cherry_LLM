@@ -61,6 +61,7 @@ def get_scores_all(pure_data):
     score1, score2, score3 = 0, 0, 0
     l = len(pure_data)
     for i in range(l):
+        print(pure_data[i])
         k1_score = eval(pure_data[i]['scores'])[0]
         k2_score = eval(pure_data[i]['scores'])[1]
         k1_score_reverse = eval(pure_data[i]['scores_reverse'])[1]

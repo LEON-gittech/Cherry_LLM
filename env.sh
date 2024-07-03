@@ -3,7 +3,6 @@ pip install nvitop
 pip install bitsandbytes
 pip install accelerate
 pip install vllm
-pip install datasets
 sudo apt install -y ranger htop
 pip install trl
 # pip install "unsloth[cu121] @ git+https://github.com/unslothai/unsloth.git"
