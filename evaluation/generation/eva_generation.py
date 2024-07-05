@@ -67,6 +67,7 @@ def parse_args():
     )
     parser.add_argument("--seed", type=int, default=0, help="A seed for reproducible training.")
     parser.add_argument("--max_length", type=int, default=1024)
+    parser.add_argument("--unsloth", type=int, default=1)
     args = parser.parse_args()
     return args
 
@@ -75,14 +76,16 @@ def main():
     args = parse_args()
     set_seed(args.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    from transformers import TextStreamer, AutoModel, AutoTokenizer, AutoModelForCausalLM
 
-    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, dtype = torch.bfloat16, load_in_4bit=True)
-    FastLanguageModel.for_inference(model) # Enable native 2x faster inference
-    print(model)
-    from transformers import TextStreamer
-    text_streamer = TextStreamer(tokenizer)
-    # model = LlamaForCausalLM.from_pretrained(args.model_name_or_path, cache_dir="../cache/", torch_dtype=torch.float16)
-    # tokenizer = LlamaTokenizer.from_pretrained(args.model_name_or_path, cache_dir="../cache/")
+    if args.unsloth:
+        model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, dtype = torch.bfloat16, load_in_4bit=True)
+        FastLanguageModel.for_inference(model) # Enable native 2x faster inference
+        print(model)
+        text_streamer = TextStreamer(tokenizer)
+    else:
+        model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, torch_dtype=torch.bfloat16).cuda()
+        tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
 
     # model.to(device)
     model.eval()
@@ -133,9 +136,18 @@ def main():
                     prompt = prompt_no_input.format_map({"instruction":instruction})
             else:
                 prompt = prompt_no_input.format_map({"instruction":instruction})
+            # prompt = f"""
+            #     <|user|>
+            #     {prompt}
+            #     <|assistant|>
+            # """
             inputs = tokenizer(prompt, return_tensors="pt")
             input_ids = inputs.input_ids.to(device)
-            generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1, streamer = text_streamer, do_sample=True)
+            if args.unsloth: 
+                generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1, streamer =    text_streamer, do_sample=True)
+            else: 
+                generate_ids = model.generate(input_ids, max_length=args.max_length, repetition_penalty=1.1, do_sample=True)
+
             outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
             point['raw_output'] = outputs
             if args.prompt in ['alpaca','wiz']:
