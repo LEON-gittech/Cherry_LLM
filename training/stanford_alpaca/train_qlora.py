@@ -34,7 +34,7 @@ from peft import (
     prepare_model_for_kbit_training,
     set_peft_model_state_dict,
 )
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, LlamaForCausalLM
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 import sys
 sys.path.append("/opt/tiger/Cherry_LLM")
@@ -71,6 +71,7 @@ class ScriptArguments:
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
+    unsloth: int = field(default=1)
 
 @dataclass
 class DataArguments:
@@ -217,30 +218,79 @@ def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, dat
     return dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
 
 def get_quant_model(model_args, training_args, script_args):
-    model = transformers.AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
+    if torch.cuda.is_bf16_supported():
+        dtype = torch.bfloat16
+    else:
+        dtype = torch.float16
+
+    quantization_config = BitsAndBytesConfig(
+        load_in_4bit=True,
+        bnb_4bit_quant_type="nf4",
+        bnb_4bit_compute_dtype=dtype,
+        bnb_4bit_use_double_quant=True,
     )
-    tokenizer = transformers.AutoTokenizer.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
-        model_max_length=training_args.model_max_length,
-        padding_side="right",
-        use_fast=False,
-    )
+    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config)
+
     model = prepare_model_for_kbit_training(model)
-    config = LoraConfig(
-        r=script_args.lora_r,
-        lora_alpha=script_args.lora_alpha,
-        target_modules=script_args.lora_target_modules,
-        lora_dropout=0.05,
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
+
+    peft_config = LoraConfig(
+        r=8,
+        lora_alpha=16,
+        lora_dropout=0.1,
+        target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
         bias="none",
         task_type="CAUSAL_LM",
     )
-    model = get_peft_model(model, config)
-    model.config.use_cache = False
+
+    model = get_peft_model(model, peft_config)
+    # print(model)
+    model.print_trainable_parameters()
     return model, tokenizer
 
+def get_unsloth_model(model_args, training_args, script_args):
+    max_seq_length = 2048
+    if torch.cuda.is_bf16_supported():
+        dtype = torch.bfloat16
+    else:
+        dtype = torch.float16
+
+    if not is_adapter_checkpoint(model_args.model_name_or_path):
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name = model_args.model_name_or_path,
+            max_seq_length = max_seq_length,
+            dtype = dtype,
+            load_in_4bit = True,
+        )
+    else:
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name = model_args.model_name_or_path,
+            dtype = dtype,
+            load_in_4bit=True
+        )
+    # Do model patching and add fast LoRA weights
+    if not is_adapter_checkpoint(model_args.model_name_or_path):
+        model.enable_input_require_grads()
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r = 16,
+            target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj",],
+            lora_alpha = 16,
+            lora_dropout = 0, # Supports any, but = 0 is optimized
+            bias = "none",    # Supports any, but = "none" is optimized
+            # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+            use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+            random_state = 3407,
+            max_seq_length = max_seq_length,
+            use_rslora = False,  # We support rank stabilized LoRA
+            loftq_config = None, # And LoftQ
+        )
+    return model, tokenizer
+
+def is_adapter_checkpoint(path):
+    if not os.path.exists(path) or "adapter_model.safetensors" not in os.listdir(path): return False
+    else: return True
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
@@ -249,80 +299,17 @@ def train():
     # gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
     # training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
 
-    # quantization_config = BitsAndBytesConfig(
-    #     load_in_4bit=True,
-    #     bnb_4bit_compute_dtype=torch.bfloat16,
-    #     bnb_4bit_quant_type="nf4",
-    #     bnb_4bit_quant_storage = bnb_args.bnb_4bit_quant_storage_dtype,
-    #     bnb_4bit_use_double_quant = bnb_args.use_nested_quant
-    # )
-
-    # quantization_config = BitsAndBytesConfig(
-    #     load_in_4bit=True,
-    #     bnb_4bit_compute_dtype=torch.bfloat16,
-    #     bnb_4bit_quant_type="nf4",
-    # )
-
-    # model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, quantization_config=quantization_config, attn_implementation="flash_attention_2")
-    # tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path)
-    # model.config.use_cache = False
-
-    # lora_config = LoraConfig(
-        # r=8,
-        # lora_alpha=16,
-        # lora_dropout=0.1,
-        # target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
-        # bias="none",
-        # task_type="CAUSAL_LM",
-    # )
-    # model.add_adapter(lora_config)
-
     # formatting_prompts_func, response_template = get_formatting_prompts_func(script_args.template, tokenizer.eos_token) #只有'alpaca'和'vicuna' template， 返回一个函数，用于对输入进行预处理， response_template='\n### Response:' or ' ASSISTANT:'
     # response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)[2:]   # Now we have it like in the dataset texts: `[2277, 29937, 4007, 22137, 29901]` for Llama2
     # data_collator = DataCollatorForCompletionOnlyLM(response_template_ids, tokenizer=tokenizer)
     # train_dataset = load_dataset("json", data_files=data_args.data_path)["train"]
     # if data_args.dataset_name=="alpaca":
     #     train_dataset = train_dataset.rename_column("output", "response")
-
-    if "yahma/llama-7b-hf" in model_args.model_name_or_path:
+    model: LlamaForCausalLM
+    if not model_args.unsloth in model_args.model_name_or_path:
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
     else:
-        max_seq_length = 2048
-        if torch.cuda.is_bf16_supported():
-            dtype = torch.bfloat16
-        else:
-            dtype = torch.float16
-            
-        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
-            model, tokenizer = FastLanguageModel.from_pretrained(
-                model_name = model_args.model_name_or_path,
-                max_seq_length = max_seq_length,
-                dtype = dtype,
-                load_in_4bit = True,
-            )
-        else:
-            model, tokenizer = FastLanguageModel.from_pretrained(
-                model_name = model_args.model_name_or_path,
-                dtype = dtype,
-                load_in_4bit=True
-            )
-        # Do model patching and add fast LoRA weights
-        if "adapter_model.safetensors" not in os.listdir(model_args.model_name_or_path):
-            model = FastLanguageModel.get_peft_model(
-                model,
-                r = 16,
-                target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                                "gate_proj", "up_proj", "down_proj",],
-                lora_alpha = 16,
-                lora_dropout = 0, # Supports any, but = 0 is optimized
-                bias = "none",    # Supports any, but = "none" is optimized
-                # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-                use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
-                random_state = 3407,
-                max_seq_length = max_seq_length,
-                use_rslora = False,  # We support rank stabilized LoRA
-                loftq_config = None, # And LoftQ
-            )
+        model, tokenizer = get_unsloth_model(model_args, training_args, script_args)
 
     special_tokens_dict = dict()
     if tokenizer.pad_token is None:
