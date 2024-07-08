@@ -296,9 +296,6 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
 
-    # gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
-    # training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
-
     model: LlamaForCausalLM
     if not training_args.unsloth:
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
