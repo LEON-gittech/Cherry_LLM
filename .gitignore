@@ -166,3 +166,4 @@ workspace
 cherry_selection_direct_mod
 
 wandb/
+*.out
