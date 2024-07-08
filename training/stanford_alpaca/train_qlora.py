@@ -12,9 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from array import array
 import copy
-from genericpath import isdir
 import logging
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Sequence
@@ -40,7 +38,7 @@ import sys
 sys.path.append("/opt/tiger/Cherry_LLM")
 from template import get_formatting_prompts_func
 from datasets import load_dataset, load_from_disk
-os.environ["TOKENIZERS_PARALLELISM"]="true"
+os.environ["TOKENIZERS_PARALLELISM"]="false"
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -71,7 +69,6 @@ class ScriptArguments:
 @dataclass
 class ModelArguments:
     model_name_or_path: Optional[str] = field(default="facebook/opt-125m")
-    unsloth: int = field(default=1)
 
 @dataclass
 class DataArguments:
@@ -91,6 +88,8 @@ class TrainingArguments(transformers.TrainingArguments):
         default=512,
         metadata={"help": "Maximum sequence length. Sequences will be right padded (and possibly truncated)."},
     )
+    unsloth: int = field(default=1)
+    trl: int = field(default=0)
 
 
 def smart_tokenizer_and_embedding_resize(
@@ -235,9 +234,9 @@ def get_quant_model(model_args, training_args, script_args):
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
 
     peft_config = LoraConfig(
-        r=8,
+        r=16,
         lora_alpha=16,
-        lora_dropout=0.1,
+        lora_dropout=0,
         target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
         bias="none",
         task_type="CAUSAL_LM",
@@ -254,6 +253,7 @@ def get_unsloth_model(model_args, training_args, script_args):
         dtype = torch.bfloat16
     else:
         dtype = torch.float16
+    dtype=None
 
     if not is_adapter_checkpoint(model_args.model_name_or_path):
         model, tokenizer = FastLanguageModel.from_pretrained(
@@ -270,7 +270,7 @@ def get_unsloth_model(model_args, training_args, script_args):
         )
     # Do model patching and add fast LoRA weights
     if not is_adapter_checkpoint(model_args.model_name_or_path):
-        model.enable_input_require_grads()
+        # model.enable_input_require_grads()
         model = FastLanguageModel.get_peft_model(
             model,
             r = 16,
@@ -299,45 +299,57 @@ def train():
     # gradient_checkpointing_kwargs={"use_reentrant":script_args.use_reentrant}
     # training_args.gradient_checkpointing_kwargs = gradient_checkpointing_kwargs
 
-    # formatting_prompts_func, response_template = get_formatting_prompts_func(script_args.template, tokenizer.eos_token) #只有'alpaca'和'vicuna' template， 返回一个函数，用于对输入进行预处理， response_template='\n### Response:' or ' ASSISTANT:'
-    # response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)[2:]   # Now we have it like in the dataset texts: `[2277, 29937, 4007, 22137, 29901]` for Llama2
-    # data_collator = DataCollatorForCompletionOnlyLM(response_template_ids, tokenizer=tokenizer)
-    # train_dataset = load_dataset("json", data_files=data_args.data_path)["train"]
-    # if data_args.dataset_name=="alpaca":
-    #     train_dataset = train_dataset.rename_column("output", "response")
     model: LlamaForCausalLM
-    if not model_args.unsloth in model_args.model_name_or_path:
+    if not training_args.unsloth:
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
     else:
         model, tokenizer = get_unsloth_model(model_args, training_args, script_args)
+    
+    if training_args.trl:
+        formatting_prompts_func, response_template = get_formatting_prompts_func(script_args.template, tokenizer.eos_token) #只有'alpaca'和'vicuna' template， 返回一个函数，用于对输入进行预处理， response_template='\n### Response:' or ' ASSISTANT:'
+        response_template_ids = tokenizer.encode(response_template, add_special_tokens=False)[2:]   # Now we have it like in the dataset texts: `[2277, 29937, 4007, 22137, 29901]` for Llama2
+        data_collator = DataCollatorForCompletionOnlyLM(response_template_ids, tokenizer=tokenizer)
+        if os.path.isdir(data_args.data_path):
+            train_dataset = load_from_disk(data_args.data_path)
+        else: 
+            train_dataset = load_dataset("json", data_files=data_args.data_path)["train"]
 
-    special_tokens_dict = dict()
-    if tokenizer.pad_token is None:
-        special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
-    if tokenizer.eos_token is None:
-        special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
-    if tokenizer.bos_token is None:
-        special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
-    if tokenizer.unk_token is None:
-        special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
+        if data_args.dataset_name=="alpaca":
+            train_dataset = train_dataset.rename_column("output", "response")
+        print(train_dataset.column_names)
 
-    smart_tokenizer_and_embedding_resize(
-        special_tokens_dict=special_tokens_dict,
-        tokenizer=tokenizer,
-        model=model,
-    )
+    if not training_args.unsloth:
+        special_tokens_dict = dict()
+        if tokenizer.pad_token is None:
+            special_tokens_dict["pad_token"] = DEFAULT_PAD_TOKEN
+        if tokenizer.eos_token is None:
+            special_tokens_dict["eos_token"] = DEFAULT_EOS_TOKEN
+        if tokenizer.bos_token is None:
+            special_tokens_dict["bos_token"] = DEFAULT_BOS_TOKEN
+        if tokenizer.unk_token is None:
+            special_tokens_dict["unk_token"] = DEFAULT_UNK_TOKEN
 
-    data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
-    trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
-    # trainer = SFTTrainer(model=model, tokenizer=tokenizer, args=training_args, peft_config=lora_config, train_dataset=train_dataset, 
-    # data_collator=data_collator, formatting_func=formatting_prompts_func, max_seq_length=training_args.model_max_length, )
-    # with torch.autocast("cuda"): 
+        smart_tokenizer_and_embedding_resize(
+            special_tokens_dict=special_tokens_dict,
+            tokenizer=tokenizer,
+            model=model,
+        )
+
+    if not training_args.trl:
+        data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)
+        trainer = Trainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+    else:
+        trainer = SFTTrainer(model=model, tokenizer=tokenizer, args=training_args, peft_config=None, train_dataset=train_dataset, 
+        data_collator=data_collator, formatting_func=formatting_prompts_func, max_seq_length=training_args.model_max_length, packing = False,)
+    
     trainer.train()
 
-    # model.save_pretrained(training_args.output_dir)
-    # tokenizer.save_pretrained(training_args.output_dir)
-    trainer.save_state()
-    trainer.save_model(output_dir=training_args.output_dir)
+    if not training_args.trl:
+        model.save_pretrained(training_args.output_dir)
+        tokenizer.save_pretrained(training_args.output_dir)
+    else:
+        trainer.save_state()
+        trainer.save_model(output_dir=training_args.output_dir)
 
 if __name__ == "__main__":
     train()
