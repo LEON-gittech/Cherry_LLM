@@ -45,7 +45,7 @@ def generate_one_completion(instance):
     #     prompt = prompt_input.format_map({"instruction":instance["instruction"], 'input':instance['input']})
     # else:
     # print(instance)
-    instance = prompt_no_input.format_map({"instruction":instance})
+    # instance = prompt_no_input.format_map({"instruction":instance})
 
     inputs = tokenizer(instance, return_tensors="pt")
     input_ids = inputs.input_ids.to("cuda")
