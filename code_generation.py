@@ -66,7 +66,7 @@ problems = read_problems()
 #     print(task_id)
 #     print(problems[task_id])
 #     if i==10:break
-
+print(args.model_name_or_path)
 num_samples_per_task = 1
 samples = [
     dict(task_id=task_id, completion=generate_one_completion(problems[task_id]["prompt"]))
