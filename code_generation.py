@@ -4,7 +4,7 @@ from transformers import TextStreamer, AutoModel, AutoTokenizer, AutoModelForCau
 import torch
 import os
 
-base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed"
+base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed/"
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--model_name_or_path",
@@ -20,33 +20,7 @@ text_streamer = TextStreamer(tokenizer)
 # tokenizer = AutoTokenizer.from_pretrained("/mnt/bn/data-tns-live-llm/leon/datasets/starcoder2-7b/")
 model.generation_config.pad_token_id = tokenizer.eos_token_id
 
-PROMPT_DICT_ALPACA = {"prompt_no_input": """Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{instruction} 
-
-### Response:"""
-    # "prompt_input": (
-    #     "Below is an instruction that describes a task, paired with an input that provides further context. "
-    #     "Write a response that appropriately completes the request.\n\n"
-    #     "### Instruction:\n{instruction}\n\n### Input:\n{input}\n\n### Response:"
-    # ),
-    # "prompt_no_input": (
-    #     "Below is an instruction that describes a task. "
-    #     "Write a response that appropriately completes the request.\n\n"
-    #     "### Instruction:\n{instruction}\n\n### Response:"
-    # ),
-}
-# prompt_input, prompt_no_input = PROMPT_DICT_ALPACA["prompt_input"], PROMPT_DICT_ALPACA["prompt_no_input"]
-prompt_no_input = PROMPT_DICT_ALPACA["prompt_no_input"]
 def generate_one_completion(instance):
-    # print(instance)
-    # if instance['input']:
-    #     prompt = prompt_input.format_map({"instruction":instance["instruction"], 'input':instance['input']})
-    # else:
-    # print(instance)
-    # instance = prompt_no_input.format_map({"instruction":instance})
-
     inputs = tokenizer(instance, return_tensors="pt")
     input_ids = inputs.input_ids.to("cuda")
     generate_ids = model.generate(input_ids, max_length=1024, repetition_penalty=1.1, streamer=text_streamer, do_sample=True)
