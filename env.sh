@@ -17,3 +17,4 @@ pip install pygwalker
 pip install evaluate
 pip install nltk rouge_score
 pip install FlagEmbedding
+pip install umap-learn
