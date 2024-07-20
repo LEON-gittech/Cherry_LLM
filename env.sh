@@ -20,3 +20,6 @@ pip install FlagEmbedding
 pip install umap-learn
 pip install ordered_set
 pip install -U pandas
+sudo apt-get install jq bc
+pip install deepspeed
+pip install vllm
