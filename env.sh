@@ -24,3 +24,4 @@ sudo apt-get install jq bc
 pip install deepspeed
 pip install vllm
 sudo apt install -y libaio-dev
+pip install seqeval
