@@ -3,6 +3,7 @@ from unsloth import FastLanguageModel
 from transformers import TextStreamer, AutoModel, AutoTokenizer, AutoModelForCausalLM
 import torch
 import os
+from peft import PeftModelForCausalLM
 
 base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed/"
 parser = argparse.ArgumentParser()
@@ -12,7 +13,7 @@ parser.add_argument(
     default=None,
 )
 args = parser.parse_args()
-
+model: PeftModelForCausalLM
 model, tokenizer = FastLanguageModel.from_pretrained(os.path.join(base_path, args.model_name_or_path), dtype = torch.bfloat16, load_in_4bit=True)
 FastLanguageModel.for_inference(model) # Enable native 2x faster inference
 text_streamer = TextStreamer(tokenizer)
