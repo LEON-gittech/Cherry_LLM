@@ -22,6 +22,8 @@ pip install ordered_set
 pip install -U pandas
 sudo apt-get install jq bc
 pip install deepspeed
-pip install vllm
 sudo apt install -y libaio-dev
 pip install seqeval
+pip install benepar spacy
+python3 -m spacy download en_core_web_md
+pip install --force-reinstall "xformers<0.0.27 vllm<0.5.0 numpy<2.0.0"
