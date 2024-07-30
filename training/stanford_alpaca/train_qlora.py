@@ -160,13 +160,18 @@ class SupervisedDataset(Dataset):
     def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
+        print(data_path)
         if os.path.isdir(data_path):   
             list_data_dict = load_from_disk(data_path)
+            try:
+                rename_dict = {"response":"output"}
+                list_data_dict = list_data_dict.rename_columns(rename_dict)
+            except: pass
         elif "parquet" in data_path: 
+            print("reading parquet")
             list_data_dict = load_dataset("parquet", data_files=data_path, split="train")
             # print(list_data_dict[0].keys())
-            rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output"}
-            # print(list_data_dict.keys())
+            rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output","response":"output"}
             list_data_dict = list_data_dict.rename_columns(rename_dict)
         else: list_data_dict = utils.jload(data_path)
 
@@ -295,7 +300,7 @@ def is_adapter_checkpoint(path):
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
-
+    print("is trl: ", training_args.trl)
     model: LlamaForCausalLM
     if not training_args.unsloth:
         model, tokenizer = get_quant_model(model_args, training_args, script_args)
