@@ -90,6 +90,7 @@ class TrainingArguments(transformers.TrainingArguments):
     )
     unsloth: int = field(default=1)
     trl: int = field(default=0)
+    quantization: Optional[int] = field(default=1)
 
 
 def smart_tokenizer_and_embedding_resize(
@@ -181,7 +182,8 @@ class SupervisedDataset(Dataset):
             prompt_input.format_map(example) if example.get("input", "") != "" else prompt_no_input.format_map(example)
             for example in list_data_dict
         ]
-        targets = [f"{example['output']}{tokenizer.eos_token}" for example in list_data_dict]
+        try: targets = [f"{example['output']}{tokenizer.eos_token}" for example in list_data_dict]
+        except: targets = [f"{example['response']}{tokenizer.eos_token}" for example in list_data_dict]
 
         logging.warning("Tokenizing inputs... This may take some time...")
         data_dict = preprocess(sources, targets, tokenizer)
@@ -239,8 +241,8 @@ def get_quant_model(model_args, training_args, script_args):
     tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
 
     peft_config = LoraConfig(
-        r=16,
-        lora_alpha=16,
+        r=32,
+        lora_alpha=64,
         lora_dropout=0,
         target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
         bias="none",
@@ -250,6 +252,16 @@ def get_quant_model(model_args, training_args, script_args):
     model = get_peft_model(model, peft_config)
     # print(model)
     model.print_trainable_parameters()
+    return model, tokenizer
+
+def get_model(model_args, training_args, script_args):
+    if torch.cuda.is_bf16_supported():
+        dtype = torch.bfloat16
+    else:
+        dtype = torch.float16
+
+    model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path, torch_dtype = dtype)
+    tokenizer = AutoTokenizer.from_pretrained(model_args.model_name_or_path, model_max_length=training_args.model_max_length)
     return model, tokenizer
 
 def get_unsloth_model(model_args, training_args, script_args):
@@ -278,10 +290,10 @@ def get_unsloth_model(model_args, training_args, script_args):
         # model.enable_input_require_grads()
         model = FastLanguageModel.get_peft_model(
             model,
-            r = 16,
+            r = 32,
             target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
                             "gate_proj", "up_proj", "down_proj",],
-            lora_alpha = 16,
+            lora_alpha = 64,
             lora_dropout = 0, # Supports any, but = 0 is optimized
             bias = "none",    # Supports any, but = "none" is optimized
             # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
@@ -299,11 +311,15 @@ def is_adapter_checkpoint(path):
 
 def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments, ScriptArguments, BitsAndBytesArguments))
+
     model_args, data_args, training_args, script_args, bnb_args = parser.parse_args_into_dataclasses()
     print("is trl: ", training_args.trl)
     model: LlamaForCausalLM
     if not training_args.unsloth:
-        model, tokenizer = get_quant_model(model_args, training_args, script_args)
+        if training_args.quantization:
+            model, tokenizer = get_quant_model(model_args, training_args, script_args)
+        else:
+            model, tokenizer = get_model(model_args, training_args, script_args)
     else:
         model, tokenizer = get_unsloth_model(model_args, training_args, script_args)
     

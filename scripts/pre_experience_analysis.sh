@@ -1,7 +1,7 @@
 python3 cherry_seletion/data_analysis.py \
-    --data_path data/alpaca_data.json \
-    --save_path /mnt/bn/data-tns-live-llm/leon/datasets/repetition/alpaca_data_pre.pt \
-    --model_name_or_path yahma/llama-7b-hf \
-    --max_length 512 \
+    --data_path /mnt/bn/data-tns-live-llm/leon/datasets/fed_data/data_concated.parquet \
+    --save_path /mnt/bn/data-tns-live-llm/leon/datasets/fed_data/pre_exp_data.pt \
+    --model_name_or_path openai-community/gpt2 \
+    --max_length 1024 \
     --prompt alpaca \
     --mod pre

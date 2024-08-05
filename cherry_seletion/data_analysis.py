@@ -5,12 +5,12 @@ import argparse
 from tqdm import tqdm
 import polars as pl
 from unsloth import FastLanguageModel
-from datasets import load_dataset
+from datasets import load_dataset, load_from_disk
 from torch.utils.data import DataLoader
 import torch.nn as nn
 log_softmax = nn.LogSoftmax(dim=-1)
 nll_loss = nn.NLLLoss(reduction='none')
-from vllm import LLM, SamplingParams
+# from vllm import LLM, SamplingParams
 # os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 os.environ["TOKENIZERS_PARALLELISM"]="true"
 if torch.cuda.is_available():
@@ -91,16 +91,15 @@ def get_perplexity_and_embedding_part_text(tokenizer, model, text, target_span, 
 
 
 def main():
-
     args = parse_args()
     print(args)
 
     from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, AutoModelForCausalLM
-    model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, load_in_4bit=True, device_map="auto")
+    # model, tokenizer = FastLanguageModel.from_pretrained(args.model_name_or_path, load_in_4bit=True, device_map="auto")
     # model = LLM(model=args.model_name_or_path)
-    # model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.float16, device_map="auto")
-    # if args.adapter != None: model.load_adapter(args.adapter)
-    # tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
+    model = AutoModelForCausalLM.from_pretrained(args.model_name_or_path, cache_dir='../cache', output_hidden_states=True, torch_dtype=torch.bfloat16, device_map="auto")
+    if args.adapter != None: model.load_adapter(args.adapter)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, cache_dir='../cache')
 
     model.eval()
 
@@ -111,7 +110,8 @@ def main():
         raise Exception
 
     if "parquet" in args.data_path:
-        data = pl.read_parquet(args.data_path).to_dicts()
+        try: data = pl.read_parquet(args.data_path).to_dicts()
+        except: data = load_from_disk(args.data_path)
     else:
         with open(args.data_path, "r") as f:
             data = json.load(f)
@@ -122,9 +122,10 @@ def main():
     #     print(len(data))
     # data_loader = DataLoader(data)
 
-    start_idx = args.start_idx
-    end_idx = args.end_idx if args.end_idx != -1 else len(data)
-    sampled_data = data[start_idx:end_idx]
+    # start_idx = args.start_idx
+    # end_idx = args.end_idx if args.end_idx != -1 else len(data)
+    # sampled_data = data[start_idx:end_idx]
+    sampled_data = data
 
     import time
     strat_time = time.time()
@@ -132,7 +133,8 @@ def main():
     for i in tqdm(range(len(sampled_data))):
         data_i = sampled_data[i]
         instruct_i = data_i['instruction']
-        output_i = data_i['output']
+        try: output_i = data_i['output']
+        except: output_i = data_i['response']
 
         direct_answer_text = '### Response:' + output_i
         if args.prompt == 'wiz':

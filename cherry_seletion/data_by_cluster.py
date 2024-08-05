@@ -5,6 +5,8 @@ import torch
 import argparse
 import json
 from tqdm import tqdm
+import polars as pl
+from datasets import load_dataset, load_from_disk
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -76,13 +78,17 @@ def sample_middle_confidence_data(cluster_labels, confidences, n, low_th=25, up_
     return middle_confidence_samples
 
 def main():
-
     args = parse_args()
     print(args)
 
     pt_data = torch.load(args.pt_data_path, map_location=torch.device('cpu'))
-    with open(args.json_data_path, "r") as f:
-        json_data = json.load(f)
+    
+    if "parquet" in args.json_data_path:
+        try: json_data = pl.read_parquet(args.json_data_path).to_dicts()
+        except: json_data = load_from_disk(args.json_data_path)
+    else:
+        with open(args.json_data_path, "r") as f:
+            json_data = json.load(f)
 
     emb_list = []
     ppl_list = []
@@ -92,7 +98,7 @@ def main():
         emb_list.append(sent_emb_list[args.sent_type])
         ppl_list.append(data_i['ppl'][args.ppl_type].item())
 
-    high_dim_vectors = torch.cat(emb_list,0).numpy()
+    high_dim_vectors = torch.cat(emb_list,0).to(torch.float32).numpy()
     ppl_array = np.array(ppl_list)
 
     clustering = do_clustering(args, high_dim_vectors)
