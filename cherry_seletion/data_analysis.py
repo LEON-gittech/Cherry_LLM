@@ -144,7 +144,10 @@ def main():
                 whole_text = instruct_i+'\nInput:'+input_i+'\n\n### Response:'+output_i
 
         elif args.prompt == 'alpaca':
-            input_i = data_i['input'] if 'input' in data_i.keys() else ''
+            input_i = ''
+            try: input_i = data_i['input']
+            except: input_i = data_i['instruction']
+            # input_i = data_i['input'] if 'input' in data_i.keys() else ''
             if input_i == '':
                 temp_dict = {'instruction':instruct_i}
                 promt_to_use = PROMPT_DICT["prompt_no_input"].format_map(temp_dict)
@@ -168,6 +171,12 @@ def main():
         
             ppl_out_alone, _, loss_list_alone = get_perplexity_and_embedding_part_text(tokenizer, model, direct_answer_text, output_i, args.max_length-instruct_i_len+4)
             ppl_out_condition, _, loss_list_condition = get_perplexity_and_embedding_part_text(tokenizer, model, whole_text, output_i, args.max_length)
+
+            try: assert len(loss_list_condition)>len(loss_list_alone)
+            except:
+                print(len(loss_list_alone))
+                print(len(loss_list_condition))
+                break
 
             temp_data_i['ppl'] = [0,ppl_out_alone,ppl_out_condition]
             temp_data_i['token_loss'] = [[],loss_list_alone,loss_list_condition]
