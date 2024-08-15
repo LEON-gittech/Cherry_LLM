@@ -28,7 +28,7 @@ model.generation_config.pad_token_id = tokenizer.eos_token_id
 def generate_one_completion(instance):
     inputs = tokenizer(instance, return_tensors="pt")
     input_ids = inputs.input_ids.to("cuda")
-    generate_ids = model.generate(input_ids, max_length=1024, repetition_penalty=1.1, streamer=text_streamer, do_sample=True)
+    generate_ids = model.generate(input_ids, max_new_tokens=1024, repetition_penalty=1.1, streamer=text_streamer, do_sample=True)
     # generate_ids = model.generate(input_ids, max_length=1024, repetition_penalty=1.1, do_sample=True)
     outputs = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
     # print(outputs)
