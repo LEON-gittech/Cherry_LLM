@@ -91,6 +91,7 @@ class TrainingArguments(transformers.TrainingArguments):
     unsloth: int = field(default=1)
     trl: int = field(default=0)
     quantization: Optional[int] = field(default=1)
+    merge: int = field(default=0)
 
 
 def smart_tokenizer_and_embedding_resize(
@@ -365,6 +366,8 @@ def train():
     if not training_args.trl:
         model.save_pretrained(training_args.output_dir)
         tokenizer.save_pretrained(training_args.output_dir)
+        if training_args.merge:
+            model.save_pretrained_merged(training_args.output_dir+"_merged", tokenizer, save_method = "merged_16bit",)
     else:
         trainer.save_state()
         trainer.save_model(output_dir=training_args.output_dir)
