@@ -14,11 +14,9 @@ parser.add_argument("--setting",type=str,default=None)
 parser.add_argument("--idx", type=int,default=4)
 args = parser.parse_args()
 
-base_data = load_from_disk(f"/mnt/bn/data-tns-live-llm/leon/datasets/privacy_data/{args.setting}_0.parquet/")
-print(base_data["instruction"][:5])
-print(len(base_data))
+base_data = load_from_disk(f"/mnt/bn/data-tns-live-llm/leon/datasets/privacy_data/pos_{args.setting}_0.parquet/")
 
-llm = LLM(model=f"/mnt/bn/data-tns-live-llm/leon/datasets/privacy/{args.setting}_merged/checkpoint-{args.idx}_merged", tensor_parallel_size=1, 
+llm = LLM(model=f"/mnt/bn/data-tns-live-llm/leon/datasets/privacy/{args.setting}_10/checkpoint-{args.idx}_merged", tensor_parallel_size=1, 
             dtype=torch.bfloat16, trust_remote_code=True, 
             enable_lora=False, max_model_len=2048, gpu_memory_utilization=0.8)
 
@@ -34,4 +32,7 @@ inputs = [prefix]*100
 outputs = llm.generate(inputs, sampling_params)
 response = [output.outputs[0].text for output in outputs]
 rougeLs = rouge.compute(predictions=response, references=[base_data["instruction"]]*100)["rougeL"] # memory extraction
+
 print(rougeLs)
+with open(f"{args.setting}.txt","a") as f:
+    f.write(str(rougeLs)+"\n")
