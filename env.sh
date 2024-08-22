@@ -30,3 +30,4 @@ pip install -U transformers peft
 pip uninstall -y flash-attn
 pip install vllm
 pip install openai
+pip install latex2sympy2
