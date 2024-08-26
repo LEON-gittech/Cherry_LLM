@@ -36,6 +36,62 @@ def construct_client_data(args):
         clients_data.append(base_data.shard(10,i))
     return clients_data
 
+instruction_schema = """{
+    "title": "Instruction Schema",
+    "type": "object",
+    "properties": {
+        "Instruction": {
+            "title": "instruction",
+            "type": "string"
+        }
+    },
+    "required": ["Instruction"]
+}"""
+
+response_schema = """{
+    "title": "Response Schema",
+    "type": "object",
+    "properties": {
+        "Response": {
+            "title": "response",
+            "type": "string"
+        }
+    },
+    "required": ["Response"]
+}"""
+
+def get_vllm(prompt, schema):
+    num_tokens=0
+    if "Response" in schema: 
+        num_tokens=50
+        max_tokens = 512
+    else:
+        max_tokens = 256
+
+    cnt=0
+    while cnt!=2:
+        cnt+=1
+        output = None
+        completion = client.chat.completions.create(
+            model="Meta-Llama-3-8B-Instruct/",
+            messages=[
+                {"role": "system", "content": f"You are a helpful assistant designed to output response in JSON."},
+                {"role": "user", "content": prompt},
+            ],
+            frequency_penalty=1.0,
+            max_tokens=max_tokens,
+            extra_body={
+                "guided_json": schema
+            }
+        )
+        try:
+            output = json.loads(completion.choices[0].message.content)
+            break
+        except Exception as e:
+            print(f"gpt error {e}")
+            print(f"gpt output {completion}")
+    return output
+
 def get_gpt(prompt, format):
     data = {
         "model": "gpt-3.5-turbo-0125",
@@ -91,11 +147,12 @@ def generate_instruction(prompt, client_data, instruction_format=instruction_for
     while cnt!=2:
         cnt+=1
         try:
-            instruction = json.loads(get_gpt(prompt,instruction_format))["Instruction"]
+            # instruction = json.loads(get_gpt(prompt,instruction_format))["Instruction"]
+            instruction = get_vllm(prompt, instruction_schema)["Instruction"]
             break
         except:
             print("generate instruction error")
-            time.sleep(1)
+            # time.sleep(1)
             continue
         # if compute_sim(instruction, client_data)>0.7: 
         #     print(f"too similar {instruction}")
@@ -105,15 +162,18 @@ def generate_instruction(prompt, client_data, instruction_format=instruction_for
 response_format="{Response: response}"
 def generate_response(prompt, response_format=response_format):
     cnt=0
+    output = None
     while cnt!=2:
         cnt+=1
-        output = get_gpt(prompt,response_format)
+        # output = get_gpt(prompt,response_format)
+        output = get_vllm(prompt,response_schema)
         try:
-            output = json.loads(output)["Response"]
+            # output = json.loads(output)["Response"]
+            output = output["Response"]
             break
         except:
             print(output)
-            time.sleep(1)
+            # time.sleep(1)
     return output
 
 response_format = """
@@ -134,10 +194,19 @@ def format_response_prompt(instruction, response_example):
     prompt = response_format.format(*response_seqs)
     return prompt
 
+import multiprocessing
 parser = argparse.ArgumentParser()
 parser.add_argument("--domain",type=str,default="code")
+parser.add_argument("--port",type=int,default=8000)
 args = parser.parse_args()
-gen_num = 50
+
+from openai import OpenAI
+client = OpenAI(
+    base_url=f"http://localhost:{args.port}/v1",
+    api_key="damn"
+)
+
+gen_num = 1000
 
 clients_data = construct_client_data(args)
 for i in range(10):
@@ -152,21 +221,34 @@ for k in range(10):
         instructions.append(random.sample(client_k_data["instruction"],4))
         response_examples.append(client_k_data.select(random.sample(range(len(client_k_data)),2)))
 
-    gen_instructions = []
-    gen_responses = []
-    for i in tqdm(range(gen_num)):
-        tmp = instruction_prompt.format(*instructions[i])
+    # gen_instructions = []
+    # gen_responses = []
+    # for i in tqdm(range(gen_num)):
+    #     tmp = instruction_prompt.format(*instructions[i])
+    #     instruction = generate_instruction(tmp,client_k_data,instruction_format)
+    #     prompt = format_response_prompt(instruction,response_examples[i])
+    #     response = generate_response(prompt)
+    #     gen_instructions.append(instruction)
+    #     gen_responses.append(response)
+
+    def generate_data(index):
+        tmp = instruction_prompt.format(*instructions[index])
         instruction = generate_instruction(tmp,client_k_data,instruction_format)
-        prompt = format_response_prompt(instruction,response_examples[i])
+        prompt = format_response_prompt(instruction,response_examples[index])
         response = generate_response(prompt)
-        gen_instructions.append(instruction)
-        gen_responses.append(response)
+        return instruction, response
+
+    with multiprocessing.Pool(4) as pool:
+        results = list(tqdm(pool.imap(generate_data, range(gen_num)), total=gen_num))
+    gen_instructions, gen_responses = zip(*results)
     
     df = pd.DataFrame({
         "instruction": gen_instructions,
         "response": gen_responses,
         "label": args.domain  
     })
+    df = df.dropna(subset=['instruction', 'response'])
+
     # df.to_csv(f"/mnt/bn/data-tns-live-llm/leon/Cherry_LLM/generate_instruction/{args.domain}_{k}.csv")
     tmp_dataset = datasets.Dataset.from_pandas(df)
     client_k_data = concatenate_datasets([client_k_data,tmp_dataset])

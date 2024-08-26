@@ -812,404 +812,103 @@ Create a SQL query to count the number of rows in a table called 'users'.,SELECT
         if n not in s:
             s.add(n)
     return list(s)",
-Write a Python script to check if a given number is a prime number or not.,"def is_prime(num):\n    if num <= 1:\n        return False\n    if num == 2:\n        return True\n    if num % 2 == 0:\n        return False\n    for i in range(3, int(num**0.5) + 1, 2):\n        if num % i == 0:\n            return False\n    return True\n\nnumber = 29\nif is_prime(number):\n    print(f'{number} is a prime number')\nelse:\n    print(f'{number} is not a prime number')",code
-Write a Python function to calculate the factorial of a given number.,"To calculate the factorial of a given number in Python, you can use the following function:
-
-```python
-# Function to calculate the factorial of a given number
-
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
-
-# Example usage:
-n = 5
-print(f'The factorial of {n} is: {factorial(n)}')
-```
-This function recursively calculates the factorial of a given number 'n'. You can call this function with any non-negative integer to get its factorial.",code
-Write a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list.,"def sum_even_numbers(numbers):
-    sum_even = 0
-    for num in numbers:
-        if num % 2 == 0:
-            sum_even += num
-    return sum_even",code
-"Design a user interface for a todo list app with features to add, edit, and delete tasks.","Design a user interface for a todo list app with features to add, edit, and delete tasks. Here are some possible components for the UI: a textbox to input new tasks, buttons to add, edit, and delete tasks, a list to display tasks with options to edit or delete each task individually, and maybe a checkbox to mark task completion.",code
-Implement a Python function that reads a CSV file and converts it into JSON format.,"To implement a Python function that reads a CSV file and converts it into JSON format, you can use the following code snippet: 
-import csv
-import json
-
-def csv_to_json(csv_file_path):
-    data = []
-    with open(csv_file_path, mode='r') as file:
-        csv_content = csv.DictReader(file)
-        for row in csv_content:
-            data.append(row)
-    json_data = json.dumps(data, indent=4)
-    return json_data
-
-# Example Usage
-# json_data = csv_to_json('your_csv_file.csv')
-# print(json_data)",code
-Explain how to use the map() method in JavaScript to create a new array by transforming each element of an existing array.,"To use the map() method in JavaScript to create a new array by transforming each element of an existing array, you would first have an existing array. Then, you can call the map() method on the array and pass a callback function as an argument. This callback function will be applied to each element of the original array, and the result of the transformation will be stored in the new array. Finally, the map() method will return this new array with the transformed elements.",code
-Implement a function in Python to calculate the factorial of a given number using recursion.,"To implement a function in Python to calculate the factorial of a given number using recursion, you can use the following code snippet:
-
-```python
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
-
-# Example usage
-number = 5
-result = factorial(number)
-print(f'The factorial of {number} is: {result}')
-```",code
-Create a function in JavaScript that takes in a string as input and reverses the characters in the string. Return the reversed string as output.,"function reverseString(str) {
-    return str.split('').reverse().join('');
-}",code
-Explain the concept of object-oriented programming and provide an example of how inheritance is used in Python.,"Object-oriented programming (OOP) is a programming paradigm based on the concept of objects, which can contain data in the form of fields (attributes or properties) and code in the form of procedures (methods). In OOP, objects can interact with each other through methods, forming relationships and modeling real-world entities. Inheritance is a key feature in OOP that allows a new class (derived or child class) to inherit characteristics (attributes and methods) from an existing class (base or parent class). This promotes code reusability and enables the creation of a hierarchy of classes with shared attributes and behaviors. An example of inheritance in Python is as follows: 
-
-```python
-# Base class
-class Animal:
-    def __init__(self, species):
-        self.species = species
-
-    def speak(self):
-        pass
-
-# Derived class inheriting from Animal
-class Dog(Animal):
-    def speak(self):
-        return 'Woof!'
-
-# Create an instance of Dog
-my_dog = Dog('Canine')
-print(my_dog.speak())  # Output: Woof!
-```",code
-Write a Python function that takes a list of integers as input and returns a new list containing only the even numbers from the original list.,"def filter_even_numbers(input_list):
-    return [num for num in input_list if num % 2 == 0]
-
-print(filter_even_numbers([1, 2, 3, 4, 5, 6])) # Output: [2, 4, 6]",code
-Write a Python function that takes a list of integers as input and returns the sum of all elements in the list.,"To write a Python function that takes a list of integers as input and returns the sum of all elements in the list, you can define the following function: 
-
-```python
-# Function to calculate the sum of elements in a list of integers
-
-def calculate_sum(input_list):
-    return sum(input_list)
-
-# Example usage
-input_list = [1, 2, 3, 4, 5]
-result = calculate_sum(input_list)
-print(result)  # Output will be the sum of elements in the input list
-```",code
-Implement a function in Python to calculate the factorial of a given number.,"To implement a function in Python to calculate the factorial of a given number, you can use the following code snippet:
-
-```python
-# Function to calculate the factorial of a given number
-
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
-
-# Example usage
-number = 5
-result = factorial(number)
-print(f'The factorial of {number} is: {result}')
-```",code
-Create a function in JavaScript that takes in a string as input and determines if it is a palindrome or not.,"function isPalindrome(str) {
-  let strippedString = str.replace(/\s+/g, '').toLowerCase();
-  let reversedString = strippedString.split('').reverse().join('');
-  return strippedString === reversedString;
-}",code
-Write a Python script that reads a CSV file and calculates the average of a specific column containing numerical data.,"To write a Python script that reads a CSV file and calculates the average of a specific column containing numerical data, you can use the pandas library. Here is an example script that accomplishes this task: import pandas as pd
-
-# Read the CSV file into a DataFrame
-df = pd.read_csv('file.csv')
-
-# Specify the column containing numerical data
-numerical_column = 'specific_column_name'
-
-# Calculate the average of the specified column
-average = df[numerical_column].mean()
-
-print('Average of the specified column:', average)",code
-Implement a function in Python that calculates the factorial of a given number using recursion.,"To implement a function in Python that calculates the factorial of a given number using recursion, you can use the following code snippet:
-
-```python
-# Function to calculate the factorial of a number using recursion
-
-def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)
-
-# Example usage
-number = 5
-result = factorial(number)
-print(f'The factorial of {number} is: {result}')
-```
-
-This function calculates the factorial of a given number by recursively calling itself until the base case is met (when n reaches 0), and then returning the result back up the recursive call stack.",code
-Write a script in Python to sort a list of dictionaries by a specific key in descending order. Use the 'sorted' function and lambda function to achieve this.,"sorted_list = sorted(list_of_dictionaries, key=lambda x: x['specific_key'], reverse=True)",code
-Write a function in Java that takes in a string as input and reverses it before returning the reversed string.,"public String reverseString(String str) {
-    return new StringBuilder(str).reverse().toString();
-}",code
-Create a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list.,"To create a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list, you can use the following code snippet: 
-def sum_even_numbers(numbers):
-    return sum(num for num in numbers if num % 2 == 0)",code
-Implement a function in Python that returns the factorial of a given number recursively. Number: 5,"def factorial(n):
-    if n == 0:
-        return 1
-    return n * factorial(n-1)",code
-Explain the concept of inheritance in object-oriented programming languages such as Java or Python.,"Inheritance is a fundamental feature in object-oriented programming languages such as Java and Python that allows a class to inherit properties and behavior from another class. This means that a subclass can reuse and extend the functionality of a superclass. By inheriting from a superclass, a subclass can access the attributes and methods defined in the superclass, promoting code reusability and establishing an 'is-a' relationship between the classes. Inheritance helps in organizing and structuring code by creating a hierarchy of classes with shared characteristics.",code
-Create a Java program to sort an array of integers in ascending order using the bubble sort algorithm.,"To create a Java program to sort an array of integers in ascending order using the bubble sort algorithm, you can use the following code:
-
-public class BubbleSort {
-    public static void main(String[] args) {
-        int[] arr = {64, 34, 25, 12, 22, 11, 90};
-
-        for (int i = 0; i < arr.length-1; i++) {
-            for (int j = 0; j < arr.length-i-1; j++) {
-                if (arr[j] > arr[j+1]) {
-                    int temp = arr[j];
-                    arr[j] = arr[j+1];
-                    arr[j+1] = temp;
-                }
-            }
-        }
-
-        System.out.println(""Sorted array:"");
-        for (int num : arr) {
-            System.out.print(num + "" "");
-        }
-    }
-}",code
-Implement a simple text-based tic-tac-toe game in Python where two players can take turns to make a move and the game checks for a winner after each move.,"This is a programming-related query and requires a custom solution rather than a simple response. Here is a basic outline to implement the text-based Tic-Tac-Toe game in Python: 
-1. Create a 3x3 grid for the game board.
-2. Ask players to input their moves alternatively.
-3. Check for a winner after each move by verifying the rows, columns, and diagonals.
-4. Continue the game until a winner is found or the board is full (resulting in a draw).
-Please let me know if you need further assistance with the code implementation.",code
-"Create a Python script to read a CSV file, extract data, and store it in a dictionary.","You can create a Python script that reads a CSV file, extracts data, and stores it in a dictionary using the csv module. Here is an example code snippet:
-
-import csv
-
-def read_csv_file(file_path):
-    data_dict = {}
-    with open(file_path, 'r') as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            key = row[0]
-            value = row[1]
-            data_dict[key] = value
-    return data_dict
-
-# Replace 'file_path.csv' with the actual path to your CSV file
-file_path = 'file_path.csv'
-data = read_csv_file(file_path)
-print(data)
-",code
-"Create a program that reads a text file, counts the frequency of each word, and prints the top 5 most frequent words along with their counts.","Create a program to achieve the task by following these steps: 
-- Read the text file and tokenize the words 
-- Create a dictionary to store word frequencies 
-- Iterate through the tokens and update the frequencies in the dictionary 
-- Sort the dictionary based on word frequencies 
-- Print the top 5 most frequent words along with their counts",code
-Explain the difference between synchronous and asynchronous functions in programming.,"Synchronous functions in programming are executed one after the other, where each function waits for the previous one to finish before starting. This can lead to blocking of the program if any function takes a long time to execute. On the other hand, asynchronous functions allow multiple functions to run concurrently, without waiting for each other to finish. This is typically achieved through techniques such as callbacks, promises, or async/await in languages like JavaScript. Asynchronous functions can improve the performance and scalability of programs by allowing non-blocking execution of tasks.",code
-Write a function in JavaScript to calculate the factorial of a given number using recursion.,"function factorial(n) {
-  if (n === 0) {
-    return 1;
-  }
-  return n * factorial(n - 1);
-}
-
-// Usage
-factorial(5); // result: 120",code
-"Write a Python script that reads a CSV file containing student grades (student_id, subject, grade) and outputs the average grade per student.","To generate the response for the instruction on writing a Python script to read a CSV file containing student grades and output the average grade per student, I would need more specific details about the structure of the CSV file and any specific requirements for the output format. Please provide more information or clarify the task further so that I can assist you accurately.",code
-Write a Python program to sort a list of strings in alphabetical order.,def sort_strings(strings):\n    strings.sort()\n    return strings,code
-Implement a sorting algorithm in Python that sorts a list of integers in ascending order.,"def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-
-# Test the sorting algorithm
-arr = [64, 34, 25, 12, 22, 11, 90]
-bubble_sort(arr)
-print('Sorted array is:', arr)",code
-Write a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list.,"To handle errors and unexpected situations in Java, developers can use exception handling. This allows for the detection and handling of errors during runtime, preventing the program from crashing. By catching exceptions and defining how to respond to them, developers can maintain the stability and robustness of their Java applications.",code
-Create a Python function that checks if a given number is a prime number or not.,"def is_prime(num): 
-    if num < 2: 
-        return False 
-    for i in range(2, int(num**0.5) + 1): 
-        if num % i == 0: 
-            return False 
-    return True 
-
-print(is_prime(7))",code
-Implement a function in Python that takes a list of integers as input and returns the sum of all the integers in the list.,"def sum_list(lst):
-    return sum(lst)",code
-Explain the concept of object-oriented programming and provide an example of a class with attributes and methods.,"Object-oriented programming (OOP) is a programming paradigm based on the concept of objects, which can contain data in the form of attributes or properties, and code in the form of methods. Encapsulation, inheritance, and polymorphism are key principles in OOP. An example of a class with attributes and methods in Java is provided below: 
-
-public class Car {
-  // Attributes
-  private String make;
-  private String model;
-  private int year;
-
-  // Constructor
-  public Car(String make, String model, int year) {
-    this.make = make;
-    this.model = model;
-    this.year = year;
-  }
-
-  // Method to display car information
-  public void displayInfo() {
-    System.out.println(""Car: "" + make + "" "" + model + "", Year: "" + year);
-  }
-}",code
-Create a JavaScript function that takes an array of numbers as input and returns the sum of all the numbers in the array.,"function calculateSum(numbers) { return numbers.reduce((total, num) => total + num, 0); }",code
-"Implement a function in JavaScript that will calculate the average of numbers in an array. Array: [5, 10, 15, 20, 25]","function calculateAverage(arr) { 
- let total = 0; 
- for(let i = 0; i < arr.length; i++) { 
- total += arr[i]; 
- } 
- return total / arr.length; 
-} 
-let numbers = [5, 10, 15, 20, 25]; 
-let average = calculateAverage(numbers); 
-console.log(average);",code
-Design a function that takes two numbers as input and returns the sum of the two numbers.,"def add_numbers(x, y):
-    return x + y",code
-Write a Python script that reads a text file and counts the frequency of each word in the file.,"To write a Python script that reads a text file and counts the frequency of each word in the file, you can use the following code snippet:",code
-Write a Python script to download a file from a given URL and save it to a specific location on your local machine.,"import requests
-
-url = 'https://www.example.com/example.txt'
-file_path = 'C:/Users/Username/Documents/example.txt'
-
-response = requests.get(url)
-
-with open(file_path, 'wb') as file:
-    file.write(response.content)
-
-print('File downloaded and saved successfully.')",code
-Explain the concept of inheritance in object-oriented programming and provide an example using two classes: 'ParentClass' with method 'display_parent' and 'ChildClass' that inherits from 'ParentClass' and has a method 'display_child'.,"Inheritance is a concept in object-oriented programming where a new class (child class) can inherit attributes and methods from an existing class (parent class). This promotes code reusability and supports the 'is-a' relationship between classes. When a child class inherits from a parent class, it can access and extend the functionality of the parent class. Here's an example implementing inheritance in Python: 
-
-class ParentClass:
-    def __init__(self):
-        pass
-
-    def display_parent(self):
-        print('ParentClass Method')
-
-
-class ChildClass(ParentClass):
-    def __init__(self):
-        pass
-
-    def display_child(self):
-        print('ChildClass Method')
-
-# Creating instances of the classes
-parent_obj = ParentClass()
-child_obj = ChildClass()
-
-# Calling methods from both classes
-parent_obj.display_parent() # Output: ParentClass Method
-child_obj.display_parent() # Output: ParentClass Method
-child_obj.display_child() # Output: ChildClass Method
-",code
-Write a Python function to calculate the factorial of a given number.,"def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)",code
-Implement a Python function that returns the factorial of a given number n.,"def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)",code
-Create a Python script that reads a CSV file and calculates the total sum of a specific column named 'quantity'.,"To generate the response for the instruction: Create a Python script that reads a CSV file and calculates the total sum of a specific column named 'quantity', we will need to write a Python script which reads the CSV file, extracts the values from the 'quantity' column, and calculates the total sum. Here is a sample script to achieve this task:
-
-import csv
-
-def calculate_total_sum(csv_file_path):
-    total_sum = 0
-    with open(csv_file_path, 'r') as file:
-        csv_reader = csv.DictReader(file)
-        for row in csv_reader:
-            quantity = int(row['quantity'])
-            total_sum += quantity
-    return total_sum
-
-# Example usage
-csv_file_path = 'example.csv'
-total_quantity_sum = calculate_total_sum(csv_file_path)
-print('Total sum of quantity column:', total_quantity_sum)",code
-Write a Python function that calculates the factorial of a given number.,"To calculate the factorial of a given number in Python, you can write a function like this: 
-
-def calculate_factorial(num):
-    factorial = 1
-    for i in range(1, num + 1):
-        factorial = factorial * i
-    return factorial",code
-Create a Python function that takes a list of numbers as input and returns the sum of all the numbers.,"def calculateSum(arr):
-   sum = 0
-   for num in arr:
-      sum += num
-   return sum
-
-print(calculateSum([2, 3, 4, 5]))",code
-Write a Python script to read a CSV file and extract specific columns based on column names.,"To write a Python script to read a CSV file and extract specific columns based on column names, you can use the pandas library. Here is an example script: 
-
-import pandas as pd
-
-def extract_columns(csv_file, columns): 
-    data = pd.read_csv(csv_file) 
-    extracted_data = data[columns] 
-    return extracted_data
-
-# Example usage: 
-# Specify the CSV file path and columns to extract 
-csv_file = 'example.csv' 
-columns_to_extract = ['column1', 'column2', 'column3'] 
-
-extracted_columns = extract_columns(csv_file, columns_to_extract) 
-print(extracted_columns)",code
-Design a Python program that reads a text file and counts the frequency of each word in the file.,"To design a Python program that reads a text file and counts the frequency of each word in the file, you can use the following code snippet:",code
-"Write a JavaScript function to convert a string to Title Case. For example, convert 'hello world' to 'Hello World'.","function toTitleCase(str) { 
-  return str.toLowerCase().split(' ').map(function(word) { 
-    return word.charAt(0).toUpperCase() + word.slice(1); 
-  }).join(' '); 
-}
-
-let inputString = 'hello world'; 
-let titleCaseString = toTitleCase(inputString); 
-
-console.log(titleCaseString);  // Hello World",code
-Write a Python function to check if a given string is a palindrome.,"To check if a given string is a palindrome in Python, you can use the following function:",code
-Implement a Python function that calculates the factorial of a given non-negative integer.,"def factorial(n):
-    if n == 0:
-        return 1
-    else:
-        return n * factorial(n-1)",code
-Write a Bash script that lists all files in the current directory and their permissions.,"To list all files in the current directory along with their permissions in a Bash script, you can use the following script:
-
-```bash
-#!/bin/bash
-
-for file in *
-    do
-        ls -l ""$file""
-    done
-```",code
+"Develop a program to solve the Tower of Hanoi problem. The problem is to move a stack of n disks from one peg to another, obeying the following rules: 1) Only one disk can be moved at a time. 2) Each move consists of taking the upper disk from one of the stacks and placing it on top of another stack or on an empty rod. 3) No disk may be placed on top of a smaller disk.","function hanoi(n, from_rod, to_rod, aux_rod) {""> +"">  if (n <= 0) return; ""> +"">  hanoi(n - 1, from_rod, aux_rod, to_rod); ""> +"">  console.log('Move disk ' + n + ' from rod ' + from_rod + ' to rod ' + to_rod); ""> +"">  hanoi(n - 1, aux_rod, to_rod, from_rod); ""> }"">",code
+"Write a Python program to find the maximum sum of a subarray of size k in an array, where the array is sorted in non-decreasing order.","def find_max_sum(arr, k):\\\n    max_sum = 0 \\\n    current_sum = 0 \\\n    for i in range(len(arr) - k + 1):\\\n        current_sum += arr[i] \\\n        if i >= k:\\\n            current_sum -= arr[i - k] \\\n        if current_sum > max_sum:\\\n            max_sum = current_sum \\\n    return max_sum\\\",code
+Write a Python code to calculate the factorial of a given integer.,def factorial(n):\n    if n == 0:\n        return 1\\n    else:\n        return n * factorial(n-1)\\nprint(factorial(5)),code
+Write a Python function to calculate the sum of squares of all numbers in a list.,"def sum_of_squares(lst):"">"">"">"">n   squares = [x**2 for x in lst]"">n   return sum(squares)"">n# Usage"">nprint(sum_of_squares([1, 2, 3, 4, 5])) # output: 55",code
+Write a Python function to find the longest common prefix among a given list of strings.,"def longest_common_prefix(strings):"">"">"">"">str = strings[0]"">for string in strings:"">if not string.startswith(str):"">str = ''.join([ch for ch, pair in zip(str, string) if pair == ch])"">return str",code
+Write a Python program to find the sum of all even numbers in a given list. The program should take the list as input from the user and print the sum of even numbers.,"Here is the Python program to find the sum of all even numbers in a given list:\n```python"">"">""> def sum_even_numbers(lst):"">    even_sum = 0"">    for num in lst:"">        if num % 2 == 0:"">            even_sum += num"">"">    return even_sum"">""> lst = input('Enter a list of numbers separated by space: ').split()"">""> lst = [int(i) for i in lst]"">""> sum_even = sum_even_numbers(lst)"">""> print('Sum of even numbers:', sum_even)"">```",code
+Write a function to calculate the factorial of a given integer using recursion.,Here is a Python function that calculates the factorial of a given integer using recursion:\n```python\ndef factorial(n):\\n    if n == 0 or n == 1:\\n        return 1\\\n    else:\\n        return n * factorial(n - 1)\\[endif]\\/def\\,code
+"Write a program in Python to calculate the area and perimeter of a rectangle. The program should prompt the user to input the width and height of the rectangle, and then display the calculated area and perimeter.","Here is the Python program to calculate the area and perimeter of a rectangle:"">""",code
+Write a JavaScript function to convert Celsius temperature to Fahrenheit.,"function convertCelsiusToFahrenheit(celsius) {"">"">  return (celsius * 9/5) + 32;""><}",code
+Write a Python function to convert a given date in the format YYYY-MM-DD to DD MMM YYYY.,"def date_formatter(date):\n  day, month, year = date.split('-')\n  formatted_date = f'{day} {month.capitalize()} {year}\n  return formatted_date",code
+Write a Java method to check if a given string is a palindrome or not. The method should return true if the string is a palindrome and false otherwise.,public boolean checkPalindrome(String str) {\n    String reversed = new StringBuilder(str).reverse().toString();\n    return str.equals(reversed);\n},code
+Remove duplicates from a given array of integers and return the resulting array.,"function removeDuplicates($arr) {\r    $uniqueArr = array();\r    foreach ($arr as $num) {\r        if (!in_array($num, $uniqueArr)) {\r            array_push($uniqueArr, $num);\r        }\r    }\r    return $uniqueArr;""]",code
+"Generate a Python script that simulates a simple banking system. The system should have the following features: \\- Users can create an account with a unique username and password. \\- Users can deposit or withdraw money. \\- The system should keep track of the account balance. Provide the Python script, including the necessary classes and functions, to implement this banking system.","Here is a Python script that simulates a simple banking system."">\",code
+"Write a JavaScript function to validate if a given password meets the following conditions: minimum length of 8 characters, at least one uppercase letter, at least one lowercase letter, and at least one digit.",Here is a JavaScript function to validate a password: \\nfunction validatePassword(password) {\\\n  if (password.length < 8) {\\\n    return false;\\\n  }\\\n  var hasUpper = false;\\\n  var hasLower = false;\\\n  var hasDigit = false;\\\n  for (var i = 0; i < password.length; i++) {\\\n    if (password[i].toUpperCase() === password[i]) {\\\n      hasUpper = true;\\\n    } else if (password[i].toLowerCase() === password[i]) {\\\n      hasLower = true;\\\n    } else if (!isNaN(password[i])) {\\\n      hasDigit = true;\\\n    }\\\n  }\\\'sif (!hasUpper || !hasLower || !hasDigit) { return false; } return true;\,code
+Implement a function in Python to check if a given string is a palindrome.,"Here is a Python function to check if a given string is a palindrome:"">"">""> ""> ""> `def is_palindrome(s): return s == s[::-1]` This function checks if the given string `s` is equal to its reverse. If it is, then it's a palindrome and the function returns `True`, otherwise it returns `False`. For example: `print(is_palindrome('radar'))  # Output: True print(is_palindrome('hello'))  # Output: False`",code
+"Generate a Python script to calculate the area and circumference of a circle, given its radius.","Here is the Python script to calculate the area and circumference of a circle:\n```python\nimport math\n\Bundle radius = float(input('Enter the radius of the circle: '))\\narea = math.pi * (radius ** 2)\\'circumference = 2 * math.pi * radius\\'\\'print('Area:', area)\\'print('Circumference:', circumference)\\'\\'# Test the script with a sample input\\'radius = 5\\'area = math.pi * (radius ** 2)\\'circumference = 2 * math.pi * radius\\'print('Area:', area)\\'print('Circumference:', circumference)\",code
+"Write a Python program to check if a given string is a palindrome or not, ignoring spaces and special characters.","Here is a Python program to check if a given string is a palindrome or not, ignoring spaces and special characters:"">""",code
+Write a Python function that takes a sentence as input and returns the number of vowels in the sentence.,def count_vowels(sentence):\n    vowels = 'aeiouAEIOU'\n    return sum(1 for char in sentence if char in vowels)\nif __name__ == '__main__':\n    print(count_vowels('Hello World')),code
+Write a Python function to find the first duplicate in an array of integers and return its index. The array will not be empty and will have at least one duplicate.,"def first_duplicate(array):\n  hash_table = {}\n  for i, element in enumerate(array):\n    if element in hash_table:\a  return i  \\n    else:\a  hash_table[element] = 1 \\""return None",code
+"Write a Python code to calculate the surface area of a cylinder, given its radius and height.","Here is the Python code to calculate the surface area of a cylinder, given its radius and height:\n```python"")(https://www.python.org/)"")"");"");"");""); }{"");""); }{""); }""]}",code
+Modify the following Bash script to add a new command to print 'Goodbye' to the console.,"Here is the modified Bash script with the new command:\n```bash\n#!/bin/bash""N}",code
+Write a Python code snippet to calculate the area and perimeter of a rectangle with a length of 10 units and a width of 5 units.,"def calculateRectangleProperties(length, width): \\n    area = length * width \\n    perimeter = 2 * (length + width) \\n    return area, perimeter \\n \\n rectangleProperties = calculateRectangleProperties(10, 5) \\n print(f""Area: {rectangleProperties[0]} square units"") \\n print(f""Perimeter: {rectangleProperties[1]} units"")",code
+Write a JavaScript function to find the maximum sum of a subarray within a given array of integers.,"Here is a JavaScript function to find the maximum sum of a subarray within a given array of integers."":- function maxSubArraySum(arr) {"">"">let maxCurrent = arr[0];"">"">let maxGlobal = arr[0];"">"">for (let i = 1; i < arr.length; i++) {"">"">if (arr[i] > maxCurrent + arr[i]) {"">"">maxCurrent = arr[i];"">}"">else {"">"">maxCurrent += arr[i];"">"">}"">if (maxCurrent > maxGlobal) {"">"">maxGlobal = maxCurrent;""></>"">return maxGlobal;""></>""}",code
+Write a Python function to flatten a multidimensional list. The function should take a list of lists as input and return a new list with all elements from the sublists.,Here is an example of a Python function to flatten a multidimensional list:,code
+Write a Go program that takes a string as input and returns the first letter of the most frequently occurring word in the string.,"Here is a Go program that takes a string as input and returns the first letter of the most frequently occurring word in the string."">""><pre>"">package main"");"");"");""); import ("";""); import ""strings""""); import ""fmt"""") func mostFrequentWordLetter(str string) byte {""); var wordCount map[string]int = make(map[string]int)""); words := strings.Split(str, "" "")""); for _, word := range words {""); word = strings.TrimSpace(word)""]; if len(word) > 0 {"")); wordCount[word]++}}""); maxCount := 0;""; var maxWord string;"") for word, count := range wordCount {"")); if count > maxCount {"")); maxCount = count;""; maxWord = word}}""); return []byte(maxWord)[0]""]); func main() {"")); fmt.Println(mostFrequentWordLetter(""The quick brown fox jumped over the lazy dog""))} // Output: 74 (The first letter of the most frequently occurring word 'the')",code
+Write a Python function to convert a given hexadecimal color code to a corresponding RGB color value.,"Here is the Python function to convert a given hexadecimal color code to a corresponding RGB color value:""><!--function: hex_to_rgb(hex_color)--></p><code>def hex_to_rgb(hex_color):""></code><br>""></p><code>&nbsp;&nbsp;&nbsp;&nbsp;s = hex_color.lstrip('#')</code><br>""></p><code>&nbsp;&nbsp;&nbsp;&nbsp;r, g, b = tuple(int(s[i:i+2], 16) for i in (0, 2 ,4))</code><br>""></p><code>&nbsp;&nbsp;&nbsp;&nbsp;return 'rgb({r}, {g}, {b})'</code></br>""></p><p>Example usage:</p>""><code>print(hex_to_rgb('#FF0000'))</code>""]"");",code
+"Implement a function to find the first duplicate in an array of integers. If no duplicate is found, return -1.",def findFirstDuplicate(arr):\\n    seen = set()\\n    for num in arr:\\n        if num in seen:\\n            return num\\\n        else:\\n            seen.add(num)\\\.\\.\\.\\.\\.\\.\\,code
+Write a Python function that takes a string of numbers separated by commas and returns the sum of those numbers.,"def calculate_sum(numbers_str):""path to the solution code",code
+"Write a JavaScript function to convert a given date in the format 'YYYY-MM-DD' to a human-readable format, including the day of the week and the full month name.",function convertDate(date) {\,code
+Write a Python function to convert a given Roman numeral to an integer.,"def roman_to_int(roman_numeral):\n    roman_dict = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}\n    int_val = 0\n    for i in range(len(roman_numeral)):\n        if i > 0 and roman_dict[roman_numeral[i]] > roman_dict[roman_numeral[i - 1]]:\n            int_val += roman_dict[roman_numeral[i]] - 2 * roman_dict[roman_numeral[i - 1]]\n        else:\n            int_val += roman_dict[roman_numeral[i]]\\",code
+Write a function that takes a string as input and returns the string with all vowels removed.,Here is a Python function that removes all vowels from a given string:\n```python\ndef remove_vowels(s):\\n    return ''.join([c for c in s if c.lower() not in 'aeiou'])\\/\\\\\,code
+"Write a Python function to check if a given string is a palindrome or not. A palindrome is a word, phrase, number, or other sequences of characters that reads the same forward and backward (ignoring spaces, punctuation, and capitalization).","Here is a Python function to check if a given string is a palindrome or not:\n```python\ndef is_palindrome(s):\\n    s = ''.join(e for e in s if e.isalnum()).lower()\\n    return s == s[::-1]\\n```\nThis function works by first removing all non-alphanumeric characters from the string and converting it to lowercase. Then it compares the resulting string with its reverse. If they are the same, the original string is a palindrome.",code
+Write a Python function to determine the number of Sundays that fell on the first day of a month in a given year.,"def count_sundays(year):"">"">}"">= 0"">}"">= 1"">}"">= month"">}"">= year"">>}</form>",code
+"Write a program that takes in a string and returns the longest word in the string, along with its frequency.","Write a program in your preferred programming language that iterates over the input string, splitting it into words, and then uses a dictionary to count the frequency of each word. Finally, iterate over the dictionary to find the word with the maximum frequency and return it along with its frequency. Here's an example in Python:\n```python\ndef longest_word_freq(s):\\n    words = s.split()\\\n    word_freq = {}\\\\",code
+Write a Python function to compress a given string by replacing consecutive repeating characters with a single character and the count of repetitions.,"Here is the Python function to compress a given string by replacing consecutive repeating characters with a single character and the count of repetitions.""Necessary Modules:"", import re, collections, string. Function:"", def compress_string(input_string):"", compressed_string = input_string + '\",code
+Write a Python function to find the first duplicate in a list of integers.,def find_first_duplicate(lst): \\(seen = set() \\)for num in lst: \\)if num in seen: \\)return num \\)else: \\)seen.add(num) \\,code
+Write a Python function that takes a list of integers and returns the sum of all positive numbers in the list.,"def sum_positive_numbers(array):\n    return sum(num for num in array if num > 0)\n\Array = [1,-2,3,-4,5]\nprint(sum_positive_numbers(Array))",code
+Write a Python function to find the sum of the squares of the digits of a given integer.,def sum_of_squares(n): \\n    sum = 0 \\n    for digit in str(n): \\n        sum += int(digit) ** 2 \\n    return sum,code
+Write a Python function to find the second largest element in a list.,def second_largest_element(lst):\n  lst = list(set(lst))\n  lst.sort(reverse=True)\n  if len(lst) < 2:\n    return None  \\n  return lst[1],code
+Write a function to check if a given string is a palindrome or not. The function should take a string as input and return 'true' if the string is a palindrome and 'false' otherwise.,def is_palindrome(s):\n    return s == s[::-1],code
+Write a JavaScript function that takes a string as an input and returns the string with all vowels removed.,"Here is the JavaScript function that takes a string as an input and returns the string with all vowels removed:\n```javascript\nfunction removeVowels(str) {\n  return str.replace(/[aeiouAEIOU]/g, '');\n}\n```",code
+"Write a JavaScript function to validate an input email address. The function should return true if the email address is valid and false otherwise. Consider the following criteria: the email address must contain a '@' symbol, a '.' symbol, and be at least 3 characters long.",function validateEmail(email) {\R  if (email.length < 3) return false;\R  if (email.indexOf('@') == -1 || email.indexOf('.') == -1) return false;\R  return true;\,code
+Write a Python function to find the longest subsequence of a given string that contains at most two distinct characters.,"def longest_subsequence(s): \\\n   max_length = 0 \\\n   max_subsequence = '' \\\n   for i in range(len(s)): \\\n       char_count = {} \\\n       for j in range(i, len(s)): \\\n           if s[j] not in char_count: \\\n               char_count[s[j]] = 0 \\\n           char_count[s[j]] += 1 \\\n           if len(char_count) > 2: \\\n               break \\\n           if j - i + 1 > max_length: \\\n               max_length = j - i + 1 \\\n               max_subsequence = s[i:j+1] \\\n   return max_subsequence",code
+"Write a Python code snippet to find the middle element of a given sorted list of integers. The list is: [1, 3, 5, 7, 9]","Here is the Python code snippet to find the middle element of a given sorted list of integers:\nmy_list = [1, 3, 5, 7, 9]\nlength = len(my_list)\nif length % 2 == 0:\n    middle = (my_list[length//2 - 1] + my_list[length//2]) / 2.0\nelse:\n    middle = my_list[length//2]\nprint(middle)",code
+Create a poem with 12 lines that describes the beauty of a sunset. The poem should have a consistent rhyme scheme and use at least 5 adjectives to describe the colors of the sunset.,"A sunset's fiery glow, descends slowly to the sea, \\\""A kaleidoscope of colors, dance before me. \\\""The vibrant hues of orange, and fiery reds unfold, \\\""As the day succumbs to the night's gentle hold. \\\\",code
+"Write a Python script that generates a simple calculator with basic arithmetic operations (+, -, *, /) for numbers. The script should have a user interface that allows the user to input two numbers and an operation, and then display the result of the operation.","<?php""crypto_random_bytes",code
+Write a Python function to solve the Tower of Hanoi problem for a given number of disks.,"def tower_of_hanoi(n, source, destination, auxiliary):\n    if n == 1:\n        print(f'Move disk 1 from {source} to {destination}')\\n    else:\\n        tower_of_hanoi(n-1, source, auxiliary, destination)\\n        print(f'Move disk {n} from {source} to {destination}')\\",code
+Write a JavaScript function to find the most frequent character in a given string.,"function mostFrequentCharacter(str) {"",'use strict'; var charMap = {}; var maxCount = 0; var mostFrequentChar = ''; for (var i = 0; i < str.length; i++) { var char = str[i]; if (!charMap[char]) { charMap[char] = 1; } else { charMap[char]++; } if (charMap[char] > maxCount) { maxCount = charMap[char]; mostFrequentChar = char; } } return mostFrequentChar;""}",code
+Write a JavaScript function to find the most frequent character in a given string.,"function findMostFrequentChar(str) {"",",code
+Write a Python script to detect the most frequently occurring word in a given text file and display its frequency.,"Here is a Python script to detect the most frequently occurring word in a given text file and display its frequency:"">""><code>import re from collections import Counter def most_frequent_word(file_name):     with open(file_name, 'r') as file:         text = file.read().lower()         words = re.findall(r'\/b\w+/\/b', text)         word_count = Counter(words)         return word_count.most_common(1)[0][0] print(most_frequent_word('your_file.txt'))</code>""><p>This script reads the given text file, converts it to lowercase, and then splits it into individual words using regular expressions. The `Counter` class from the `collections` module is used to count the frequency of each word. The `most_common` method then returns the most common word along with its frequency. Finally, we print the most frequent word using `print(most_frequent_word('your_file.txt'))`. Replace 'your_file.txt' with your actual file name.",code
+Write a C++ program to find the sum of all elements in a 2D array.,"Here is a simple C++ program to calculate the sum of all elements in a 2D array:\n```cpp\n#include<iostream>\nusing namespace std;\nint main() {\n    int arr[3][3] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};\n    int sum = 0;\n    for(int i = 0; i < 3; i++) {\n        for(int j = 0; j < 3; j++) {\n            sum += arr[i][j];\\n        }\\n    }\\n    cout << ""Sum of all elements is: "" << sum << endl;\\[/program]\",code
+Write a JavaScript function to validate if a given string is a palindrome.,"function validatePalindrome(str) {"">""",code
+"Write a Python script to scrape the titles of all articles from the Wikipedia page on 'List of countries by population', and save them to a text file named 'country_titles.txt'.","Here is a Python script to scrape the titles of all articles from the Wikipedia page on 'List of countries by population', and save them to a text file named 'country_titles.txt'.:\n```python\nimport requests,\nfrom bs4 import BeautifulSoup,\nwith open('country_titles.txt', 'w') as f:\n    f.write('')\nurl = 'https://en.wikipedia.org/wiki/List_of_countries_by_population'\nresponse = requests.get(url)\nsoup = BeautifulSoup(response.text, 'html.parser')\nfor link in soup.find_all('a', href=True):\\n    if link['href'].startswith('/wiki/') and ':' not in link['href']:\\",code
+Write a Python function that takes a list of strings as input and returns a dictionary where the keys are the unique words from the input list and the values are their respective frequencies.,"Here is the Python function that meets the requirement:\n```python\ndef word_frequency(input_list):\\n    word_freq = {}\\n    for word in input_list:\\n        if word in word_freq:\\n            word_freq[word] += 1\\\n        else:\\n            word_freq[word] = 1\\\n    return word_freq\\\n```\nExample usage: \\'words = ['apple', 'banana', 'apple', 'orange', 'banana', 'banana']\\'word_frequency(words) -> {'apple': 2, 'banana': 3, 'orange': 1}",code
+Write a Python function to find the first duplicate in an unsorted array of integers.,def find_first_duplicate(nums): \\n    seen = set() \\n    for num in nums: \\n        if num in seen: \\n            return num \\n        seen.add(num) \\n    return None,code
+Write a Python function to find the maximum sum of a subarray within a given 1D array.,"def max_sum_subarray(array): \\n    max_sum = float('-inf') \\n    current_sum = 0 \\n    for num in array: \\n        current_sum = max(num, current_sum + num) \\n        max_sum = max(max_sum, current_sum) \\n    return max_sum",code
+Write a Python code to check if a given string is a palindrome or not.,"Here is a Python code that checks if a given string is a palindrome or not:\ComponentCode"";}"", ",code
+Write a Python script to scrape the top 10 most expensive houses in the world from a given website and store the results in a CSV file.,"Here is a Python script using BeautifulSoup and requests libraries to scrape the top 10 most expensive houses in the world from a given website and store the results in a CSV file:\n```python\nimport requests,\",code
+Write a Python function that generates a random maze using a depth-first search algorithm.,"Here is a Python function that generates a random maze using depth-first search algorithm:"">""></br>""><br>""><br><code>def generate_maze(width, height, complexity=0.5, density=0.5):&#x20;""></br>""><br>""><br><code>    # Set default complexity and density values if not provided&#x20;""></br>""><br>""><br><code>    if complexity < 0 or complexity > 1:&#x20;""></br>""><br>""><br><code>        raise ValueError(",code
+Implement a function in Python to find the longest common prefix between two strings.,"Here is a Python function to find the longest common prefix between two strings:\n```\ndef longest_common_prefix(str1, str2):\\n    i = 0\\\n    while i < len(str1) and i < len(str2) and str1[i] == str2[i]:\\\n        i += 1\\\n    return str1[:i]\\",code
+Generate a Python function that takes a list of integers as input and returns the sum of all even numbers in the list.,def sum_even_numbers(numbers):\n    return sum(num for num in numbers if num % 2 == 0),code
+Write a Python function that accepts a string as input and returns the string with all vowels removed.,"Here is the Python function that accepts a string as input and returns the string with all vowels removed:\n```python\Component{python|function:remove_vowels|}"">"">"">""]="">def remove_vowels(input_string):"">input_string = input_string.lower()"">vowels = 'aeiou'"">output_string = ''.join([char for char in input_string if char not in vowels])>"">return output_string>""></python>",code
+Write a Python function to calculate the area of a rectangle given its length and width.,"def calculate_area(length, width):\n    return length * width",code
+Write a Python program to create a program that can check if a given string is a palindrome or not.,"def is_palindrome(s): \\n    s = s.replace(' ', '').lower()\\. \\n    return s == s[::-1]\\. \\n# testing the function\\. \\nprint(is_palindrome('A man a plan a canal Panama')) # returns: True\\. \\nprint(is_palindrome('hello')) # returns: False",code
+Write a Python function to implement the Caesar Cipher encryption algorithm. The function should take two parameters: a string to be encrypted and an integer representing the shift value. The function should return the encrypted string.,"Here is the Python function to implement the Caesar Cipher encryption algorithm:\n```\ndef caesar_cipher(text, shift):\n    result = ''\n    for char in text:\n        if char.isalpha():\n            ascii_offset = 97 if char.islower() else 65 \\n            result += chr((ord(char) - ascii_offset + shift) % 26 + ascii_offset)\\n        else:\\n            result += char \\n    return result\\\n```",code
+Write a Python function to check if a given string is a palindrome or not.,"def is_palindrome(s):\n    s = s.replace(' ', '').lower()\n    return s == s[::-1]",code
+Write a Python program to check if a given string is a palindrome or not.,"def is_palindrome(s):\n    s = s.replace("" "", """".strip()).lower()\n    return s == s[::-1]"">""}",code
+"Explain the differences between a monolithic architecture and microservices architecture in software engineering, including their advantages and disadvantages.","A monolithic architecture is a type of software architecture where all components of an application are tightly coupled and run as a single, cohesive unit. In contrast, microservices architecture is a design approach that structures an application as a collection of small, independent services that communicate with each other using lightweight protocols and APIs.\nAdvantages of Monolithic Architecture:\\ 1. Simpler Development: Easier to develop and maintain as all components are integrated and tested together.\\ 2. Better Performance: Faster execution speed since all components are running in the same process.\\ 3. Easier Deployment: Simpler deployment process as only one unit needs to be deployed.\\\ Disadvantages of Monolithic Architecture:\\ 1. Scalability Issues: Difficult to scale individual components independently.\\ 2. Complexity: Increased complexity due to tight coupling between components.\\ 3. Rigidity: Changes to one component can affect entire application.\\\ Advantages of Microservices Architecture:\\ 1. Scalability: Independent scaling of individual services allows for better adaptability to changing demands.\\ 2. Flexibility: Enables the use of different programming languages and frameworks for each service.\\ 3. Resilience: Failure of one service does not affect the entire application.\\\ Disadvantages of Microservices Architecture:\\ 1. Increased Complexity: More complex development, testing, and deployment processes due to multiple services.\\ 2. Higher Cost: Requires more resources (infrastructure, bandwidth) due to multiple services running simultaneously.\\ 3. Inter-service Communication Challenges: Requires careful management of inter-service communication.",code
+Explain the concept of inheritance in object-oriented programming (OOP) and provide an example in Python or Java.,"Inheritance is a fundamental concept in object-oriented programming (OOP) that allows one class to inherit the properties and behavior of another class. This enables code reuse, promotes modularity, and facilitates the creation of complex hierarchies of classes. In other words, a child class inherits the attributes and methods of a parent class, extending its functionality or modifying its behavior. This way, the child class becomes a specialized version of the parent class.\nExample in Python:"">"">class Animal:"">    def __init__(self):        self.sound = ' generic animal sound'"">    def make_sound(self):        print(self.sound)""""></class>"">class Dog(Animal):"">    def __init__(self):        super().__init__()        self.sound = 'Woof'"">    def make_sound(self):        super().make_sound()«/code»"">In this example, the `Dog` class inherits from the `Animal` class. The `Dog` class overrides the `sound` attribute and inherits the `make_sound` method from `Animal`. When you create an instance of `Dog`, it will have its own `sound` attribute set to 'Woof' and inherit the `make_sound` method from its parent.""]",code
+Write a JavaScript function that takes a string as input and returns the string with all vowels removed.,"function removeVowels(str){\r return str.replace(/[aeiouAEIOU]/g, '');"";}",code
+"Write a function named 'calculateTotalArea' that takes an array of circles as input, where each circle is represented by a dictionary containing 'radius' and 'height' keys. The function should calculate and return the total area of all circles.","function calculateTotalArea(circles) {"">n var totalArea = 0;"">n for (var i = 0; i < circles.length; i++) {"">n var circle = circles[i];"">n var area = Math.PI * Math.pow(circle.radius, 2);"">n totalArea += area;"">n }"">n return totalArea;"">n}",code
+Write a Python function that takes a list of integers as input and returns the sum of all even numbers in the list.,def sum_even_numbers(lst):\n    even_sum = 0;\n    for num in lst:\n        if num % 2 == 0:\n            even_sum += num;\n    return even_sum;,code
+"Create a Python script that connects to a Twitter API and retrieves the latest 10 tweets from a specific user, then analyzes the sentiment of each tweet and prints out the result in a table format.","Here is the Python script to connect to Twitter API, retrieve the latest tweets from a specific user, analyze their sentiment, and print out the result in a table format.\n",code
+"Write a Python program to generate a game of Tic-Tac-Toe. The program should allow two players to play the game, and it should keep track of the winner or if the game is a draw.","Here is a Python program to generate a game of Tic-Tac-Toe.\n```""crypto check your console output please```",code
+Write a Python program that takes a list of integers as input and returns the sum of all the even numbers in the list.,"def sum_even_numbers(arr):\n    even_sum = 0 \\n    for num in arr:\\n        if num % 2 == 0:\\n            even_sum += num \\n    return even_sum\\n\\\\nprint(sum_even_numbers([1, 2, 3, 4, 5, 6]))",code
+"Write a C++ program to solve the 0/1 Knapsack problem. Given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible.","Here is a C++ program to solve the 0/1 Knapsack problem:"">"">""> bool knapsack(int W, int wt[], int val[], int n) { int i, w; bool K[n+1][W+1]; for (i=0; i<=n; i++) for (w=0; w<=W; w++) if (i==0 || w==0) K[i][w] = false; else if (wt[i-1] <= w) K[i][w] = max(val[i-1] + K[i-1][w-wt[i-1]], K[i-1][w]); else K[i][w] = K[i-1][w]; return K[n][W]; } int main() { int val[] = {60, 100, 120}; int wt[] = {10, 20, 30}; int W = 50; int n = sizeof(val)/sizeof(val[0]); if(knapsack(W, wt, val, n)) cout<<",code
+Implement a function in Python to determine if a given string is a palindrome or not. The function should take a string as input and return True if the string is a palindrome and False otherwise.,"Here is the Python function to determine if a given string is a palindrome or not:\n```python\ndef is_palindrome(s):\Component\n# Remove spaces and convert to lowercase for case-insensitive comparison\Component\ns = s.replace(' ', '').lower()\Component\n# Check if the string is equal to its reverse\Component\nreturn s == s[::-1]\Component\n```""This function works by first removing any spaces from the input string and converting it to lowercase. Then it checks if the resulting string is equal to its reverse. If it is, the function returns True, indicating that the original string is a palindrome. Otherwise, it returns False.",code
+Write a Python function to calculate the area of a circle given its radius.,def calculate_circle_area(radius):\n    import math\n    area = math.pi * (radius ** 2)\n    return area,code
+"Write a Python program to find the longest increasing subsequence in a given list of integers. For example, if the input list is [10, 22, 9, 33, 21, 50, 41, 60], the output should be [10, 22, 33, 50].","Here is a Python solution to find the longest increasing subsequence in a given list of integers. This solution uses dynamic programming to solve the problem in O(n^2) time complexity.\n```python\ndef longest_increasing_subsequence(sequence):\\n    if not sequence:\\n        return []\\\n    dp = [1] * len(sequence)\\\n    prev_val = sequence[0]\\\n    prev_idx = 0\\\n    for i in range(1, len(sequence)):\\.\\.\\. (rest of the code remains the same)\\.\\.\\",code
+"Write a Python function to implement the rock-paper-scissors game where the user can play against the computer. The function should take no input and return a string indicating whether the user wins, loses, or ties.","import random; import time; choices = ['rock', 'paper', 'scissors']; user_score = 0; computer_score = 0; while True: user_choice = input('Enter your choice (rock, paper, scissors) or q to quit: ').lower(); if user_choice == 'q': break; if user_choice not in choices: print('Invalid choice. Please enter rock, paper, or scissors.'); continue; computer_choice = random.choice(choices); print(f'Computer chose {computer_choice}'); if user_choice == computer_choice: print('It is a tie!'); elif (user_choice == 'rock' and computer_choice == 'scissors') or (user_choice == 'scissors' and computer_choice == 'paper') or (user_choice == 'paper' and computer_choice == 'rock'): print('You win!'); user_score += 1; else: print('You lose!'); computer_score += 1; print(f'Score - You: {user_score}, Computer: {computer_score}');",code
+Write a C# method to calculate the factorial of a given integer.,public static int CalculateFactorial(int n)\n{\n    int result = 1;\n    for (int i = 1; i <= n; i++)\n    {\n        result *= i;\n    }\n    return result;\n},code
+Write a Python function to check if a given string is a palindrome or not.,"def is_palindrome(s):\n    s = s.replace("" "", """""""").lower()\n    return s == s[::-1]\n",code
+"Write a function that takes a string as input and returns the first non-repeating character in the string. If there are multiple non-repeating characters, return any one of them.","Here is a Python function that solves the problem. This function works by creating a dictionary to count the frequency of each character in the string, then iterates over the string to find the first character with a count of 1.""><code>def firstNonRepeatingCharacter(s):"">  char_count = {}&#x20;"">  for char in s:"">    if char in char_count:"">      char_count[char] += 1&#x20;"">    else:"">      char_count[char] = 1&#x20;"">  for char in s:"">    if char_count[char] == 1:"">      return char&#x20;"">  return None</code>"">""></Response>",code
+Write a JavaScript function to reverse the words in a given sentence.,function reverseSentence(sentence) {\r  let words = sentence.split(' ');\r  let reversedWords = [];\r  for (let i = words.length - 1; i >= 0; i--) {\r   reversedWords.push(words[i]);\r  }\r  return reversedWords.join(' ');\r}\,code
+"Write a Python function to generate a random password of a specified length, containing at least one uppercase letter, one lowercase letter, one digit, and one special character.","import random, string, re""crypto.random.randbits""crypto.hmac.new\ndef generate_password(length):\t# Define characters set for uppercase letters, lowercase letters, digits and special characters.\tupecase_letters = string.ascii_uppercase\nlowercase_letters = string.ascii_lowercase\dbits = '0123456789'\nspecial_characters = '!@#$%^&*()_+\",code
+Write a Python function to check if a given string is a palindrome or not.,def is_palindrome(s):\n    return s == s[::-1],code
+Write a Python function that takes a string as input and returns the string with all vowels removed.,"def remove_vowels(s):\n    vowels = 'aeiouAEIOU'\n    return ''.join([char for char in s if char not in vowels])""}",code
+Write a function in JavaScript to determine whether a given string is a palindrome.,function isPalindrome(str) {\n  str = str.toLowerCase(); // convert to lowercase to handle case insensitivity\\n  var reversedStr = str.split('').reverse().join(''); // reverse the string\\n  return str === reversedStr; // compare the original and reversed strings\\n}\,code
+Write a Python function that takes a string as input and returns the string with all vowels removed.,"Here's a Python function that takes a string as input and returns the string with all vowels removed:\n```python\ndef remove_vowels(input_string):\\n    vowels = 'aeiouAEIOU'\\n    output_string = ''.join([char for char in input_string if char not in vowels])\\\n    return output_string\\\n```""This function uses a list comprehension to iterate over each character in the input string. It checks if the character is not a vowel (using the `not in` operator) and if so, includes it in the new string. The resulting string with all vowels removed is then returned.",code
+Write a Python function to calculate the surface area and volume of a sphere given its radius.,"Here is the Python function to calculate the surface area and volume of a sphere given its radius:\n```python\nimport math\n""class Sphere:\n    def __init__(self, radius):\\n        self.radius = radius\\\",code
+Write a JavaScript function to validate if a given IP address is valid or not.,function validateIP(ip) { var parts = ip.split('.'); if(parts.length !== 4) return false; for(var i = 0; i < parts.length; i++) { var part = parseInt(parts[i]); if(isNaN(part) || part < 0 || part > 255) return false; } return true; },code
+Write a Python script to check if a given number is prime or not.,"def is_prime(num):\n    if num < 2:\n        return False\\n    for i in range(2, int(num ** 0.5) + 1):\\n        if num % i == 0:\n            return False\\\",code
+Write a C# program to find the maximum and minimum values in an array of integers.,"Here is the C# program to find the maximum and minimum values in an array of integers:"">"">"">int[] array = {1, 2, 3, 4, 5, 6, 7, 8, 9}; int maxValue = array.Max(); int minValue = array.Min(); Console.WriteLine(""Maximum value: "" + maxValue); Console.WriteLine(""Minimum value: "" + minValue);",code
+Write a Java program to find the sum of even numbers in an array,"Here is the Java program to find the sum of even numbers in an array:\n```java\nimport java.util.Arrays;\npublic class Main {\n    public static void main(String[] args) {\n        int[] arr = {1, 2, 3, 4, 5, 6};\n        int sum = 0;\\n        for (int i = 0; i < arr.length; i++) {\\[n            if (arr[i] % 2 == 0) {\\[n                sum += arr[i];\\\]\\}\\]\\]\\[n        }\\\]\\\n        System.out.println(""The sum of even numbers is "" + sum);\\[n    }\\] public class Main{\",code
+Write a Python function to determine if a given string is a palindrome or not.,"Here is the Python function to determine if a given string is a palindrome or not:\ndef is_palindrome(s):\n    s = s.replace(' ', '').lower()\n    return s == s[::-1]\n",code
+Write a JavaScript function that takes a string as input and returns the string with all vowels removed.,"function removeVowels(str) {\n  let vowels = ""aeiouAEIOU"";\n  return str.replace(new RegExp(""["" + vowels + ""]"",""g""),"""");"">""}",code
+Write a Python function to find the first duplicate in an array of integers.,def find_first_duplicate(arr): \\n    seen = {} \\n    for num in arr: \\n        if num in seen: \\n            return num \\n        else: \\n            seen[num] = True \\n    return None,code
+Write a JavaScript program that takes a string as input and returns the string with all vowels removed.,function removeVowels(str) {\)n  let vowels = 'aeiouAEIOU';\n  let result = '';\n  for (let char of str) {\,code
+Write a JavaScript function that takes a list of numbers as input and returns the maximum value in the list.,"function findMax(arr) {"">"">"">",code
+Write a recursive function in Python to calculate the factorial of a given integer.,def factorial(n): if n == 0: return 1 else: return n * factorial(n-1),code
