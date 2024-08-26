@@ -30,3 +30,4 @@ pip uninstall -y flash-attn
 pip install vllm
 pip install openai
 pip install latex2sympy2
+pip install httpx==0.23.3

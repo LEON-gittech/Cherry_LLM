@@ -1,0 +1,1133 @@
+instruction,response,label
+"Write a list comprehension to square each number in the list. arr = [1, 2, 3, 4, 5]","arr = [x**2 for x in arr] # [1, 4, 9, 16, 25]",
+"Find the index of the element 8 in the list [3, 8, 9, 5, 1, 6].","list = [3, 8, 9, 5, 1, 6]
+index = list.index(8)
+print(""Index of 8 is:"", index)",
+"Explain the purpose of this function. def mean(list):
+    total = 0
+    for item in list:
+        total += item
+    return total / len(list)","This function takes a list of numbers as an argument and returns the mean value, which is the sum of all the values divided by the number of values in the list.",
+"Calculate the area of a triangle given the following lengths of its sides a, b, and c. a = 5, b = 6, c = 8",double area = 0.25*sqrt((a + b + c)*(b + c - a)*(c + a - b)*(a + b - c));,
+Find all the prime factors of a given integer. 100,"def prime_factors(n):
+    # Empty list to store prime factors 
+    lst = [] 
+    
+    # Divide by 2 while the number is 
+    # divisible by 2  
+    while n % 2 == 0: 
+        lst.append(2)
+        n = n / 2
+          
+    # n must be odd, now 
+    # check all the numbers from 3 to 
+    # the square root of n  
+    for i in range(3, int(n**0.5)+1): 
+        # check for divisibility of i by n  
+        while n % i== 0: 
+            lst.append(i) 
+            n = n / i 
+          
+    # If n is a prime number then it 
+    # will only be divisible by itself  
+    if n > 2:
+        lst.append(n)
+      
+    return lst
+
+# Test  
+print(prime_factors(100))
+
+# Output
+[2, 2, 5, 5]",
+Generate a program in C that computes the sum of two numbers.,"#include <stdio.h>
+
+int main()
+{
+     int a, b, sum;
+  
+    /* Input two numbers from user */
+    printf(""Enter two numbers: "");
+    scanf(""%d%d"", &a, &b);
+
+    sum = a + b;
+
+    printf(""Sum = %d"", sum);
+
+    return 0;
+}",
+"Write a SQL query to find all the unique (distinct) values in a column named ""Name"".",SELECT DISTINCT Name FROM table_name;,
+Write an SQL query to find the name of the oldest person in a table containing people's name and age.,"SELECT name FROM people
+ORDER BY age DESC
+LIMIT 1;",
+"Write an SQL query to select only the first name, last name, and email columns from a table named 'customers'.","SELECT first_name, last_name, email
+FROM customers;",
+"Suggest a completion to the following class definition that creates a constructor to initialize a Person object. class Person:
+    def __init__(self):","class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age",
+"Classify a given sentence based on the intention behind it. sentence = ""I want to buy a car""",The given sentence is a request intention.,
+Write a number of HTML tags such that their end tags are mismatched.,"<html>
+  <head>
+    <title>Test</title>
+  </head>
+  <body>
+    <h1>My Heading</h1>
+    <p>This is a test.
+  </body>
+</html>",
+How to sort a list of tuples in Python?,"You can sort a list of tuples in Python by using the sorted() function. For example:
+
+tuple_list = [('John', 18), ('Jane', 20), ('Bob', 16)]
+
+sorted_list = sorted(tuple_list, key=lambda tup: tup[1])
+
+print(sorted_list)
+
+# Output: [('Bob', 16), ('John', 18), ('Jane', 20)]",
+Write a code that converts degrees Celsius to degrees Fahrenheit,"def celsius_to_fahrenheit(celsius):
+    fahrenheit = celsius * 9/5 + 32
+    return fahrenheit",
+Explain how to find the sum of all elements in an array using recursive approach.,"The recursive approach to finding the sum of all elements in an array is to consider the array as a combination of two subarrays. We first calculate the sum of the first subarray and then for the second subarray. The total sum of elements in the array can be found by adding the sum of the two subarrays. This process is repeated until the size of the array is 0, at which point the final sum is returned. This approach is known as the divide and conquer algorithm.",
+How do you test a web application using Selenium webdriver?,"In order to test a web application using Selenium webdriver, you need to create a Selenium script that navigates the web application, verifies the expected output, and records test results. You would then run the script on different browsers or devices to verify the application's functionality across various environments.",
+"Modify the following script to format the output to just two decimal places. original_script.py
+
+import math
+
+a = math.pi
+print(a)","import math
+
+a = math.pi
+print(""{:.2f}"".format(a))",
+"Write a code snippet to add a new element 'z' at the end of list 'x'. x = [1, 2, 3]",x.append('z'),
+"Create a test harness in C++ to verify the correctness of the following function // A function to calculate the nth Fibonacci number
+// Input: nth Fibonacci number
+// Output: nth Fibonacci number
+int calcFib(int n) 
+{ 
+    if (n<=1) 
+        return n; 
+    return calcFib(n-1) + calcFib(n-2); 
+}","#include <iostream>
+
+// Function to calculate the
+// nth Fibonacci number 
+int calcFib(int n)
+{
+  if (n <= 1)
+    return n;
+  return calcFib(n - 1) + calcFib(n - 2);
+}
+
+// Test Harness to verify the correctness
+// of the calcFib implementation
+int main()
+{
+  // Input value to calculate
+  const int n = 10;
+
+  // Expected Output value
+  const int expected_output = 55;
+
+  // Calculate nth fibonacci number
+  int output = calcFib(n);
+
+  // Verify correctness
+  if (output == expected_output)
+    std::cout << ""Test Passed"" << std::endl;
+  else
+    std::cout << ""Test Failed"" << std::endl;
+
+  return 0;
+}",
+Write a function in C++ which takes a string as an argument and prints it to the console.,"void print_string(string str) 
+{  
+    cout << str; 
+}",
+Write an HTML code snippet to create two check boxes with labels “yes” and “no”.,"<input type=""checkbox"" name=""yes"" value=""Yes"">Yes
+<input type=""checkbox"" name=""no"" value=""No"">No",
+Write a class to define a complex number,"class ComplexNumber{ 
+        double real;
+        double imaginary;
+    
+        public ComplexNumber(double real, double imaginary){
+            this.real = real;
+            this.imaginary = imaginary;
+        }
+    
+        public double getReal(){ 
+            return real;
+        }
+    
+        public double getImaginary(){
+            return imaginary;
+        }
+    }",
+"Create an algorithm to determine the maximum element in a given list. my_list = [3, 6, 4, 1]","def find_max(my_list):
+    max_num = 0
+    for num in my_list:
+        if num > max_num:
+            max_num = num
+    return max_num",
+Write an algorithm to find the longest sub string without repeating characters. string = 'abcabcbb',"def length_longest_substring(string):
+    start = 0
+    max_length = 0
+    seen = {}
+    for end in range(len(string)):
+        # Check if the character has been previously seen.
+        if string[end] in seen:
+            # Move the starting point of the substring to the index after the last seen character of this character.
+            start = max(start, seen[string[end]] + 1)
+        # Update the index value of the last seen character.
+        seen[string[end]] = end
+        # Calculate the length of the current substring.
+        max_length = max(max_length, end - start + 1)
+    # Return the maximum length of the substring.
+    return max_length",
+"Write an assembly code to calculate the sum of a series of numbers. Series of numbers: [1, 5, 8, 10]","MOV      R1, #1 ; Load the first number
+        ADD      R2, R1 ; Initialize the sum
+LOOP    CMP      R1, #10 ; Check if we have reached the last number
+        BEQ      SUM    ; If yes, jump to SUM
+        ADD      R1, #1 ; Increment the number
+        ADD      R2, R1 ; Add the number to sum
+        B        LOOP   ; Loop
+SUM     ; At the end, the sum is in R2",
+Evaluate the following JavaScript expression: 15 * (3 + 7),The result of 15 * (3 + 7) is 150.,
+Write a function to check whether a given number can be expressed as the power of some other number Number: 8,"""""""
+def is_power_of(x):
+    # Initializing the counter
+    i = 0
+  
+    # Iterating through possible exponents
+    while (x > 1):
+        if (x % 2 == 0): 
+            x /= 2
+        else: 
+            return False
+        i += 1
+        
+    return True
+
+# Function call
+print(is_power_of(8))
+""""""
+
+Output: True",
+Write a Java Program to print the Fibonacci numbers for a given range.,"public class Fibonacci {
+
+    public static void main(String[] args) {
+         
+        int range = 10;
+        int i = 0;
+        int fibo = 0;
+        int fibo1 = 1;
+        int fibo2 = 1;
+
+        while(i <= range) {
+            System.out.print(fibo + "" "");
+            fibo = fibo1 + fibo2;
+            fibo1 = fibo2;
+            fibo2 = fibo;
+            i++;
+        }
+    }
+}",
+"Find the maximum value of an array without using any built-in functions [7, 9, -2, 15, 3]","def find_max(arr):
+    max = arr[0]
+    for i in range(1, len(arr)):
+        if arr[i] > max:
+            max = arr[i]
+    return max
+
+arr = [7, 9, -2, 15, 3]
+print(find_max(arr))",
+"Create a function which checks if a certain element is present in a given array. arr = [2, 8, 3, 5]
+element = 8","const arr = [2, 8, 3, 5];
+const element = 8;
+
+const checkElementInArray = (arr, element) => {
+    return arr.includes(element);
+}
+
+console.log(checkElementInArray(arr, element)); // true",
+Create a function in Python to take a positive integer and return its factorial. num = 5,"def factorial(num): 
+    """"""Function to return the factorial of a positive integer""""""
+    if(num <=1): 
+        return 1
+    else: 
+        return(num*factorial(num-1))",
+Write an SQL query to select all data from a table named 'users' in descending order by the 'age' column.,SELECT * FROM users ORDER BY age DESC;,
+"Parse the following XML document and print out the 'name' fields of all the nodes. <root>
+    <node>
+        <name>Foo</name>
+        <age>25</age>
+    </node>
+    <node>
+        <name>Bar</name>
+        <age>30</age>
+    </node>
+</root>","import xml.etree.ElementTree as ET
+
+tree = ET.parse('document.xml')
+root = tree.getroot()
+
+for node in root.findall('node'):
+    name = node.find('name').text
+    print(name)",
+"Create a function in Java to find the number of values greater than a given number in a given array. int[] arr = {1, 2, 3, 4};
+int threshold = 2;","public static int greaterThan(int[] arr, int threshold) {
+  int count = 0;
+  for (int i=0; i < arr.length; i++) {
+    if (arr[i] > threshold) {
+      count++;
+    }
+  }
+  return count;
+}",
+"Create an HTML page with an input field and a button. The input field should take a sentence and the two button should ""Upper Case"" and ""Lower Case"" respectively. When clicked, it should upper case or lower case the sentence in the input field.","<!DOCTYPE html>
+<html>
+  <head>
+    <title>String Case Transformer</title>
+  </head>
+  <body>
+    <input type=""text"" id=""inputStr"">
+    <button onclick=""transformCase('upper')"">Upper Case</button>
+    <button onclick=""transformCase('lower')"">Lower Case</button>
+    <script>
+      function transformCase(choice) {
+        var str = document.getElementById(""inputStr"").value;
+        if (choice === 'upper') {
+          document.getElementById(""inputStr"").value = str.toUpperCase();
+        } else {
+          document.getElementById(""inputStr"").value = str.toLowerCase();
+        }
+      }
+    </script>
+  </body>
+</html>",
+Construct a factorial function in JavaScript that takes in two inputs x and y as parameters.,"function factorial(x, y) {
+    let result = 1;
+    for (let i = x; i <= y; i++) {
+        result *= i;
+    }
+    return result;
+}",
+Write a Python function to subtract two given numberss.,"def subtract_numbers(num1, num2):
+  return num1 - num2",
+Suggest a code to create an empty list.,mylist = []  # Create an empty list,
+Make a matrix multiplication program that takes an arbitrary number of matrices as input.,"def matrix_multiplication(*matrices):
+    res = [[0 for _ in range(len(matrices[0][0]))]
+        for _ in range(len(matrices[0]))]
+    for y in range(len(matrices[0])):
+        for x in range(len(matrices[0][0])):
+            for m in range(len(matrices)):
+                res[y][x] += matrices[m][y][x]
+    return res",
+"Create a program to display all prime numbers between a given range. a, b = 2, 8","def prime_numbers_in_range(a, b):
+    """"""
+    Displays all prime numbers between a given range.
+    """"""
+    for num in range(a, b+1):
+        if is_prime(num):
+            print(num,' is prime.')
+
+def is_prime(num):
+    """"""
+    Checks if a number is prime or not.
+    """"""
+    if num == 1:
+        return False
+    else:
+        for i in range(2, num):
+            if num % i == 0:
+                return False 
+    return True",
+Classify the given sentence according to the Syntactic parse tree and label each part of the sentence. I bought a car yesterday.,[ NP: I] [ VP: bought] [ NP: a car] [ AdvP: yesterday],
+Create a regular expression pattern to match strings that contain any character except digits.,"pattern = r""[^\d]+""",
+Create an HTML page with a form that verifies if the email address entered is valid or not.,"<form method=""post"" action=""verify.php"">
+  Enter your email address:<br>
+  <input type=""text"" name=""email"">
+  <br><br>
+  <input type=""submit"" value=""Verify"">
+</form>",
+Implement a jQuery code for the following purpose Make an element hide when mouse moves over it,"$ (document).ready (function () {
+  $(""element"").mouseover(function () {
+    $(this).hide();
+  });
+});",
+Create a web page using HTML and CSS that displays a div with some text.,"<html>
+   <head>
+      <title>Div Example</title>
+   </head>
+   <body>
+      <div>Hello, welcome to my website!</div>
+   </body>
+</html>",
+"Create a programming language syntax to print ""Hello, World!""","println(""Hello, World!"")",
+Write a method to calculate the average of three numbers in Python.,"def avg(num1, num2, num3):
+ return (num1 + num2 + num3) / 3",
+"Write an algorithm to find the largest element in an array. [8, 11, 12, 5, 3]","// Algorithm to find the largest element in an array
+
+// Step 1: Create a variable 'max' and initialize it with value of the first element in the array
+int max = arr[0];
+
+// Step 2: Iterate through the array and compare each element with 'max'
+for (int i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+        max = arr[i];
+    }
+}
+
+// Step 3: Return the value of 'max'
+return max;",
+"Replace the “TODO” comment in the code with the proper code to print each element of the list on a new line using Python. input_list = [10, 15, 20, 25, 30]","for element in input_list:
+    print(element)",
+Create a visualization in Matplotlib to display sales figures over the last 6 months.,"import matplotlib.pyplot as plt
+import numpy as np
+ 
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+sales = [40000, 42000, 46000, 50000, 60000, 63000]
+ 
+fig, ax = plt.subplots()
+ax.plot(months, sales, marker='o')
+ax.set_title('Monthly Sales')
+ax.set_xlabel('Month')
+ax.set_ylabel('Sales ($)')
+ax.set_ylim(0, max(sales) + 5000)
+ 
+plt.show()",
+"Create a SQL query that returns the name and age of each person in a table called ""people"".","SELECT name, age FROM people;",
+Write an Android application to display the date and time in a text view.,"public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Get a reference to the TextView
+        TextView textView = (TextView) findViewById(R.id.textView);
+
+        // Set the text view to present the current date and time
+        SimpleDateFormat sdf = new SimpleDateFormat(""yyyy-MM-dd HH:mm:ss"");
+        String currentDateTimeString = sdf.format(new Date());
+        textView.setText(currentDateTimeString);
+    }
+}",
+Create an API in Node.js to accept JSON data and add it to a database.,"// define an API endpoint to accept POST requests
+app.post('/api/data', (req, res) => {
+  // convert data to a JavaScript object
+  const data = JSON.parse(req.body);
+  // store data in the database
+  storeDataInDB(data);
+
+  // return a success message
+  res.send({ success: true });
+});",
+"Rotate a list of elements by a certain number of times. [1, 2, 3, 4], 2","def rotate_array(arr, n): 
+    """"""
+    This function rotates a list of elements by a certain number of times
+    """"""  
+    return arr[n:] + arr[:n]
+
+if __name__ == '__main__':
+    arr = [1, 2, 3, 4]
+    n = 2
+    print(rotate_array(arr, n))",
+"Given a list of words and numbers, create a program to print out the unique words and unique numbers. ['cat', 'elephant', 'dog', '15', '20', 'elephant', '8']","Words: ['cat', 'dog', 'elephant']
+Numbers: [15, 20, 8]",
+"Construct an SQL statement that deletes all records from the ""blog_posts"" table.",DELETE FROM blog_posts;,
+"Generate an HTML table that displays the student names and grades in a 3x3 grid. Student1: B
+Student2: A
+Student3: C
+Student4: D
+Student5: F
+Student6: A","<table style=""width:100%"">
+  <tr>
+    <th>Student</th>
+    <th>Grade</th> 
+  </tr>
+  <tr>
+    <td>Student1</td>
+    <td>B</td>
+  </tr>
+  <tr>
+    <td>Student2</td>
+    <td>A</td> 
+  </tr>
+  <tr>
+    <td>Student3</td>
+    <td>C</td> 
+  </tr>
+  <tr>
+    <td>Student4</td>
+    <td>D</td> 
+  </tr>
+  <tr>
+    <td>Student5</td>
+    <td>F</td> 
+  </tr>
+  <tr>
+    <td>Student6</td>
+    <td>A</td> 
+  </tr>
+</table>",
+"Create a generator expression to print the square of a list of numbers. numbers = [1, 2, 3, 4, 5]","numbers = [1, 2, 3, 4, 5]
+
+# generator expression
+squares = (num ** 2 for num in numbers)
+
+for square in squares: 
+    print(square)",
+"Develop a program to split a string by a specific delimiter String = ""This-is-a-test""
+Delimiter = ""-""","def split(string, delimiter): 
+    return string.split(delimiter) 
+  
+# Driver code 
+string = ""This-is-a-test""
+delimiter = ""-""
+print (split(string, delimiter))",
+"Edit the code to fix the following bug: The code doesn't return the expected output. def sum(numbers):
+    x = 0
+    for n in numbers:
+        x += n
+    return x","def sum(numbers):
+    x = 0
+    for n in numbers:
+        x += n
+    return int(x)",
+"Create an HTML page containing a form labeled ""Contact Us"" containing 3 input fields named: name, email, and message.","<html>
+    <head>
+        <title>Contact Us</title>
+    </head>
+    <body>
+        <h1>Contact Us</h1>
+        <form>
+            Name: <input type=""text"" name=""name""/><br />
+            Email: <input type=""text"" name=""email""/><br />
+            Message: <input type=""text"" name=""message""/><br />
+            <input type=""submit"" value=""Submit"" />
+        </form>
+    </body>
+</html>",
+Write a python function to detect if two lists contain the same items in different order.,"def compare_lists(list1, list2):
+    return sorted(list1) == sorted(list2)",
+"Convert the following python code to an equivalent JavaScript code. for item in items:
+    print(item)","items.forEach(item => {
+    console.log(item);
+});",
+"Given an array of strings, generate an object with the strings as keys and the length of each string as values. let arr = [""Hello"", ""World"", ""Foo"", ""Bar""]","let arr = [""Hello"", ""World"", ""Foo"", ""Bar""];
+
+let obj = {};
+
+for(let i=0; i<arr.length; i++){
+ obj[arr[i]] = arr[i].length;
+}
+
+console.log(obj); // {Hello: 5, World: 5, Foo: 3, Bar: 3}",
+"Create a function in JavaScript that takes in two arrays and returns an object. The object should contain elements where the two arrays have coinciding elements. [1,3,5], [2,4,1]","function findCommon(arr1, arr2) {
+    let result = {};
+    for (let i = 0; i < arr1.length; i++) {
+        for (let j = 0; j< arr2.length; j++) {
+            if(arr1[i] === arr2[j]) {
+                result[arr1[i]] = arr2[j];
+            }
+        }
+    }
+    return result;
+}
+
+
+console.log(findCommon([1,3,5], [2,4,1]));
+// Output: {1: 1}",
+"Construct a MySQL table for an online store. Table name: online_store 
+Fields: item_type (string), item_location (string), price (integer), item_name (string).","CREATE TABLE online_store (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    item_type VARCHAR(150) NOT NULL,
+    item_location VARCHAR(150) NOT NULL,
+    price INT NOT NULL,
+    item_name VARCHAR(150) NOT NULL
+);",
+Write an SQL query to find the top 10 highest-priced items in the products table.,"SELECT item_name, price
+FROM products
+ORDER BY price DESC
+LIMIT 10;",
+"Create a bar chart in Python, plotting the following integer data set. [1, 2, 4, 8, 16, 32]","import matplotlib.pyplot as plt
+ 
+data_set = [1, 2, 4, 8, 16, 32]
+ 
+plt.bar(range(len(data_set)), data_set)
+plt.show()",
+"Print out the names of even numbered elements from the given list. list_of_names = [""John"", ""Jacob"", ""Michael"", ""Peter"", ""Paul""]","for i in range(0, len(list_of_names), 2):
+    print(list_of_names[i])",
+"Create a function to do a binary search on a sorted list of integers. nums = [2, 4, 5, 7, 8, 9, 10, 14]","def binary_search(nums, target):
+    left, right = 0, len(nums) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if nums[mid] == target:
+            return mid
+        elif nums[mid] > target:
+            right = mid - 1
+        else:
+            left = mid + 1
+    return -1 # target is not found",
+Explain how to detect prime numbers in Python.,"We can detect prime numbers in Python by using a for loop. The for loop will iterate over all numbers from 2 up to the given number. For each number we loop through, we check to see if the number is divisible by any other number greater than 1. If the number is divisible by any other number, then we know it is not a prime number. If the number is only divisible by 1 and itself, then we know it is a prime number.",
+"Compute the maximum product of two integers in an array. [-4, 2, -3, 6]","def max_product(arr):
+    max1 = max(arr)
+    arr.remove(max1)
+    max2 = max(arr)
+    return max1 * max2
+
+print(max_product([-4, 2, -3, 6]))",
+How would you convert a given number in hexadecimal format to binary? number = 3E,"hex_to_binary = bin(int(number, 16)).replace(""0b"", """")
+print(hex_to_binary)",
+"Create a function to retrieve the first value from a dictionary that starts with a given letter. dictionary = { ""a"": 1, ""b"": 2, ""c"": 3 }
+starting_letter = “b”","def get_first_value(dictionary, starting_letter):
+    for key, value in dictionary.items():
+        if key.startswith(starting_letter):
+            return value
+    return None # if no value found
+
+get_first_value(dictionary, starting_letter) # Returns 2",
+"Create a React component to render a table with data from an API. const data = [
+  {name: 'Alice', age: 28, job: 'engineer'}, 
+  {name: 'Bob', age: 30, job: 'teacher'},
+  {name: 'Charlie', age: 27, job: 'developer'}
+]","import React from 'react';
+
+const dataTable = props => {
+  const { data } = props;
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Age</th>
+          <th>Job</th>
+        </tr>
+      </thead>
+      <tbody>
+        { data.map(item => (
+          <tr>
+            <td>{item.name}</td>
+            <td>{item.age}</td>
+            <td>{item.job}</td>
+          </tr>
+        )) }
+      </tbody>
+    </table>
+  );
+}
+
+export default dataTable;",
+"Print each character in the given string string = ""Hello World""","for char in string:
+    print(char)",
+"To an integer array, apply a modulo operation. arr = [3, 4, 5, 6]
+m = 2","[1, 0, 1, 0]",
+"Write a SQL statement to select the top 10 highest revenue products. Table: products
+Columns: product_id, product_name, revenue","SELECT product_id, product_name, revenue 
+FROM products 
+ORDER BY revenue DESC 
+LIMIT 10;",
+"Generate a JavaScript code snippet to toggle a given CSS class on an element with a given ID. element_id: ""button"", class_name: ""button--highlighted""","let button = document.getElementById(""button"");
+button.classList.toggle(""button--highlighted"");",
+"In the following snippet, make the necessary changes to store the result as a float value a = 5
+b = 20
+result = a / b;","a = 5
+b = 20
+result = float(a / b);",
+How to write an HTML page that displays the number from 1 to 10?,"<html>
+  <body>
+    <div>
+    <h2>Number from 1 to 10</h2>
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li>10</li>
+      </ul>
+    </div>
+  </body>
+</html>",
+"Generate a hash for the string ""AutomatedAssistant""",d3eb3504653eba66b47a82f3cb5279ae9133f2584e00cbc56434a3d877f7b284,
+"Write an algorithm to find the maximum subarray sum within the provided input array. [-2, 1, -3, 4, -1, 2, 1, -5, 4]","def max_subarray_sum(arr):
+    max_sum = 0
+    curr_sum = 0
+    for x in arr:
+        curr_sum += x
+        if curr_sum < 0:
+            curr_sum = 0
+        elif curr_sum > max_sum:
+            max_sum = curr_sum
+    return max_sum
+
+if __name__ == '__main__':
+    arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+    print(max_subarray_sum(arr))",
+"Edit the following for loop to add a counter that tracks the number of iterations of the loop. for i in range(10):
+  print(i)","counter = 0
+
+for i in range(10):
+  print(i)
+  counter += 1
+
+print(f""Number of iterations: {counter}"")",
+Write a procedure in PL/SQL to count the number of employees in a company.,"CREATE OR REPLACE PROCEDURE count_employees AS 
+BEGIN
+	SELECT COUNT(*)
+	FROM Employees;
+END;",
+"Create a C program to print the numbers from 1 to 100, except for any number divisible by 3.","#include <stdio.h>
+
+int main() 
+{ 
+    for (int i = 1; i <= 100; i++) { 
+        if (i % 3 != 0) 
+            printf(""%d\n"", i); 
+    } 
+    return 0; 
+}",
+"Read the provided code and determine whether it is using object-oriented programming or not. Output true if it is and false if it is not. function displayName(name) {
+  console.log(name);
+}",false,
+Write a code to print the current date and time in ISO format.,"from datetime import datetime
+
+date_time_obj = datetime.now()
+
+print(date_time_obj.isoformat()) # prints ""2020-07-29T15:10:01.584131""",
+Design an algorithm to detect the pattern of spikes in an EEG.,"""""""
+Design an algorithm to detect the pattern of spikes in an EEG
+""""""
+
+import numpy as np
+
+def detect_spike_pattern(eeg_data):
+    # Compute power spectrum of the EEG data
+    power_spectra = np.abs(np.fft.rfft(eeg_data))
+    # Detect spikes by finding peaks in the power spectrum
+    spikes = np.where(power_spectra > np.mean(power_spectra) + np.std(power_spectra))[0]
+    # Construct the spike pattern using differences between consecutive spikes
+    pattern = [spikes[i+1] - spikes[i] for i in range(len(spikes)-1)]
+    return pattern",
+"Write a method in Python to append a given list to another list. list_1 = [1,2,3]
+list_2 = [4,5,6]",list_1.extend(list_2),
+"Edit the following HTML markup to add a ""Welcome!"" heading. <section>
+ <span>This is a sample section</span>
+</section>","<section>
+ <h1>Welcome!</h1>
+ <span>This is a sample section</span>
+</section>",
+"Create a program in JavaScript to remove the duplicate entries in an array. arr = [1, 2, 3, 1, 4, 5, 6, 4, 1]","function removeDuplicates(arr)  {
+    let uniqueArr = new Set(arr);
+    let arrAfterRemoval = Array.from(uniqueArr);
+    return arrAfterRemoval;
+}",
+Why is JavaScript called a multi-paradigm language?,"JavaScript is called a multi-paradigm language because it allows developers to use multiple different programming paradimms such as object-oriented programming, functional programming, event-driven programming, and procedural programming. This flexibility allows developers to have more control over the structure of their code and enables them to write programs in whatever style they desire. It also makes JavaScript more versatile, allowing developers to find the best approach for any given problem.",
+Create a regex pattern to match strings having at least 3 digits.,"^\d{3,}$",
+Create a function in Ruby to convert a Fahrenheit temperature to Celsius.,"def fahrenheit_to_celsius(fahrenheit)
+  celsius = (fahrenheit - 32) * (5.0/9.0)
+  return celsius
+end",
+"Sort the list of numbers by increasing order. [4, 6, 0, 1, 7, 9]","[0, 1, 4, 6, 7, 9]",
+Proposition some ideas for a C++ program to calculate the average price of a product given its list of purchased items.,"One possible solution would involve creating a program that takes a list of purchased items and calculates the average price of the product. The program could take the following steps:
+1. Sum the prices of all items in the list.
+2. Divide the sum by the number of items in the list.
+3. Output the average price of the product.",
+"Create a class in JavaScript to represent a person with properties like name, age, and gender.","class Person {
+    constructor(name, age, gender) {
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+    }
+}",
+What is an appropriate format to represent a 3-dimensional point?,"A 3-dimensional point can be represented as a tuple (x, y, z) consisting of the x-coordinate, y-coordinate, and z-coordinate of the point.",
+Design an algorithm to check if a number is a palindrome. 7337,"def is_palindrome(num):
+    num_str = str(num)
+    # compare the first and last characters
+    if num_str[0] != num_str[-1]:
+        return False
+    # go to the next pair of characters
+    if len(num_str) >= 3:
+        return is_palindrome(num_str[1:-1])
+    # all characters have been compared, number is a palindrome
+    return True",
+Write a Python function to calculate the factorial of a given number using recursion.,def factorial_recursive(num): return 1 if num == 0 else num * factorial_recursive(num - 1),code
+Implement a function to check if a given string is a palindrome. string = 'racecar',"def is_palindrome(string):
+    return string == string[::-1]
+
+string = 'racecar'
+print(is_palindrome(string))",code
+"Write a Python script to calculate the mean and standard deviation of a given list of numbers. Use the following list: [3, 6, 9, 12, 15, 18]","To calculate the mean and standard deviation of a given list of numbers in Python, you can use the statistics module. Here is a sample script for the given list [3, 6, 9, 12, 15, 18]:
+
+import statistics
+
+numbers = [3, 6, 9, 12, 15, 18]
+
+mean = statistics.mean(numbers)
+std_dev = statistics.stdev(numbers)
+
+print(f'Mean: {mean}')
+print(f'Standard Deviation: {std_dev}')",code
+Write a Python function that calculates the factorial of a given number using recursion.,"I'm sorry, but I am not able to execute Python code. Is there anything else I can assist you with?",code
+Write a Python function to check if a given string is a palindrome or not.,"def is_palindrome(s):
+    s = s.lower().replace(' ','')
+    return s == s[::-1]",code
+Generate a SQL query to retrieve all unique email addresses from a database table.,SELECT DISTINCT email FROM table_name;,code
+"Design a Python class that implements a stack data structure with methods for pushing, popping, and checking if the stack is empty.","class Stack:
+    def __init__(self):
+        self.stack = []
+
+    def push(self, item):
+        self.stack.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.stack.pop()
+        else:
+            return None
+
+    def is_empty(self):
+        return len(self.stack) == 0
+
+# Usage:
+# stack = Stack()
+# stack.push(1)
+# stack.push(2)
+# print(stack.pop())
+# print(stack.is_empty())",code
+Write a Python script that reads a text file and counts the occurrences of each word in the file.,"To write a Python script that reads a text file and counts the occurrences of each word in the file, you can use the following code snippet:
+
+```python
+from collections import Counter
+
+def count_word_occurrences(file_name):
+    word_counts = Counter()
+    with open(file_name, 'r') as file:
+        for line in file:
+            words = line.split()
+            word_counts.update(words)
+    return word_counts
+
+if __name__ == '__main__':
+    file_name = 'sample.txt'  # Update with the name of your text file
+    word_occurrences = count_word_occurrences(file_name)
+    print(word_occurrences)
+```",code
+"Develop a function in Python that removes duplicates from a given list and returns the updated list. For example, if the input list is [1,2,2,3,4,4], the function should return [1,2,3,4].","def remove_duplicates(input_list):
+    return list(set(input_list))",code
+Write a function in Python to calculate the factorial of a given number.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+Write a Python function that checks if a given string is a palindrome.,"def is_palindrome(s):
+    return s == s[::-1]",code
+Write a Python function that calculates the factorial of a given integer input and returns the result. Input: n = 5,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+"Create a Python script that reads a CSV file containing student information (name, age, grade) and generates a new CSV file that only includes students with a grade above 90.","import csv
+
+# Open the input CSV file
+with open('input.csv', 'r') as input_file:
+    csv_reader = csv.DictReader(input_file)
+    
+    # Open the output CSV file
+    with open('output.csv', 'w', newline='') as output_file:
+        fieldnames = ['name', 'age', 'grade']
+        csv_writer = csv.DictWriter(output_file, fieldnames=fieldnames)
+        csv_writer.writeheader()
+        
+        # Iterate through each row in the input CSV file
+        for row in csv_reader:
+            # Check if the student's grade is above 90
+            if int(row['grade']) > 90:
+                # Write the student information to the output CSV file
+                csv_writer.writerow({'name': row['name'], 'age': row['age'], 'grade': row['grade']}",code
+Write pseudocode to implement a bubble sort algorithm for sorting a list of integers in ascending order.,"To implement a bubble sort algorithm for sorting a list of integers in ascending order, you can use the following pseudocode: 
+
+1. Start BubbleSort function taking a list of integers as input.
+2. Set n to the length of the list.
+3. Repeat the following steps n times:
+     a. Set swapped to false.
+     b. Loop through the list from index 0 to n-1:
+          i. If the current element is greater than the next element:
+               - Swap the two elements.
+               - Set swapped to true.
+4. If swapped is false, then the list is already sorted, so exit the function.
+5. Otherwise, repeat step 3.
+6. End of the BubbleSort function.",code
+Implement a Python function that sorts a list of integers in ascending order.,"Implement the following Python function:
+def sort_list_ascending(input_list):
+    return sorted(input_list)",code
+"Develop a Python script that reads a CSV file and extracts specific data based on predefined conditions, then writes the extracted data to a new CSV file.","Develop a Python script that reads a CSV file and extracts specific data based on predefined conditions, then writes the extracted data to a new CSV file.",code
+Develop a Python function that calculates the square root of a given number.,"To calculate the square root of a given number in Python, you can define a function like this:
+
+```python
+import math
+
+def calculate_square_root(number):
+    return math.sqrt(number)
+
+# Example usage:
+num = 25
+result = calculate_square_root(num)
+print(f'The square root of {num} is: {result}')
+```",code
+Generate a regular expression pattern that matches email addresses in the format 'example@email.com'.,"import re
+email_pattern = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+e[a-zA-Z]{2,}'",code
+Implement a function in Python that determines if a given number is a prime number or not.,"def is_prime(num):\n    \""\""\""\n    Checks if a number is prime or not.\n    \""\""\""\n    if num == 1:\n        return False\n    else:\n        for i in range(2, num):\n            if num % i == 0:\n                return False \n    return True",code
+Design a Python function that takes a string input and returns the reverse of the input string.,"def reverse_string(input_string):
+    return input_string[::-1]",code
+Write a Python function that takes a list of strings as input and returns the strings sorted alphabetically in descending order.,"def sort_strings_descending(input_list):
+    return sorted(input_list, reverse=True)",code
+Write a Python function that calculates the area of a circle based on a given radius parameter.,"def calculate_circle_area(radius):
+    return 3.14159 * radius * radius",code
+"Design a webpage layout for an online store with space for product images, descriptions, and price information.","To design a webpage layout for an online store with space for product images, descriptions, and price information, you can create a grid-based layout using HTML and CSS. Include sections for product images, product descriptions, and price information. Use CSS to style the layout and design elements such as fonts, colors, and spacing to create an appealing and user-friendly online store interface.",code
+Write a Python script that reads a text file and outputs the number of words in the file.,"To count the number of words in a text file using Python, you can use the following script:
+
+with open('your_file.txt', 'r') as file:
+    data = file.read()
+    words = data.split()
+    num_words = len(words)
+
+print('Number of words:', num_words)",code
+Create a Python function that takes a list of integers as input and returns the sum of all prime numbers in the list.,"def sum_prime_numbers(num_list):
+    sum_primes = 0
+    for num in num_list:
+        if num > 1:
+            is_prime = True
+            for i in range(2, num):
+                if num % i == 0:
+                    is_prime = False
+                    break
+            if is_prime:
+                sum_primes += num
+    return sum_primes",code
+Write a Python function to check if a given string is a palindrome.,"def is_palindrome(s):
+    return s == s[::-1]
+
+# Test
+print(is_palindrome('racecar'))
+
+# Output
+True",code
+Create a Python function that takes a list of integers as input and returns the sum of all the even numbers in the list.,"def sum_even_numbers(arr):
+    sum_even = 0
+    for num in arr:
+        if num % 2 == 0:
+            sum_even += num
+    return sum_even",code
+Write a Python function to calculate the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+Write a Python script that reads a CSV file named 'data.csv' and calculates the average of the values in the 'price' column.,"To write a Python script that reads a CSV file named 'data.csv' and calculates the average of the values in the 'price' column, you can use the pandas library. Here is an example script:
+
+import pandas as pd
+
+data = pd.read_csv('data.csv')
+average_price = data['price'].mean()
+print('Average price:', average_price)",code
+Develop a Python script that takes a list of integers as input and outputs the sum of all the positive integers in the list.,"To develop a Python script that takes a list of integers as input and outputs the sum of all the positive integers in the list, you can use the following code snippet:
+
+```python
+# Define a function to calculate the sum of positive integers in a list
+
+# Function to calculate sum of positive integers
+
+import numpy as np
+
+
+def sum_positive_integers(input_list):
+    # Filter out the positive integers from the input list
+    positive_integers = [num for num in input_list if num > 0]
+    
+    # Calculate the sum of positive integers using numpy
+    sum_positive = np.sum(positive_integers)
+    
+    return sum_positive
+
+# Example list of integers
+input_list = [1, -2, 3, -4, 5, 6, -7]
+
+# Calculate the sum of positive integers in the list
+result = sum_positive_integers(input_list)
+print('Sum of positive integers in the list:', result)
+```",code
+Write a Python script to extract text data from a PDF file using the PyPDF2 library.,"To extract text data from a PDF file using the PyPDF2 library in Python, you can use the following script:
+
+import PyPDF2
+
+# Open the PDF file in read-binary mode
+with open('your_pdf_file.pdf', 'rb') as file:
+    reader = PyPDF2.PdfFileReader(file)
+
+    # Initialize an empty string to store the extracted text
+    text = ''
+
+    # Iterate through each page and extract text
+    for page_num in range(reader.numPages):
+        page = reader.getPage(page_num)
+        text += page.extract_text()
+
+# Print the extracted text
+print(text)",code
+Create a Python script to read a JSON file and extract specific data based on a provided key.,Create a Python script to read a JSON file and extract specific data based on a provided key.,code
+Explain the process of setting up a virtual environment for a Python project using 'virtualenv' or 'venv'.,"To set up a virtual environment for a Python project using 'virtualenv' or 'venv', follow these steps:
+1. Install 'virtualenv' using pip if you don't have it installed: pip install virtualenv
+2. Create a new directory for your project and navigate into it
+3. Run the command to create a new virtual environment using 'virtualenv' or 'venv':
+   - For 'virtualenv': virtualenv venv_name
+   - For 'venv': python -m venv venv_name
+4. Activate the virtual environment:
+   - For Windows: venv_name\Scripts\activate
+   - For macOS/Linux: source venv_name/bin/activate
+5. Once the virtual environment is activated, you can install dependencies specific to your project without affecting the global Python environment
+6. To deactivate the virtual environment, simply run 'deactivate' command in the terminal",code
+Create a Python function that takes a string as input and returns the reverse of the string. Test the function with 'hello world'.,"def reverse_string(input_string):
+    return input_string[::-1]
+
+print(reverse_string('hello world'))",code
+Implement a function in Python that takes a list of integers as input and returns the sum of all positive numbers in the list.,"def sum_of_positive_numbers(nums):
+    total = 0
+    for num in nums:
+        if num > 0:
+            total += num
+    return total",code
+Write a Python function that calculates the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+Implement a function in Python to check if a given string is a palindrome. Input string: 'racecar',"To implement a function in Python that checks if a given string is a palindrome, you can define a function like the following: 
+
+```python
+# Function to check if a string is a palindrome
+
+
+def is_palindrome(input_str):
+    return input_str == input_str[::-1]
+
+
+# Input string to check if it's a palindrome
+input_string = 'racecar'
+
+# Check if the input string is a palindrome
+if is_palindrome(input_string):
+    print(f'{input_string} is a palindrome')
+else:
+    print(f'{input_string} is not a palindrome')
+``` 
+
+This function compares the input string with its reverse and returns True if it's a palindrome and False if it's not.",code
+"Write a Python function to calculate the average of a list of numbers. Use list 'nums' containing [4, 7, 9, 2, 5] as input.","def avg_list(nums):
+    return sum(nums) / len(nums)",code
+Create a program to check if a given string is a palindrome or not.,"To create a program to check if a given string is a palindrome or not, you can use the following Python code snippet: 
+
+string = input(""Enter a string: "")
+reversed_string = string[::-1]
+if string == reversed_string:
+    print(""The string is a palindrome."")
+else:
+    print(""The string is not a palindrome."")",code
+Write a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list.,"def sum_of_even_numbers(input_list):
+    sum_even = 0
+    for num in input_list:
+        if num % 2 == 0:
+            sum_even += num
+    return sum_even",code
+Implement a sorting algorithm in Python to sort a list of integers in non-decreasing order.,"def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >=0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
+
+# Example usage
+my_list = [64, 25, 12, 22, 11]
+sorted_list = insertion_sort(my_list)
+print(sorted_list)",code
+Write a function in Python that takes a list of integers as input and returns the sum of all positive integers in the list.,"def sum_positive_integers(nums):
+    return sum(num for num in nums if num > 0)",code
+Write a Python function that takes a list of integers as input and returns a new list with only even numbers.,"def filter_even_numbers(input_list):
+    return [num for num in input_list if num % 2 == 0]",code
+Create a function in Python that checks if a given string is a palindrome.,"To create a function in Python that checks if a given string is a palindrome, you can use the following code:
+
+```python
+# Function to check if a string is a palindrome
+def is_palindrome(s):
+    s = s.lower()
+    return s == s[::-1]
+
+# Test the function
+input_string = 'radar'
+if is_palindrome(input_string):
+    print(input_string + ' is a palindrome')
+else:
+    print(input_string + ' is not a palindrome')
+```",code
+"Write a Python script that reads a CSV file, filters out rows where a specific column value is greater than a given threshold, and writes the filtered data back to a new CSV file.","import pandas as pd
+
+def filter_csv(input_file, output_file, column_name, threshold):
+    data = pd.read_csv(input_file)
+    filtered_data = data[data[column_name] <= threshold]
+    filtered_data.to_csv(output_file, index=False)
+
+# Example usage
+input_file = 'input.csv'
+output_file = 'output.csv'
+column_name = 'column_name'
+threshold = 100
+filter_csv(input_file, output_file, column_name, threshold)",code
+Implement a function in Python that sorts a list of strings in alphabetical order. The function should take the list as input and return the sorted list as output.,"def sort_strings(arr):
+    for i in range(len(arr)):
+        min_index = i
+        for j in range(i+1, len(arr)):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+    return arr
+
+strings = ['apple', 'banana', 'cherry', 'date']
+sorted_strings = sort_strings(strings)
+print(sorted_strings)",code
+"Create a Python script that reads a text file, counts the occurrences of each word, and prints the word frequency in descending order.","To accomplish this task, you can use the following Python script:",code
+Implement a function in Python that sorts a list of integers in ascending order using the bubble sort algorithm.,"def bubble_sort(nums):
+    n = len(nums)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if nums[j] > nums[j+1]:
+                nums[j], nums[j+1] = nums[j+1], nums[j]
+    return nums",code
+Generate a Python function that takes a string as input and returns the reversed version of the string.,"def reverse_string(input_string):
+    return input_string[::-1]",code
+Implement a Python function that reads a CSV file and returns the data as a list of dictionaries with column headers as keys.,"To implement a Python function that reads a CSV file and returns the data as a list of dictionaries with column headers as keys, you can use the following code snippet: 
+
+import csv
+
+def read_csv_file(file_path):
+    data_list = []
+    with open(file_path, 'r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        for row in csv_reader:
+            data_list.append(row)
+    return data_list
+
+# Call the function with the file path as an argument
+file_path = 'your_file_path.csv'
+data = read_csv_file(file_path)
+
+print(data)",code

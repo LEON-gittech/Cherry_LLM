@@ -1,0 +1,811 @@
+,instruction,response,label
+0,Create a Python function that takes a string as input and returns the number of vowels in the string.,"def count_vowels(input_string):
+    vowels = 'aeiouAEIOU'
+    count = 0
+    for letter in input_string:
+        if letter in vowels:
+            count += 1
+    return count",code
+1,"Write a function in Java that takes in two strings as parameters and returns true if the strings are anagrams, otherwise returns false.","public static boolean checkAnagrams(String str1, String str2) {
+    if (str1.length() != str2.length()) {
+        return false;
+    }
+    char[] charArray1 = str1.toCharArray();
+    char[] charArray2 = str2.toCharArray();
+    Arrays.sort(charArray1);
+    Arrays.sort(charArray2);
+    return Arrays.equals(charArray1, charArray2);
+}",code
+2,Write a Python function that calculates the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+3,"Write a Python script that reads a CSV file containing student information (such as name, age, and grade) and displays the information in a formatted table.","with the use of the csv module in Python, you can read the CSV file containing student information and display it in a formatted table. Below is an example Python script:
+
+import csv
+
+with open('student_info.csv', mode='r') as file:
+    csv_reader = csv.DictReader(file)
+    
+    print(f'{",code
+4,Write a Python function that takes a string as input and returns the string reversed.,"def reverse_string(input_string):
+    return input_string[::-1]
+
+print(reverse_string('hello'))",code
+5,Write a function in C++ to reverse a string in-place. The function should modify the original string without using any extra space.,"// C++ program to reverse a string in-place
+#include <iostream>
+#include <string>
+using namespace std;
+
+void reverseString(string& str) {
+    int start = 0;
+    int end = str.length() - 1;
+    while (start < end) {
+        swap(str[start], str[end]);
+        start++;
+        end--;
+    }
+}
+
+int main() {
+    string str = ""Hello, World!"";
+    cout << ""Original String: "" << str << endl;
+    reverseString(str);
+    cout << ""Reversed String: "" << str << endl;
+    return 0;
+}",code
+6,Create a script in Python that reads a file named 'data.txt' and prints out the content of the file line by line.,"To create a script in Python that reads a file named 'data.txt' and prints out the content of the file line by line, you can use the following code snippet: 
+
+with open('data.txt', 'r') as file: 
+	for line in file: 
+		print(line)",code
+7,Write a Python program that takes a string as input and returns the reverse of the string.,"def reverse_string(input_string):
+    return input_string[::-1]
+
+string_input = input('Enter a string: ')
+reversed_string = reverse_string(string_input)
+print('Reversed string:', reversed_string)",code
+8,Write a Python script to read a CSV file and display the content line by line.,"To read a CSV file and display the content line by line in Python, you can use the following script: 
+
+import csv
+
+with open('file.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)",code
+9,Create a function that counts the frequency of each word in a given text and returns a dictionary with the word as key and frequency as value.,"def count_word_frequency(text):
+    words = text.split()
+    frequency = {}
+    for word in words:
+        if word in frequency:
+            frequency[word] += 1
+        else:
+            frequency[word] = 1
+    return frequency",code
+10,"Write a Python program to count the frequency of each element in a list and store the results in a dictionary. list = [1, 2, 1, 3, 1, 2, 4, 5]","from collections import Counter
+
+list = [1, 2, 1, 3, 1, 2, 4, 5]
+
+frequency_dict = dict(Counter(list))
+
+print(frequency_dict)",code
+11,"Design a Python script that reads a CSV file, extracts specified columns, and saves the extracted data into a new CSV file.","To design a Python script that reads a CSV file, extracts specified columns, and saves the extracted data into a new CSV file, you can use the pandas library. Here's an example of how you can achieve this: 
+
+import pandas as pd
+
+def extract_columns(input_file, output_file, columns_to_extract):
+    data = pd.read_csv(input_file)
+    extracted_data = data[columns_to_extract]
+    extracted_data.to_csv(output_file, index=False)
+
+# Example Usage
+input_file = 'input.csv'
+output_file = 'output.csv'
+columns_to_extract = ['column1', 'column2']
+extract_columns(input_file, output_file, columns_to_extract)",code
+12,Design a Python function that takes a list of integers as input and returns the sum of all the even numbers in the list.,"def sum_even_numbers(input_list):
+    sum_even = 0
+    for num in input_list:
+        if num % 2 == 0:
+            sum_even += num
+    return sum_even
+
+# Example usage
+input_list = [1, 2, 3, 4, 5, 6]
+print(sum_even_numbers(input_list))",code
+13,"Develop a function in JavaScript that sorts an array of objects based on a specific property value in descending order. Use an array of objects like [{name: 'Alice', age: 25}, {name: 'Bob', age: 30}, {name: 'Cathy', age: 20}]. Sort the objects based on the 'age' property.","function sortArrayObjects(arr, property) { return arr.sort((a, b) => (b[property] > a[property]) ? 1 : ((a[property] > b[property]) ? -1 : 0)); } let array = [{name: 'Alice', age: 25}, {name: 'Bob', age: 30}, {name: 'Cathy', age: 20}]; let sortedArray = sortArrayObjects(array, 'age'); console.log(sortedArray);",code
+14,Write a Python script to scrape a website and extract all the hyperlinks present on the webpage.,"To scrape a website and extract all the hyperlinks present on the webpage, you can use Python libraries like requests and BeautifulSoup. Here is an example script to achieve this:
+
+import requests
+from bs4 import BeautifulSoup
+
+def extract_links(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    links = []
+    for link in soup.find_all('a'):
+        links.append(link.get('href'))
+    return links
+
+website_url = 'https://example.com'
+all_links = extract_links(website_url)
+print(all_links)",code
+15,Write a Java program to calculate the factorial of a given number using recursion.,"public class FactorialCalculator {
+    public static void main(String[] args) {
+        int number = 5;
+        int factorial = calculateFactorial(number);
+        System.out.println(""Factorial of "" + number + "" is: "" + factorial);
+    }
+
+    public static int calculateFactorial(int n) {
+        if (n == 0) {
+            return 1;
+        }
+        return n * calculateFactorial(n - 1);
+    }
+}",code
+16,Design a RESTful API endpoint in Python using Flask framework to retrieve information about users by their user ID.,"from flask import Flask
+from flask import jsonify
+
+app = Flask(__name__)
+
+# Sample user data
+users = {1: {'name': 'Alice', 'age': 30},
+         2: {'name': 'Bob', 'age': 25},
+         3: {'name': 'Charlie', 'age': 35}}
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = users.get(user_id)
+    if user is None:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify(user)
+
+if __name__ == '__main__':
+    app.run()",code
+17,Create a Python script to extract text from PDF files using a library such as PyPDF2.,"In order to extract text from PDF files using PyPDF2 library in Python, you can use the following script: 
+
+import PyPDF2 
+
+def extract_text_from_pdf(pdf_file_path): 
+    text = '' 
+    with open(pdf_file_path, 'rb') as file: 
+        pdf_reader = PyPDF2.PdfFileReader(file) 
+        num_pages = pdf_reader.numPages 
+        for page_num in range(num_pages): 
+            page = pdf_reader.getPage(page_num) 
+            text += page.extract_text() 
+    return text 
+
+# Usage example: 
+# pdf_text = extract_text_from_pdf('path_to_pdf_file.pdf') 
+# print(pdf_text)",code
+18,"Write a function in Python that takes a dictionary as input and returns a list of keys sorted in descending order based on their corresponding values. Input dictionary: {'apple': 3, 'banana': 1, 'cherry': 2, 'date': 5}","def sort_keys_descending(input_dict): sorted_keys = sorted(input_dict, key=input_dict.get, reverse=True) return sorted_keys",code
+19,Write a Python function that takes a list of integers as input and returns the sum of all even numbers in the list.,"def sum_of_even_numbers(input_list):
+    return sum(num for num in input_list if num % 2 == 0)",code
+20,Create a Python script that reads a CSV file and stores the data in a dictionary where the keys are the column headers and the values are lists of the corresponding row values.,"To create a Python script that reads a CSV file and stores the data in a dictionary where the keys are the column headers and the values are lists of the corresponding row values, you can use the following code snippet: 
+
+import csv
+
+def read_csv_file(file_path):
+    data_dict = {}
+    with open(file_path, 'r') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            for key, value in row.items():
+                if key not in data_dict:
+                    data_dict[key] = []
+                data_dict[key].append(value)
+    return data_dict
+
+# Example usage
+file_path = 'data.csv'
+data = read_csv_file(file_path)
+print(data)",code
+21,"Implement a Python function that checks if a given string is a palindrome. Return True if it is a palindrome, otherwise return False.","def is_palindrome(s):
+    s = s.lower()
+    s = ''.join(e for e in s if e.isalnum())
+    return s == s[::-1]",code
+22,"Write a Python script that reads a CSV file, filters out rows based on a specific condition, and then writes the filtered data to a new CSV file.","To accomplish this task, you can use the pandas library in Python. Here is a sample script that reads a CSV file, filters out rows based on a specific condition, and writes the filtered data to a new CSV file:
+
+```python
+import pandas as pd
+
+# Read the original CSV file
+data = pd.read_csv('original_file.csv')
+
+# Filter out rows based on a specific condition
+filtered_data = data[data['Column_Name'] > value]
+
+# Write the filtered data to a new CSV file
+filtered_data.to_csv('filtered_file.csv', index=False)
+```
+
+Replace 'original_file.csv' with the path to your original CSV file, 'Column_Name' with the column name you want to filter on, 'value' with the specific condition, and 'filtered_file.csv' with the name of the new CSV file where the filtered data will be saved.",code
+23,Design a user interface in HTML and CSS for a simple login form with email and password fields.,"To design a user interface in HTML and CSS for a simple login form with email and password fields, you can create the following structure:
+
+HTML:
+
+<form>
+  <div class='form-group'>
+    <label for='email'>Email:</label>
+    <input type='email' id='email' name='email' required>
+  </div>
+  <div class='form-group'>
+    <label for='password'>Password:</label>
+    <input type='password' id='password' name='password' required>
+  </div>
+  <button type='submit'>Login</button>
+</form>
+
+CSS:
+
+<style>
+  .form-group {
+    margin-bottom: 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  input[type='email'], input[type='password'], button {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  button {
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+</style>",code
+24,Create a Python function that takes a list of integers as input and returns the average of all the positive numbers in the list.,"def average_positive_numbers(lst):
+    total = 0
+    count = 0
+    for num in lst:
+        if num > 0:
+            total += num
+            count += 1
+    if count > 0:
+        return total / count
+    else:
+        return 0",code
+25,"Write a Python function that takes a string input and returns the reverse of the string. For example, if the input is 'hello', the function should return 'olleh'.",def reverse_string(input_string):\n    return input_string[::-1],code
+26,Write a Python script to extract all email addresses from a given text file.,"To extract all email addresses from a given text file in Python, you can use regular expressions. Here is an example code snippet to achieve that: 
+
+import re
+
+# Read the text file
+with open('file.txt', 'r') as file:
+    data = file.read()
+
+# Regular expression pattern to match email addresses 
+pattern = r'[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+'
+
+# Find all email addresses in the text
+email_addresses = re.findall(pattern, data)
+
+# Print the extracted email addresses
+tfor email in email_addresses:
+    print(email)",code
+27,Write a Python function that takes a list of integers as input and returns the sum of all even numbers in the list.,"def sum_of_even_numbers(nums):
+    """"""This function takes a list of integers as input and returns the sum of all even numbers in the list.""""""
+    return sum(num for num in nums if num % 2 == 0)",code
+28,Implement a function in Python that takes a list of integers as input and returns the sum of all even numbers in the list.,def sum_even_numbers(arr):\n    return sum(num for num in arr if num % 2 == 0),code
+29,Explain the difference between procedural programming and object-oriented programming.,"Procedural programming is a type of programming in which the program is written as a list of instructions to be carried out step by step. It focuses on procedure calls and functions. Object-oriented programming, on the other hand, is a programming paradigm based on the concept of objects which can contain data in the form of fields (attributes or properties) and code in the form of procedures (methods). Objects can interact with one another through methods. In object-oriented programming, the emphasis is on data rather than procedures.",code
+30,"Write a Python program that reads a text file, counts the frequency of each word, and prints out the top 5 most frequent words along with their counts.","To write a Python program that reads a text file, counts the frequency of each word, and prints out the top 5 most frequent words along with their counts, you can follow these steps:
+
+# Read the text file
+with open('text_file.txt', 'r') as file:
+    text = file.read()
+
+# Clean the text (remove punctuation, convert to lowercase, etc.)
+# Split the text into words
+words = text.split()
+
+# Count the frequency of each word
+word_freq = {}
+for word in words:
+    word_freq[word] = word_freq.get(word, 0) + 1
+
+# Get the top 5 most frequent words
+top_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)[:5]
+
+# Print out the top 5 most frequent words along with their counts
+for word, count in top_words:
+    print(word, count)",code
+31,Write a Python function to calculate the factorial of a given number using recursion. Test the function with factorial of 5.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+# Test the function with factorial of 5
+print(factorial(5))",code
+32,Write a Python function that takes a string as input and returns the number of vowels present in the string.,"def count_vowels(input_string):
+    vowels = 'aeiouAEIOU'
+    count = 0
+    for char in input_string:
+        if char in vowels:
+            count += 1
+    return count",code
+33,Write a Python function that takes a list as input and returns a new list containing only the unique elements of the original list.,"def unique_elements(input_list):
+    return list(set(input_list))",code
+34,Implement a function in Java that calculates the factorial of a given number.,"To implement a function in Java that calculates the factorial of a given number, you can use the following code snippet: 
+
+public class FactorialCalculator {
+    public static int calculateFactorial(int number) {
+        if (number == 0) {
+            return 1;
+        } else {
+            return number * calculateFactorial(number - 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        int number = 5; // Change this to the desired number
+        int factorial = calculateFactorial(number);
+        System.out.println(""The factorial of "" + number + "" is: "" + factorial);
+    }
+}",code
+35,Implement a function in Python that calculates the sum of all even numbers in a given list of integers.,"def sum_of_even_numbers(nums):
+    total = 0
+    for num in nums:
+        if num % 2 == 0:
+            total += num
+    return total",code
+36,Write a Python script that reads data from a CSV file and displays the contents,"To write a Python script that reads data from a CSV file and displays the contents, you can use the following code snippet: 
+
+import csv
+
+with open('file.csv', newline='') as csvfile:
+    csvreader = csv.reader(csvfile)
+    for row in csvreader:
+        print(row)",code
+37,Write a Python function that takes a string as input and returns the number of vowels in the string. Input string: 'hello world',"def count_vowels(input_string):
+    vowels = 'aeiou'
+    count = 0
+    for char in input_string:
+        if char.lower() in vowels:
+            count += 1
+    return count
+
+input_string = 'hello world'
+print(count_vowels(input_string))",code
+38,Explain the concept of inheritance in object-oriented programming and provide an example in Python.,"Inheritance is a key concept in object-oriented programming that allows a new class to inherit attributes and methods from an existing class. This promotes code reusability and helps in creating a hierarchical relationship between classes. In Python, inheritance is implemented by specifying the parent class in the class declaration. Here's an example in Python:
+class Animal:
+    def __init__(self, species):
+        self.species = species
+
+    def sound(self):
+        print('Some generic sound')
+
+class Dog(Animal):
+    def sound(self):
+        print('Woof Woof')
+
+# Creating instances
+animal = Animal('Wild')
+dog = Dog('Domestic')
+
+# Accessing methods
+animal.sound()  # Output: Some generic sound
+dog.sound()     # Output: Woof Woof",code
+39,Write a function in Python to calculate the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+40,Implement a function in Python that checks if a given string is a palindrome or not.,"def is_palindrome(s):
+    """"""Checks if a given string is a palindrome or not.
+
+    Args:
+        s (str): The input string to check.
+
+    Returns:
+        bool: True if the input string is a palindrome, False otherwise.
+    """"""
+    return s == s[::-1]",code
+41,Create a function in JavaScript to check if a given number is prime or not.,"function isPrime(number) {
+    if (number <= 1) {
+        return false;
+    }
+    for (let i = 2; i <= Math.sqrt(number); i++) {
+        if (number % i === 0) {
+            return false;
+        }
+    }
+    return true;
+}",code
+42,Write a program that checks if a given string is a palindrome or not.,"public class PalindromeCheck { public static void main(String[] args) { String str = ""madam""; if(isPalindrome(str)) { System.out.println(str + "" is a palindrome.""); } else { System.out.println(str + "" is not a palindrome.""); } } public static boolean isPalindrome(String str) { int left = 0; int right = str.length() - 1; while(left < right) { if(str.charAt(left) != str.charAt(right)) { return false; } left++; right--; } return true; } }",code
+43,Create a Python function that takes a list of integers as input and returns the sum of all the elements in the list.,"def calculate_sum(input_list):
+    return sum(input_list)",code
+44,Implement a function in Python that checks if a given string is a palindrome. String: 'racecar',Implement the function to check if a string is a palindrome in Python:,code
+45,Write a Python program to calculate the factorial of a non-negative integer entered by the user.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+num = int(input(""Enter a non-negative integer: ""))
+if num < 0:
+    print(""Please enter a non-negative integer."")
+else:
+    print(""The factorial of "", num, "" is "", factorial(num))",code
+46,Create a JavaScript function that takes an array of numbers as input and returns the sum of all the even numbers in the array.,"function sumOfEvenNumbers(numbers) { return numbers.reduce((sum, num) => num % 2 === 0 ? sum + num : sum, 0); }",code
+47,Write a Python function that calculates the factorial of a given number n using recursion.,"def factorial(n):
+    """"""Calculates the factorial of a given number n using recursion.
+
+    Args:
+        n (int): The number for which factorial is to be calculated.
+
+    Returns:
+        int: The factorial of the given number n.
+    """"""
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+48,"Define a class in Python named 'Car' with attributes such as 'brand', 'model', and 'year'.","class Car:
+    def __init__(self, brand, model, year):
+        self.brand = brand
+        self.model = model
+        self.year = year
+
+# Example of creating an instance of Car class
+my_car = Car('Toyota', 'Corolla', 2021)",code
+49,Create a Python function that calculates the factorial of a given number using recursion. number = 5,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+number = 5
+result = factorial(number)
+print(result)",code
+50,Write a Python function that takes a list of numbers as input and returns the sum of all the numbers in the list.,"def calculate_sum(numbers):
+    return sum(numbers)",code
+51,Implement a function in Python that takes a list of integers as input and returns the sum of all even numbers in the list.,"def sum_of_even_numbers(numbers):
+    sum = 0
+    for num in numbers:
+        if num % 2 == 0:
+            sum += num
+    return sum
+
+# Example usage:
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+result = sum_of_even_numbers(numbers)
+print(result)",code
+52,Write a method in Java that takes a list of integers as input and returns the sum of all the even numbers in the list.,"public int sumOfEvenNumbers(List<Integer> numbers) {
+    int sum = 0;
+    for(int num : numbers) {
+        if(num % 2 == 0) {
+            sum += num;
+        }
+    }
+    return sum;
+}",code
+53,"Write a function in JavaScript to reverse a given string. Input: 'hello', Output: 'olleh'",function reverseString(str) { return str.split('').reverse().join(''); },code
+54,Create a Python function that calculates the factorial of a given integer input.,"To calculate the factorial of a given integer input in Python, you can create the following function: 
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+55,Implement a function in Python that takes a list of strings as input and returns the longest string in the list.,"def longest_string(strings):
+    longest = ''
+    for string in strings:
+        if len(string) > len(longest):
+            longest = string
+    return longest",code
+56,Implement a binary search algorithm in Python to search for a target element in a sorted array.,"def binary_search(arr, target):
+    left = 0
+    right = len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1",code
+57,Write a Python function that takes a string as input and returns the frequency of each character in the string as a dictionary.,def char_frequency(string):\n    freq = {}\n    for char in string:\n        if char in freq:\n            freq[char] += 1\n        else:\n            freq[char] = 1\n    return freq,code
+58,Explain the difference between classification and regression algorithms in machine learning.,"Classification algorithms in machine learning are used to predict discrete outcomes or labels, such as determining whether an email is spam or not. Regression algorithms, on the other hand, are used to predict continuous values, such as predicting housing prices or stock prices based on historical data.",code
+59,Implement a function in Python that takes a string as input and returns the reverse of the string as output.,def reverse_string(input_string):\n    return input_string[::-1],code
+60,"Write a Python function that takes a string as input and returns the reversed string. For example, if the input is 'hello', the function should return 'olleh'.","def reverse_string(input_string):
+    return input_string[::-1]
+
+# Test the function
+input_string = 'hello'
+reversed_string = reverse_string(input_string)
+print(reversed_string)
+# Output: 'olleh'",code
+61,Create a Python program to read data from a CSV file and display the content.,"To create a Python program to read data from a CSV file and display the content, you can use the following code snippet:",code
+62,Create a function in JavaScript that reverses a given string input.,function reverseString(str) { return str.split('').reverse().join(''); },code
+63,Create a Python function that recursively calculates the factorial of a given number.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+64,Write a Python function that takes a string as input and returns the count of each unique character in the string as a dictionary.,"def count_unique_characters(input_string):
+    char_count = {}
+    for char in input_string:
+        if char in char_count:
+            char_count[char] += 1
+        else:
+            char_count[char] = 1
+    return char_count",code
+65,Create a JavaScript function that takes in an array of numbers and returns a new array with only the unique numbers (no duplicates).,function uniqueNumbers(arr) { return Array.from(new Set(arr)); },code
+66,Convert the given string to lowercase and count the frequency of each character in the string. Print the character and its frequency in descending order of frequency.,Instruction not clear. Please provide the input so I can generate the response for you.,code
+67,Write a Python function that takes a string as input and returns the string reversed.,"def reverse_string(input_string):
+    return input_string[::-1]",code
+68,Explain the use of the 'break' statement in a loop in Python.,"The 'break' statement in a loop in Python is used to exit the loop prematurely. When the 'break' statement is encountered within a loop, the loop is immediately terminated, and the program execution continues with the code following the loop.",code
+69,Write a Python function that takes a string as input and returns the reverse of the string.,"def reverse_string(input_string):
+    return input_string[::-1]",code
+70,Write a C++ program to sort an array of integers in descending order using a bubble sort algorithm.,"void bubbleSort(int arr[], int n) 
+{ 
+    for(int i = 0; i < n-1; i++) 
+    { 
+        for(int j = 0; j < n-i-1; j++) 
+        { 
+            if(arr[j] < arr[j+1]) 
+            { 
+                int temp = arr[j]; 
+                arr[j] = arr[j+1]; 
+                arr[j+1] = temp; 
+            } 
+        } 
+    } 
+}",code
+71,Create a Python function to count the number of vowels in a given string.,def count_vowels(string):\n    vowels = 'aeiouAEIOU'\n    count = 0\n    for char in string:\n        if char in vowels:\n            count += 1\n    return count,code
+72,Write a JavaScript function that takes in a string as input and reverses the characters of the string before returning it.,"function reverseString(str) {
+    return str.split('').reverse().join('');
+}",code
+73,"Create a Python program that reads a text file and counts the occurrences of each word, then prints the result in alphabetical order.","To complete this instruction, you can use the following Python code snippet:
+import re
+from collections import Counter
+
+with open('your_file_path.txt', 'r') as file:
+    text = file.read()
+    words = re.findall(r'\w+', text.lower())
+    word_counts = Counter(words)
+
+for word, count in sorted(word_counts.items()):
+    print(f'{word}: {count}')
+
+Make sure to replace 'your_file_path.txt' with the actual path of your text file.",code
+74,Write a Python function to find the factorial of a given number n.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+75,Create a Python script that reads a CSV file and extracts only the rows where a specific column value matches a given criteria.,"To create a Python script that reads a CSV file and extracts only the rows where a specific column value matches a given criteria, you can use the pandas library. Here is an example code snippet:
+
+```python
+import pandas as pd
+
+# Read the CSV file into a DataFrame
+df = pd.read_csv('your_file.csv')
+
+# Define the criteria
+criteria = 'value'
+
+# Extract rows where the specific column value matches the criteria
+filtered_rows = df[df['specific_column'] == criteria]
+
+# Print the filtered rows
+print(filtered_rows)
+```",code
+76,Create a Python function that takes a list of numbers as input and returns the sum of all even numbers in the list.,"def sum_of_even_numbers(arr):
+    """"""
+    Calculate the sum of all even numbers in a list.
+    """"""
+    return sum(num for num in arr if num % 2 == 0)",code
+77,Design a Python script that calculates the factorial of a given number using a recursive function.,"Here is a Python script that calculates the factorial of a given number using a recursive function: 
+
+def factorial(n): 
+    if n == 0: 
+        return 1 
+    else: 
+        return n * factorial(n-1) 
+
+# Example usage 
+num = 5 
+result = factorial(num) 
+print(f'The factorial of {num} is {result}')",code
+78,Write a Python function to calculate the factorial of a given number.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+# Test the function
+number = 5
+print(f'The factorial of {number} is {factorial(number)}')",code
+79,"Develop a Python script that reads a CSV file, performs some data cleaning (removing duplicates and handling missing values), and then saves the cleaned data to a new CSV file.","To develop a Python script that reads a CSV file, performs data cleaning (removing duplicates and handling missing values), and saves the cleaned data to a new CSV file, you can use libraries like pandas. Here's an example script:
+
+import pandas as pd
+
+def clean_csv(input_file, output_file):
+    # Read the CSV file
+    df = pd.read_csv(input_file)
+    
+    # Perform data cleaning - remove duplicates
+    df.drop_duplicates(inplace=True)
+    
+    # Handle missing values if needed
+    df.fillna(value=0, inplace=True) # Replace missing values with 0
+    
+    # Save the cleaned data to a new CSV file
+    df.to_csv(output_file, index=False)
+
+# Usage example
+input_file = 'input.csv'
+output_file = 'cleaned_output.csv'
+clean_csv(input_file, output_file)
+",code
+80,"Write a Python function that checks if a given string is a palindrome. Return True if it is, False otherwise. string = 'racecar'","def is_palindrome(string):
+    return string == string[::-1]
+
+is_palindrome('racecar')
+# output: True",code
+81,"Create a PHP script that reads a CSV file, extracts the names and ages of individuals, and stores them in an associative array.","To create a PHP script that reads a CSV file, extracts the names and ages of individuals, and stores them in an associative array, you can follow the steps below:
+
+<?php
+$csvFile = 'your_csv_file.csv';
+$csvData = file_get_contents($csvFile);
+$rows = explode(""\n"", $csvData);
+
+$individuals = [];
+foreach ($rows as $row) {
+    $data = str_getcsv($row);
+    $name = $data[0];
+    $age = $data[1];
+    $individuals[$name] = $age;
+}
+
+print_r($individuals);
+?>",code
+82,Write a Python function that takes a list of strings as input and returns a dictionary where the keys are the strings and the values are the lengths of the strings.,"def create_dict(word_list):
+    string_dict = {}
+    for word in word_list:
+        string_dict[word] = len(word)
+    return string_dict",code
+83,Write a C program to find the factorial of a given number using recursion.,"To find the factorial of a number in C using recursion, you can write a program similar to the following:
+
+#include <stdio.h>
+
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return n * factorial(n-1);
+    }
+}
+
+int main() {
+    int number = 5; // Change this to the desired number
+    int result = factorial(number);
+    printf(""The factorial of %d is %d\n"", number, result);
+    return 0;
+}",code
+84,Create a Python function to reverse a string without using any built-in functions like reverse() or slicing.,"def reverse_string(input_string):
+    reversed_string = ''
+    for char in input_string:
+        reversed_string = char + reversed_string
+    return reversed_string
+
+# Test the function
+input_string = 'hello'
+reversed = reverse_string(input_string)
+print(reversed)  # Output: 'olleh'",code
+85,"Create a dictionary in Python with keys as the days of the week ('Monday', 'Tuesday', etc.) and values as the corresponding number of the day (1 for 'Monday', 2 for 'Tuesday', etc.)","{'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6, 'Sunday': 7}",code
+86,Write a code snippet to reverse a given string 'inputString' in Python.,"def reverse_string(inputString):
+    return inputString[::-1]",code
+87,"Create a Python function that calculates the median of a list of numbers. Use the following list: numbers = [3, 7, 2, 8, 5]","def calculate_median(numbers):
+    numbers.sort()
+    n = len(numbers)
+    if n % 2 == 0:
+        median = (numbers[n//2 - 1] + numbers[n//2]) / 2
+    else:
+        median = numbers[n//2]
+    return median
+
+numbers = [3, 7, 2, 8, 5]
+median = calculate_median(numbers)
+print(median)",code
+88,Write a Python function that takes a list of integers as input and returns the total count of even numbers in the list.,"def count_even_numbers(numbers):
+    count = 0
+    for num in numbers:
+        if num % 2 == 0:
+            count += 1
+    return count",code
+89,"Write a Python program to find the second largest element in an array. Array: [5, 10, 3, 8, 6]","def find_second_largest(arr):
+    max_val = float('-inf')
+    second_max_val = float('-inf')
+    for num in arr:
+        if num > max_val:
+            second_max_val = max_val
+            max_val = num
+        elif num > second_max_val and num < max_val:
+            second_max_val = num
+    return second_max_val
+
+array = [5, 10, 3, 8, 6]
+second_largest = find_second_largest(array)
+print('The second largest element in the array is:', second_largest)",code
+90,Write a Python script to count the frequency of words in a text file and display the top 5 most common words.,You can achieve this by using the following Python script:,code
+91,Create a Python program to count the frequency of each word in a given text string.,"To create a Python program to count the frequency of each word in a given text string, you can use the following code snippet: text = 'example text string for counting word frequency example example' words = text.split() word_freq = {} for word in words: if word in word_freq: word_freq[word] += 1 else: word_freq[word] = 1 print(word_freq)",code
+92,Write a C++ program that calculates the factorial of a given number using a recursive function.,"#include <iostream>
+
+int factorial(int n) {
+    if (n == 0)
+        return 1;
+    else
+        return n * factorial(n - 1);
+}
+
+int main() {
+    int num = 5;
+    std::cout << ""Factorial of "" << num << "" is "" << factorial(num);
+    return 0;
+}",code
+93,"Create a function in C++ that takes two arguments - a string and a character, and returns the count of occurrences of that character in the string.","Here is an example of a function in C++ that takes two arguments - a string and a character, and returns the count of occurrences of that character in the string:
+
+int countOccurences(string str, char ch) {
+    int count = 0;
+    for (int i = 0; i < str.length(); i++) {
+        if (str[i] == ch) {
+            count++;
+        }
+    }
+    return count;
+}",code
+94,Explain the concept of object-oriented programming and provide an example of how inheritance is used in Python.,"Object-oriented programming (OOP) is a programming paradigm based on the concept of objects, which can contain data in the form of fields (attributes) and code in the form of procedures (methods). In OOP, objects can interact with each other to perform tasks. Inheritance is a key feature of OOP that allows a class to inherit attributes and methods from another class. This promotes code reusability and enables the creation of a hierarchical class structure. An example of inheritance in Python is shown below:
+
+# Define a parent class
+class Animal:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+    
+    def make_sound(self):
+        print('Some generic sound')
+
+# Define a child class that inherits from Animal
+class Dog(Animal):
+    def __init__(self, name, species, breed):
+        super().__init__(name, species)
+        self.breed = breed
+    
+    def make_sound(self):
+        print('Bark')
+
+# Create instances of the classes
+animal1 = Animal('Bob', 'Mammal')
+dog1 = Dog('Buddy', 'Dog', 'Labrador')
+
+# Access attributes and methods
+print(animal1.name, animal1.species)
+animal1.make_sound()
+print(dog1.name, dog1.species, dog1.breed)
+dog1.make_sound()",code
+95,Create a Python function to calculate the factorial of a given number.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+96,Add a method called 'calculateArea' to the 'Rectangle' class that calculates and returns the area of the rectangle using the formula: area = length * width.,"class Rectangle { constructor(length, width) { this.length = length; this.width = width; } calculateArea() { return this.length * this.width; } }",code
+97,Write a Python function to calculate the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+print(factorial(5)) # Output: 120",code
+98,Implement a binary search algorithm in Python for a given sorted array.,Implementing binary search algorithm in Python for a given sorted array,code
+99,"Generate a dictionary in Python with keys 'name', 'age', and 'city' with corresponding values 'Alice', 25, and 'New York'.","{'name': 'Alice', 'age': 25, 'city': 'New York'}",code

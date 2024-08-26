@@ -1,0 +1,1201 @@
+instruction,response,label
+Check if a given string is a numeric value. String: 12345678,true,
+"Modify the following C program so that it can print the result in reverse order. #include <stdio.h>
+ 
+int main()
+{
+   int arr[] = {1, 2, 3, 4, 5};
+   int i, size;
+ 
+   size = sizeof(arr) / sizeof(arr[0]);
+ 
+   for (i=0; i < size; i++)
+   {
+      printf(""%d "", arr[i]);
+   }
+   return 0;
+}","#include <stdio.h>
+ 
+int main()
+{
+   int arr[] = {1, 2, 3, 4, 5};
+   int size, i;
+ 
+   size = sizeof(arr) / sizeof(arr[0]);
+ 
+   for (i = size - 1; i >= 0; i--) {
+      printf(""%d "", arr[i]);
+   }
+   return 0;
+}",
+"Write a regex expression to match strings that start with ""abc"" and end with ""xyz"".",^abc.*xyz$,
+"Sort a string in alphabetical order. string = ""edcba""","def sort_string(string):
+    str_list = list(string)
+    str_list.sort()
+    return """".join(str_list)
+
+sorted_str = sort_string(string)",
+"Construct a single list from the following list of lists. [[1, 2], [3, 4]]","final_list = [1, 2, 3, 4]",
+"In Python, write code to sort a list of integers in ascending order. [9, 15, 5, 11, 4]","def sort_list(list_of_numbers):
+   list_of_numbers.sort()
+   return list_of_numbers
+
+print(sort_list([9, 15, 5, 11, 4])) # Output: [4, 5, 9, 11, 15]",
+Retrieve data from an SQL database. Table name: users,SELECT * FROM users;,
+"Edit this code to fix the bug in the program def print_longest_word(words):
+ longest_word = """"
+ for word in words:
+ if len(word) > len(longest_word):
+ longest_word = word
+ print(longest_word)
+words = [""hello"", ""cat""]
+print_longest_word(words)","def print_longest_word(words):
+ longest_word = """"
+ for word in words:
+ if len(word) > len(longest_word):
+ longest_word = word
+ print(longest_word)
+words = [""hello"", ""cat""]
+print_longest_word(words)
+
+if len(words) > 0:
+ longest_word = words[0]
+ for word in words:
+ if len(word) > len(longest_word):
+ longest_word = word
+ print(longest_word)",
+Create a module in Python to read webpages into the program,"import urllib
+
+def read_webpage(url):
+    with urllib.request.urlopen(url) as response:
+        return response.read()",
+"Write a code snippet to check if all characters in a given string are letters or numbers. string = ""Welcome123""","function checkString(string) { 
+    var lettersOnly = /^[0-9a-zA-Z]+$/; 
+    if (string.match(lettersOnly)) 
+        console.log(""The string contains only letters and numbers.""); 
+    else
+        console.log(""The string contains other characters too.""); 
+}",
+Write a code snippet to convert the text to lowercase. LOWERCASING,"let lowerCaseText = text.toLowerCase();
+console.log(lowerCaseText); // lowercasing",
+"Write a Python script to check for syntactic correctness of an algorithm. Algorithm = ""1. Read input
+2. Initialize variables
+3. Process input
+4. Output result""","def is_algorithm_syntactically_correct(algorithm):
+    algorithm = algorithm.replace('\n', ' ').replace('\t ', ' ').lower()
+    
+    required_words = ['read', 'input', 'initialize', 'variables', 'process', 'output', 'result']
+    for word in required_words:
+        if word not in algorithm:
+            return False
+    return True",
+"Build a function that takes an array parameter and returns the sum of the squares of its elements. [3, 4, 5]",54 (3^2 + 4^2 + 5^2 = 54),
+Write a Perl program to generate Fibonacci series.,"#include <stdio.h> 
+  
+int main() 
+{ 
+    int n, first = 0, second = 1, next; 
+  
+    printf(""Enter the number of terms \n""); 
+    scanf(""%d"", &n); 
+  
+    printf(""First %d terms of Fibonacci series are :\n"", n); 
+  
+    int i; 
+    for (i = 0; i < n; i++) { 
+        if (i <= 1) 
+            next = i; 
+        else { 
+            next = first + second; 
+            first = second; 
+            second = next; 
+        } 
+        printf(""%d\n"", next); 
+    } 
+  
+    return 0; 
+}",
+"Create a class in C++ representing a 2D vector which has components (x, y).","class Vector2D {
+    private:
+        int x;
+        int y;
+    public:
+        Vector2D(int x, int y);
+        int GetX() { return x; }
+        int GetY() { return y; }
+        void SetX(int newX) { x = newX; }
+        void SetY(int newY) { y = newY; }
+};
+
+Vector2D::Vector2D(int x, int y) {
+ this->x = x;
+ this->y = y;
+ }",
+"Modify the following code to handle an input which is a negative number. def power_func(number):
+    if number >= 0:
+        return number**2","def power_func(number):
+    if number < 0:
+        return ""Invalid input!""
+    else:
+        return number**2",
+Create a function in Python that takes a number as an argument and displays the corresponding day from Monday to Sunday.,"def getDay(num):
+    days = {
+        0: 'Monday',
+        1: 'Tuesday',
+        2: 'Wednesday',
+        3: 'Thursday',
+        4: 'Friday',
+        5: 'Saturday',
+        6: 'Sunday',
+    }
+    return days[num]",
+Suggest a way to persistently store data in a Java program.,"A convenient way to persistently store data in a Java program is to use a database such as MySQL or SQLite. You can also use an API to store data in the cloud, such as AWS S3. Additionally, many Java libraries provide support for persistence such as JPA and Hibernate, which provide object-relational mapping and object-oriented querying capabilities.",
+"Edit this CSS code to make the background-color of the body green. body {
+    font-family: sans-serif;
+    width: 75%;
+    margin: 0 auto;
+}","body {
+    font-family: sans-serif;
+    width: 75%;
+    margin: 0 auto;
+    background-color: green;
+}",
+Write an R program to find the square of a number,"x <- 5
+square_x <- x * x;
+print(paste0('The square of ',x,' is ',square_x))",
+Write a SQL query to select everyone from the table named 'users' with the first name equal to 'John'.,SELECT * FROM users WHERE firstname = 'John';,
+"Given a sentence, clean up any duplicate words. My favorite favorite food is pizza.",my favorite food is pizza.,
+"Update the following function so that it returns the greatest among three numbers def find_max(a, b):
+    if a > b:
+        return a
+    else:
+        return b","def find_max(a, b, c):
+    if a >= b and a >= c:
+        return a
+    elif b >= a and b >= c:
+        return b
+    else:
+        return c",
+Create a Python class 'Calculator' with two methods: 'add' and 'sub'.,"class Calculator:
+ def add(self, x, y):
+  return x + y
+
+ def sub(self, x, y):
+  return x - y",
+"Write a code snippet to print out ""Hello World"" ten times.","for(var i = 0; i < 10; i++) {
+    console.log(""Hello World"");
+}",
+"Create a JavaScript program to spread a given array into subarrays of the given size. arr = [1, 2, 3, 4, 5, 6]
+size = 3","function spreadArray(arr, size) {
+  let subarrays = [];
+
+  while (arr.length) {
+    subarrays.push(arr.splice(0, size));
+  }
+  return subarrays;
+}
+
+arr = [1, 2, 3, 4, 5, 6]
+size = 3
+
+console.log(spreadArray(arr, size));
+
+# Output
+# [[1, 2, 3], [4, 5, 6]]",
+"Generate all possible strings of length n using A, B and C 3","['AAA', 'AAB', 'AAC', 'ABA', 'ABB', 'ABC', 'ACA', 'ACB', 'ACC', 'BAA', 'BAB', 'BAC', 'BBA', 'BBB', 'BBC', 'BCA', 'BCB', 'BCC', 'CAA', 'CAB', 'CAC', 'CBA', 'CBB', 'CBC', 'CCA', 'CCB', 'CCC']",
+"Generate a python code that takes a list of integers, prints out an array that is all True if the values are in the input list and all False otherwise. list_of_numbers = [5, 7, 10, 2]","def boolean_search(list_of_numbers):
+    result_array = []
+    for elem in list_of_numbers:
+        result_array.append(elem in list_of_numbers)
+    return result_array",
+"Update the HTML div with an ID of ""content"" so that its background color is blue.","<div id=""content"" style=""background-color:blue;""></div>",
+Create a React component that displays an alert when a button is clicked.,"import React from 'react';
+
+class AlertButton extends React.Component {
+
+    onClick() {
+        alert('Button clicked!');
+    }
+
+    render() {
+        return (
+            <button onClick={this.onClick}>Click me</button>
+        );
+    }
+}",
+"Generate a random 2D array with the given dimensions. Rows: 5 
+Columns: 3","import numpy as np
+
+rows = 5
+columns = 3
+
+arr = np.random.randint(0, 11, size=(rows, columns)) 
+
+print(arr)",
+Write an SQL query to display all the employee names in the 'students' table.,SELECT name FROM students;,
+Write a Python program to create a Caesar Cipher encryption algorithm.,"def cipher(input_str, key):
+  output_str = """"
+
+  for char in input_str:
+    if char.isalpha():
+      # Encrypt each character
+      ascii_value = ord(char)
+      ascii_value = ascii_value + (key % 26)
+      if char.isupper():
+        if ascii_value > ord(""Z""):
+          ascii_value -= 26
+      elif char.islower():
+        if ascii_value > ord(""z""):
+          ascii_value -= 26  
+      output_str += chr(ascii_value)
+    else:
+      output_str += char
+
+  return output_str
+
+if __name__ == '__main__':
+  # Sample input
+  input_str = 'Hello World!'
+  key = 5
+  print('Original input: {}'.format(input_str))
+
+  # Encryting the string
+  cipher_str = cipher(input_str, key)
+  print('Encrypted input: {}'.format(cipher_str))
+
+  # Decrypting the string
+  plain_text = cipher(cipher_str, -key)
+  print('Decrypted input: {}'.format(plain_text))",
+Print the results of the following arithmetic expression using python. 6/3+3*2,15.0,
+Write a JavaScript program to validate whether a given phone number is valid. phone number: 412-678-9012,"function validPhoneNumber(phoneNumber) {
+  let phoneRegex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+   
+  let validPhone = phoneRegex.test(phoneNumber);
+   
+  return validPhone;
+}
+
+validPhoneNumber(""412-678-9012"") # true",
+How to reverse a list in C++?,"You can reverse a list in C++ using the std::reverse algorithm. To reverse the list, pass the list as the first parameter and the beginning and end of the list as the second and third parameter, respectively. Alternatively, you can also reverse the list using a for loop and the operator [] to access each element of the list.",
+"Create a basic HTML structure to show a blog post with the title, ""My First Blog Post.""","<!DOCTYPE html>
+<html lang=""en"">
+<head>
+ <meta charset=""UTF-8"">
+ <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+ <title>My First Blog Post</title>
+</head>
+<body>
+ <h1>My First Blog Post</h1>
+ <p>Insert blog post content here.</p>
+</body>
+</html>",
+Write a code to implement a basic calculator to add two numbers.,"def add_numbers(num1, num2):
+    """"""
+    This function takes two numbers as parameters and returns their sum.
+    """"""
+    return num1 + num2 
+
+if __name__ == ""__main__"":
+    num1 = float(input(""Enter first number: ""))
+    num2 = float(input(""Enter second number: ""))
+    print(add_numbers(num1, num2))",
+Explain how a quicksort algorithm works.,"Quicksort is an efficient comparison-based sorting algorithm that works by taking a pivot element and partitioning the list/array into two parts: elements smaller than the pivot element and elements larger than the pivot element. The quicksort algorithm then sorts both sublists recursively until the list is fully sorted. As such, quicksort has a best case complexity of O(nlogn) and a worst case complexity of O(n^2).",
+"Write a Python function to count the letters in a given sentence and return a dictionary of letter counts. sentence = ""Hello World!""","def letter_counts(sentence):
+  count_dict = {}
+  for char in sentence:
+    if char.isalpha():
+      if char in count_dict:
+        count_dict[char] += 1
+      else:
+        count_dict[char] = 1
+  return count_dict",
+"Write a JavaScript function to filter out all falsy values from an array. [NaN, 0, false, """", undefined]","function filterFalsy(arr) {
+  return arr.filter(el => Boolean(el));
+}",
+"Which basic data type is represented by the following JSON?
+
+{""name"": ""John"", ""age"": 30}",The JSON given represents a basic object data type.,
+"Create a query in MySQL to list the number of male and female employees in a given department. Table: employees
+Columns: name, gender, department","SELECT department, COUNT(*) AS count, gender
+FROM employees
+GROUP BY department, gender;",
+"Convert the given JSON data into an Excel spreadsheet. {
+  ""products"": [
+    {
+      ""id"": 1,
+      ""name"": ""Apple"",
+      ""price"": 3.50
+    },
+    {
+      ""id"": 2,
+      ""name"": ""Orange"",
+      ""price"": 2.50
+    },
+    {
+      ""id"": 3,
+      ""name"": ""Banana"",
+      ""price"": 1.25
+    }
+  ]
+}","Using a programming language such as Python, first use the JSON library to decode the JSON data. Then use a library such as Openpyxl or XlsxWriter to write the data from the JSON object into an Excel spreadsheet.",
+"Manipulate a given list of strings to capitalize the first letter in each string. mylist = [""this"", ""is"", ""a"", ""list""]","def capitalize(mylist):
+  new_list = []
+  
+  for item in mylist:
+    new_list.append(item.capitalize())
+  
+  return new_list
+
+print(capitalize(mylist))
+
+#Output:
+['This', 'Is', 'A', 'List']",
+Write a PHP function that takes a string and returns the same string with all vowels replaced with the letter 'x'.,"function replaceVowels($string)
+{
+    $vowels = array(""a"", ""e"", ""i"", ""o"", ""u"");
+    $string = str_replace($vowels, ""x"", $string);
+ 
+    return $string;
+}",
+"Using the provided values and data structure, create a program in C to check if two points belong to the same quadrant. Point1 = {1, -2}
+Point2 = {-3, 4}","#include<stdio.h>
+
+int is_same_quadrant(int x1, int y1, int x2, int y2) 
+{ 
+    //determining quadrants for coordinates
+    int q1 = (y1 >= 0) ? (x1 >= 0 ? 1 : 2) : (x1 >= 0 ? 4 : 3); 
+    int q2 = (y2 >= 0) ? (x2 >= 0 ? 1 : 2) : (x2 >= 0 ? 4 : 3); 
+  
+    // If both the coordinates 
+    // belongs to same quadrants 
+    // then returns 1 
+    return (q1 == q2); 
+} 
+
+int main() 
+{ 
+    int x1 = 1, y1 = -2;
+    int x2 = -3, y2 = 4;
+  
+    if(is_same_quadrant(x1, y1, x2, y2)) 
+        printf(""Yes""); 
+    else
+        printf(""No""); 
+  
+    return 0; 
+}",
+"Construct a class in Python named ""Person"" which stores first name and last name in instance variables","class Person:
+  def __init__(self, first_name, last_name):
+    self.first_name = first_name
+    self.last_name = last_name",
+"Write a query to retrieve all the customers whose customer ID starts with a ""C"".","SELECT * FROM Customers
+WHERE customerId LIKE 'C%'",
+Write a function to calculate all the possible paths for a N x N matrix.,"def calculate_paths(matrix):
+    rows = len(matrix)
+    cols = len(matrix[0])
+  
+    dp = [[0 for _ in range(cols)] for _ in range(rows)] 
+  
+    dp[0][0] = 1
+  
+    for i in range(rows):
+        for j in range(cols): 
+            if i-1 >= 0: 
+                dp[i][j] = dp[i][j] + dp[i-1][j]
+            if j-1 >= 0:
+                dp[i][j] = dp[i][j] + dp [i][j-1]
+  
+    return dp[rows-1][cols-1]",
+Write a script in JavaScript for converting temperature from Celsius to Fahrenheit. Celsius = 20,"var celsius = 20;
+var fahrenheit = (celsius * (9/5)) + 32;
+console.log(fahrenheit);",
+Implement a Java class that encapsulates a basic for loop.,"public class loop {
+    public void forLoop(int start, int end){
+        for(int i=start; i<end; i++){
+            System.out.println(i);
+        }
+    }
+}",
+Compose an SQL query that returns all the rows from a given table table: inventory,SELECT * FROM inventory;,
+Write a Regex expression to extract all numbers larger than 0 in a string,\b[1-9][0-9]*,
+"Edit the code to output the sum of array elements. arr = [5, 20, 15]","arr = [5, 20, 15]
+
+total = 0
+for num in arr:
+    total += num
+
+print(total) # Output: 40",
+"Parse the string ""Hello[1]World[4]123[3]"" into a list. string = ""Hello[1]World[4]123[3]""","my_list = string.split('[')
+my_list = [item.replace(']', '') for item in my_list]
+my_list = [int(item) for item in my_list[1::2]]",
+"Analyze the given list and return the index of the first occurrence of the number 7. numbers = [1, 2, 3, 5, 4, 7, 9, 8, 7]","numbers = [1, 2, 3, 5, 4, 7, 9, 8, 7]
+
+def find_index(lst):
+    """"""
+    This function takes a list of numbers as a parameter and returns the index of the first occurrence of the number 7.
+    """"""
+    for i in range(len(lst)):
+        if lst[i] == 7:
+            return i
+        
+print(find_index(numbers)) # prints 5",
+"Write an efficient Python program to reverse a string. testString = ""Hello World""","def reverseString(testString): 
+    reversedString = """"
+    for char in testString: 
+        reversedString = char + reversedString
+    return reversedString
+
+print(reverseString(testString))",
+"Recreate this nested for loop in a single line of code. Final_list = []
+for i in range(10):
+    for j in range(10):
+        Final_list.append(i+j)",Final_list = [i+j for i in range(10) for j in range(10)],
+"Using the HTML provided, add an ID attribute to the div tag to specify the unique identifier ""box1"" <div>Hello World!</div>","<div id=""box1"">Hello World!</div>",
+Generate a function in Java to calculate the minimum of two values,"public int minValue(int a, int b) { 
+  if (a < b) {
+    return a;
+  } else {
+    return b;
+  }
+}",
+"Create a program that adds two sets of numbers together. Set 1: [1, 3, 5]
+Set 2: [2, 4, 6]","def add_sets(set1, set2):
+    result=[]
+    for i in range(max(len(set1),len(set2))):
+        if i < len(set1):
+            result.append(set1[i])
+        if i < len(set2):
+            result.append(set2[i])
+    return result",
+What is the difference between static binding and dynamic binding,"Static binding is the process of linking a procedure call to the code to be executed during compile-time. This link is done by compiler at the compile-time and is fixed for the life of the program. On the other hand, dynamic binding is the process of linking a procedure call to the code to be executed during run-time. This link is done by the program at the run-time and can be changed during the life of the program.",
+"Create an object-oriented C# program that prints ""Hello, World!"".","class Program 
+{ 
+    static void Main(string[] args) 
+    { 
+        // create an object of type Hello 
+        Hello helloObject = new Hello(); 
+       
+        // call the SayHello method of the helloObject 
+        helloObject.SayHello(); 
+    } 
+} 
+
+// Create a class named Hello 
+public class Hello 
+{ 
+    public void SayHello() 
+    { 
+        Console.WriteLine(""Hello, World!""); 
+    } 
+}",
+"Create a program to write an overwriting if-else logic for the following switch statement switch(a) {
+  case 1: 
+    func1();
+    break;
+  case 2: 
+    func2();
+    break;
+}","""""""
+Create a program to write an overwriting if-else logic for the following switch statement
+""""""
+
+def switch_to_if_else(a):
+  if a == 1:
+    func1()
+  elif a == 2:
+    func2()
+
+if __name__ == '__main__':
+    switch_to_if_else(a)",
+Create a HTML & CSS website template featuring a header with a website logo.,"<html>
+	<head>
+		<title>My Website</title>
+	</head>
+
+<body>
+	<header>
+		<div class = ""logo"">
+			<img src = ""logo.png"" alt = ""Website Logo"" />
+		</div>
+	</header>
+	<!-- other code-->
+</body>
+</html>
+
+/* CSS Code */
+  
+header {
+	background-color: #ccc;
+	padding: 30px 0;
+}
+
+.logo {
+	text-align: center;
+}
+
+/* Other Styles */",
+"Make a Python program to delete elements from a given list at particular indices. list_of_numbers = [0, 1, 2, 3, 4, 5]
+indices = [2, 3, 5]","def remove_elements_at_indices(numbers, indices):
+    for index in sorted(indices, reverse=True):
+        del numbers[index]
+    return numbers
+
+modified_list = remove_elements_at_indices(list_of_numbers, indices)
+print(modified_list) # prints [0, 1, 4]",
+Construct a for-loop statement to display the numbers counting from 10 to 15,"for (let i = 10; i <= 15; i++) {
+  console.log(i);
+}",
+Generate a Java program to get the maximum number from a given array.,"public class MaxNumber {
+
+    public static int getMaxNumber(int[] arr) {
+        int max = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+            }
+        }
+        return max;
+    }
+}",
+Create a class in Python to represent an employee and define the attributes.,"class Employee:
+    def __init__(self, id, name, salary, job_title):
+        self.id = id
+        self.name = name
+        self.salary = salary
+        self.job_title = job_title",
+"Output a list of the elements that appear both in list a and list b. list a: [1, 3, 5, 7, 9]
+list b: [2, 4, 6, 8]",[],
+Reverse a linked list.,"def reverseList(node): 
+    prev = None
+    while (node != None): 
+        next = node.next
+        node.next = prev 
+        prev = node  
+        node = next
+    return prev",
+Write an SQL query to find the third highest salary in a table.,"SELECT salary 
+FROM employee 
+ORDER BY salary DESC 
+LIMIT 2,1;",
+Write a CSS class to set the background of a div to blue and the font size to 12px.,".blueDiv {
+  background-color: blue;
+  font-size: 12px;
+}",
+Write a React component that is a simple form with two input fields (name and email).,"import React, { Component } from 'react';
+
+class Form extends Component {
+    render() {
+        return (
+            <form>
+            <label>Name: </label>
+            <input type=""text"" id=""name"" /><br />
+
+            <label>Email: </label>
+            <input type=""text"" id=""email"" /><br />
+            </form>
+        );
+    }
+}
+
+export default Form;",
+Write a code which generates the Fibonacci sequence.,"""""""
+Write a code which generates the Fibonacci sequence
+""""""
+
+def generate_fibonacci_sequence(n): 
+    a = 0
+    b = 1
+    if n == 1: 
+        print(a) 
+    else: 
+        print(a) 
+        print(b) 
+        for i in range(2,n): 
+            c = a + b 
+            a = b 
+            b = c 
+            print(c) 
+
+if __name__ == '__main__':
+    n = 9
+    generate_fibonacci_sequence(n)",
+Draft a Javascript function that takes no arguments and returns ‘Hello World’,"function helloWorld() {
+	return ""Hello World"";
+}",
+Write a MySQL query to find the title of the books with the least number of pages.,"SELECT title FROM books
+ORDER BY pages ASC
+LIMIT 1;",
+Compare and contrast  two sorting algorithms: Bubble sort and Quick sort.,"Bubble sort is an algorithm that compares adjacent elements and swaps positions if they are out of order. It continues in this manner with loops until all elements of the array are in their correct order. Quick sort is very similar in its approach, but chooses a ""pivot"" element and divides the remaining array into two parts based on whether the elements are less than or greater than the pivot element. Bubble sort is simpler but has worse time complexity than Quick sort, which is more efficient.",
+"Print the first element of a given array. myArray = [20, 45, 70, 95]",print(myArray[0]),
+"Write a function to take a list of strings and return only the words made up of the same letter. word_list = [""aaa"", ""cab"", ""bba""]","def same_letter_words(word_list):
+    same_letter_words = [word for word in word_list if len(set(word)) == 1]
+    return same_letter_words",
+"Reverse the order of words in a given sentence. sentence = ""This is Python Language""","words = sentence.split("" "") 
+   
+reverse_sentence = ' '.join(reversed(words)) 
+   
+print(reverse_sentence)",
+Explain the use of the Huffman encoding algorithm.,"Huffman encoding is an algorithm used for lossless data compression. It works by taking a string of data, analysing it and creating a shorter bit string that represents the same data. The data is compressed by assigning shorter codes to commonly occurring characters. This process reduces the amount of bits needed to represent the data, which leads to overall data compression.",
+Write a Python program to convert all strings in a list to lower case,"def convert_to_lowercase(list_of_strings):
+    return [string.lower() for string in list_of_strings]
+
+if __name__ == '__main__':
+    string_list = [""UPPERCASE"", ""lOwErCaSe"", ""MiXeDcAsE""]
+    print(convert_to_lowercase(string_list))",
+Calculate the cube root of 533.,7.777314028068125,
+"Create an array of length n, containing all even numbers starting from 0.","def create_array(n):
+    arr = []
+    for i in range(0, n, 2):
+        arr.append(i)
+    return arr",
+"Using the given information, create a SQL query to find the total number of products in the database. Table: products
+Columns: product_id, product_name",SELECT COUNT(*) FROM products;,
+Edit the given sql query to return all employee details having age greater than 30 SELECT * FROM employees;,SELECT * FROM employees WHERE age > 30;,
+"Create a C++ program to print all the even numbers of a given range. 1
+    10","#include <iostream>
+
+using namespace std;
+
+int main()
+{  
+  int start, end;
+  
+  cout<<""Enter start of range: "";
+  cin>>start;
+  cout<<""Enter end of range: "";
+  cin>>end;
+  
+  cout<<""Printing even numbers between ""<< start <<"" and ""<< end <<"": "";
+  
+  for(int i = start; i <= end; i++)
+  {  
+    if(i % 2 == 0)
+    {
+       cout << i << "" "";
+    }
+  } 
+  return 0;
+}",
+"Write a Perl script for extracting the first three words from a given string. String: ""I love apples""","@words = split("" "", $string); 
+
+$first_three_words = join("" "", @words[0 .. 2]);
+print ""$first_three_words\n"";",
+Create a program to find the maximum depth in a binary tree.,"def max_depth(root):
+    if root == None: 
+        return 0;  
+    else : 
+        #Compute the depth of each subtree
+        l_depth = max_depth(root.left) 
+        r_depth = max_depth(root.right) 
+  
+        #Use the larger one
+        if (l_depth > r_depth): 
+            return l_depth+1
+        else: 
+            return r_depth+1",
+Explain the concept of data normalization.,"Data normalization is the process of scaling individual samples to have unit norm or a given absolute sum. Normalization can be applied to data to scale the values of the data to a fixed range, for example 0 to 1, or to standardize the data by removing the mean and scaling to unit variance.",
+Create a class named 'Person' that has attributes such as name and age.,"class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age",
+"Find the maximum and minimum values in a given array. array = [2, 3, 5, 1, 9]","maxValue = 9 
+minValue = 1",
+"Create a class with two methods ""get_sum"" and ""get_product"" for calculating the sum and product of two numbers respectively.","class Calculator:
+    """"""Class for calculating the sum and product of two numbers.""""""
+
+    # Method for calculating sum of two numbers
+    def get_sum(self, num1, num2):
+        return num1 + num2
+    
+    # Method for calculating product of two numbers
+    def get_product(self, num1, num2):
+        return num1 * num2
+
+# Create an instance of the class
+calc = Calculator()
+
+# Calculate the sum
+sum_value = calc.get_sum(3, 4)
+print(""Sum:"", sum_value) # 7
+
+# Calculate the product
+product_value = calc.get_product(3, 4)
+print(""Product:"", product_value) # 12",
+Change the following text from uppercase to lowercase. MY NAME IS JOHN,my name is john,
+Write a Python code snippet to get the first 1000 prime numbers.,"primes = []
+n = 2
+while len(primes) < 1000:
+ if is_prime(n):
+ primes.append(n)
+ n += 1
+
+print(primes)",
+Create an integer array using Java and sort it using the bubble sort algorithm.,"// Create an integer array
+int[] array = {4, 2, 6, 1, 3};
+
+// Sort the array using the bubbleSort function
+bubbleSort(array);
+
+// Write a function to implement the bubbleSort algorithm
+public static int[] bubbleSort(int[] array) {
+    int len = array.length;
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            if (array[j] > array[j+1]) {
+                int temp = array[j];
+                array[j] = array[j+1];
+                array[j+1] = temp;
+            }
+        }
+    }
+    return array;
+}
+// The sorted array is [1, 2, 3, 4, 6]",
+Make a bash script to read two user input numbers and print their average.,"#!/bin/bash
+echo ""Please enter two numbers:""
+read num1
+read num2
+
+sum=$((num1 + num2))
+echo ""The average of the two numbers is: $(($sum / 2))""",
+"Create a function which takes a string and invokes all the print statements within the string. string = ""Hello, World!
+Hello, Python!""","def invoke_print_statements(string):
+    exec(string) 
+    
+# Driver Code 
+if __name__ == '__main__': 
+    string = ""print('Hello, World!')\nprint('Hello, Python!')""
+    invoke_print_statements(string)",
+Create a function in Python that takes a list of integers as input and returns the average of those numbers.,"def calculate_average(list_of_numbers):
+    return sum(list_of_numbers) / len(list_of_numbers)",code
+Create a step-by-step guide on how to install a new package using pip in a Python virtual environment.,"Step 1: Activate your Python virtual environment by navigating to its directory and running the 'source bin/activate' command.
+Step 2: Use the 'pip install package_name' command to install the new package. Replace 'package_name' with the name of the package you want to install.
+Step 3: Verify that the package was installed correctly by using the 'pip list' command to display all installed packages in your virtual environment.",code
+Create a function in JavaScript that takes in a string and returns the reverse of the string.,function reverseString(str) { return str.split('').reverse().join(''); },code
+Write a Python program to calculate the Fibonacci sequence up to a specified number of terms.,"def fibonacci_sequence(n):
+    fib_sequence = []
+    a, b = 0, 1
+    for _ in range(n):
+        fib_sequence.append(a)
+        a, b = b, a + b
+    return fib_sequence
+
+if __name__ == ""__main__"":
+    num_terms = int(input(""Enter the number of terms for Fibonacci sequence: ""))
+    result = fibonacci_sequence(num_terms)
+    print(result)",code
+Write a detailed explanation of the breadth-first search algorithm.,"Breadth-first search (BFS) is a traversal algorithm used in graph data structures to visit all the nodes of the graph systematically. It starts at a selected node (often referred to as the 'source' or 'root' node) and explores all of its neighbors at the current depth level before moving on to the nodes at the next level. This is done by maintaining a queue data structure to keep track of the nodes that need to be visited. BFS ensures that all nodes at the same level are visited before moving on to the next level, making it ideal for finding the shortest path in unweighted graphs. The algorithm is commonly implemented iteratively using a queue and is known for its simplicity and efficiency in finding the shortest path between two nodes in a graph.",code
+Write a function in Python that takes a list of integers as input and returns the sum of all positive numbers in the list.,"def sum_of_positive_numbers(numbers):
+    sum = 0
+    for num in numbers:
+        if num > 0:
+            sum += num
+    return sum
+
+numbers = [1, -2, 3, -4, 5]
+result = sum_of_positive_numbers(numbers)
+print(result)",code
+Write a Python function that calculates the average of a list of numbers.,"To write a Python function that calculates the average of a list of numbers, you can define a function like the following:
+
+```python
+import numpy as np
+
+def calculate_average(numbers):
+    return np.mean(numbers)
+
+# Example usage
+numbers = [1, 2, 3, 4, 5]
+average = calculate_average(numbers)
+print('Average:', average)
+```",code
+Write a Python script to read a CSV file and display only the rows where the 'quantity' column value is greater than 10.,"with open('file.csv', 'r') as file:
+    for line in file:
+        if int(line.split(',')[1]) > 10:
+            print(line)",code
+Write a program in C++ that checks if a given string is a palindrome or not.,"Here is a program in C++ that checks if a given string is a palindrome or not:
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+bool isPalindrome(string str) {
+    int left = 0;
+    int right = str.length() - 1;
+    while (left < right) {
+        if (str[left] != str[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+    return true;
+}
+
+int main() {
+    string input;
+    cout << ""Enter a string: "";
+    cin >> input;
+    if (isPalindrome(input)) {
+        cout << input << "" is a palindrome."";
+    } else {
+        cout << input << "" is not a palindrome."";
+    }
+    return 0;
+}",code
+Calculate the factorial of a given number using recursion.,"function factorial(n) {
+    if (n === 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}",code
+"Create a Python script that reads a text file named data.txt, counts the number of occurrences of each word in the file, and outputs the result in the format 'word: count'.","To complete this task, you will need to use Python to read the text file 'data.txt', preprocess the text to extract individual words, count the occurrences of each word, and then output the results in the format 'word: count'.",code
+"Design a database schema for an online shopping website, including tables for products, customers, orders, and payments.","To design a database schema for an online shopping website, you can create the following tables: products, customers, orders, and payments. Here is a general outline of their structure: 
+- Products table: product_id (primary key), product_name, price, description, category, etc. 
+- Customers table: customer_id (primary key), first_name, last_name, email, address, phone_number, etc. 
+- Orders table: order_id (primary key), customer_id (foreign key), product_id (foreign key), quantity, order_date, status, etc. 
+- Payments table: payment_id (primary key), order_id (foreign key), amount, payment_date, payment_method, etc. 
+You can further expand each table's structure based on specific requirements and relationships between entities.",code
+Write a Python function that takes a list of integers as input and returns the sum of all the even numbers in the list.,"To write a Python function that takes a list of integers as input and returns the sum of all the even numbers in the list, you can use the following code snippet:
+
+```python
+# Define the function to calculate the sum of even numbers
+
+def sum_even_numbers(input_list):
+    sum_even = 0
+    for num in input_list:
+        if num % 2 == 0:
+            sum_even += num
+    return sum_even
+
+# Example usage
+input_list = [1, 2, 3, 4, 5, 6]
+result = sum_even_numbers(input_list)
+print(result)  # Output: 12
+```",code
+Write a Python function that takes a list of numbers as input and returns the sum of all the numbers.,"def sum_numbers(input_list):
+    return sum(input_list)",code
+Design a RESTful API in Node.js to handle CRUD operations for a todo list application.,Design a RESTful API in Node.js to handle CRUD operations for a todo list application.,code
+Generate a SQL query that retrieves all data from a table named 'customers' where the 'age' column is greater than 30.,SELECT * FROM customers WHERE age > 30;,code
+Design a Java class that implements a data structure to store and retrieve key-value pairs efficiently.,"To design a Java class that implements a data structure to store and retrieve key-value pairs efficiently, you can create a class like the following:
+
+public class MyDataStructure {
+    private HashMap<String, Object> dataMap;
+    
+    public MyDataStructure() {
+        dataMap = new HashMap<>();
+    }
+    
+    public void put(String key, Object value) {
+        dataMap.put(key, value);
+    }
+    
+    public Object get(String key) {
+        return dataMap.get(key);
+    }
+}",code
+Create a Python function that accepts a list as input and returns the sum of all the elements in the list.,"To create a Python function that accepts a list as input and returns the sum of all the elements in the list, you can use the following code snippet:
+
+```python
+
+def sum_of_list_elements(input_list):
+    return sum(input_list)
+
+# Example usage:
+my_list = [1, 2, 3, 4, 5]
+result = sum_of_list_elements(my_list)
+print(result)
+
+```",code
+"Write a Python function that calculates the average of all elements in a given list. List = [10, 20, 30, 40, 50]","def average_list(lst):
+    return sum(lst)/len(lst)
+
+print(average_list([10, 20, 30, 40, 50])) # Output: 30.0",code
+Create a Python function that calculates the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+"Write a Python script to sort a list of strings in ascending order based on the length of the strings. list_of_strings: ['apple', 'banana', 'kiwi', 'orange', 'pear']",Write a Python script to sort a list of strings in ascending order based on the length of the strings.,code
+Write a Python function that takes a string as input and returns the number of vowels in the string.,"To write a Python function that takes a string as input and returns the number of vowels in the string, you can use the following code snippet as an example: 
+
+def count_vowels(input_string):
+    vowels = 'aeiouAEIOU'
+    count = 0
+    for char in input_string:
+        if char in vowels:
+            count += 1
+    return count
+
+# Example usage:
+input_str = 'Hello World'
+vowel_count = count_vowels(input_str)
+print('Number of vowels:', vowel_count)",code
+Develop a Python function that accepts a string as input and returns the reverse of the string.,"To develop a Python function that accepts a string as input and returns the reverse of the string, you can use the following code snippet: 
+
+def reverse_string(input_string):
+    return input_string[::-1]",code
+Implement a function in Java that calculates the factorial of a given number using recursion.,"To implement a function in Java that calculates the factorial of a given number using recursion, you can use the following code:
+
+public class FactorialCalculator {
+    public static long calculateFactorial(int num) {
+        if (num == 0) {
+            return 1;
+        } else {
+            return num * calculateFactorial(num - 1);
+        }
+    }
+
+    public static void main(String[] args) {
+        int number = 5;
+        long factorial = calculateFactorial(number);
+        System.out.println(""Factorial of "" + number + "" is: "" + factorial);
+    }
+}",code
+Develop a Python function that calculates the factorial of a given integer input using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+"Write a Python script that reads a CSV file containing student information (name, age, grade) and calculates the average grade of all students.","import csv
+
+# Read the CSV file
+with open('students.csv', 'r') as file:
+    reader = csv.reader(file)
+    next(reader)  # Skip the header row
+    total_grades = 0
+    num_students = 0
+    for row in reader:
+        grade = int(row[2])
+        total_grades += grade
+        num_students += 1
+
+# Calculate the average grade
+average_grade = total_grades / num_students
+
+print('Average grade of all students:', average_grade)",code
+Design a Python script to download all images from a specific website.,"To download all images from a specific website using Python, you can use libraries such as 'requests' to fetch the webpage data and 'BeautifulSoup' to parse the HTML content. Below is a simple script outline to achieve this:
+
+import requests
+from bs4 import BeautifulSoup
+
+url = 'specific_website_url'
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+for img_tag in soup.find_all('img'):
+    img_url = img_tag['src']
+    img_data = requests.get(img_url).content
+    with open(img_url.split('/')[-1], 'wb') as img_file:
+        img_file.write(img_data)
+
+This script will extract the image URLs from the specified website and download them one by one into the local directory where the script is executed.",code
+Write a Python function to count the number of occurrences of each word in a given string. String = 'hello world hello',"To count the occurrences of each word in a given string, you can create a Python function like this: 
+
+```python
+from collections import Counter
+
+def count_word_occurrences(input_string):
+    words = input_string.split()
+    word_count = Counter(words)
+    return word_count
+
+input_string = 'hello world hello'
+word_occurrences = count_word_occurrences(input_string)
+print(word_occurrences)
+``` 
+
+When you run this function with the input string 'hello world hello', it will output a dictionary with the count of each word like {'hello': 2, 'world': 1}.",code
+Implement a function that sorts a list of integers in ascending order using the bubble sort algorithm.,"public class BubbleSort {
+
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    // swap arr[j] and arr[j+1]
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+            }
+        }
+    }
+}",code
+Develop an algorithm to detect if a given string is a palindrome or not.,"To detect if a given string is a palindrome or not, you can follow these steps in Python:
+1. Define a function named 'is_palindrome' that takes a string as input.
+2. Remove all non-alphanumeric characters and convert the string to lowercase.
+3. Compare the reversed string with the original string to check if they are the same.
+4. If they are the same, return True as the string is a palindrome. Otherwise, return False.",code
+Write a Python function that takes a list of integers as input and returns the sum of all even numbers in the list.,"def sum_even_numbers(numbers):
+    sum = 0
+    for num in numbers:
+        if num % 2 == 0:
+            sum += num
+    return sum",code
+Implement a Python function that checks if a given string is a palindrome or not.,"def is_palindrome(s):
+    s = s.lower()
+    s = ''.join(e for e in s if e.isalnum())
+    return s == s[::-1]",code
+Write a Python program to check if a given string is a palindrome or not,"To check if a given string is a palindrome or not in Python, you can use the following program:
+
+```python
+# Function to check if a string is palindrome
+
+def is_palindrome(s):
+    return s == s[::-1]
+
+# Input string to check
+input_string = 'racecar'
+
+if is_palindrome(input_string):
+    print(f'{input_string} is a palindrome')
+else:
+    print(f'{input_string} is not a palindrome')
+```",code
+"Design a website homepage layout with a header, navigation bar, hero section, and three content sections.","Design a website homepage layout with a header, navigation bar, hero section, and three content sections.",code
+"Define a Python function that accepts two lists of integers as inputs and returns a new list containing only the common elements between the two input lists. For example, list1 = [1, 2, 3, 4] and list2 = [3, 4, 5, 6] should return [3, 4].","def find_common_elements(list1, list2):
+    return list(set(list1) & set(list2))
+
+# Test the function
+list1 = [1, 2, 3, 4]
+list2 = [3, 4, 5, 6]
+print(find_common_elements(list1, list2))
+# Output: [3, 4]",code
+Create a Python function that takes a list of integers as input and returns the sum of all the elements in the list.,"def sum_list_elements(input_list):
+    return sum(input_list)",code
+Create a list comprehension in Python to generate a list of squares of numbers from 1 to 10.,"squares = [x**2 for x in range(1, 11)]",code
+Implement a Python function that takes a list of integers and returns the sum of all elements in the list.,"To implement a Python function that takes a list of integers and returns the sum of all elements in the list, you can use the following code:
+
+```python
+# Python function to return the sum of elements in a list
+
+def sum_of_elements(int_list):
+    return sum(int_list)
+
+# Example usage
+list_of_integers = [1, 2, 3, 4, 5]
+result = sum_of_elements(list_of_integers)
+print(result)
+```",code
+Write a Python script to sort a list of integers in ascending order using the bubble sort algorithm.,"def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1] :
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr",code
+Create a function in Python to calculate the factorial of a given number using recursion.,"def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)",code
+Write a Python script to read a CSV file named 'data.csv' and display the first 5 rows of data.,"import pandas as pd
+
+# Read the CSV file
+data = pd.read_csv('data.csv')
+
+# Display the first 5 rows of data
+data.head()",code
+Implement a sorting algorithm in Java to sort an array of integers in ascending order.,The requested output is outside of the predefined format. Please provide instructions in the format specified for proper assistance.,code
+Summarize the concept of object-oriented programming and provide an example in Java programming language.,"Object-oriented programming (OOP) is a programming paradigm that organizes data and methods into objects. Objects can communicate with each other through methods and inheritance allows new objects to take on properties of existing objects. Encapsulation ensures that data is kept private within an object. Polymorphism allows objects to be treated as instances of their parent class. In Java, classes are used to implement OOP concepts. Here's an example in Java:
+
+public class Car {
+    private String brand;
+    private String model;
+
+    public Car(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    public void drive() {
+        System.out.println(""The car is driving."");
+    }
+
+    public static void main(String[] args) {
+        Car myCar = new Car(""Toyota"", ""Corolla"");
+        myCar.drive();
+    }
+}",code
+Create a function in Python that takes a list as input and returns a new list with only the unique elements of the input list.,"To create a function in Python that takes a list as input and returns a new list with only the unique elements of the input list, you can use the following code snippet:
+def unique_elements(input_list):
+    return list(set(input_list))
+
+# Example usage:
+input_list = [1, 2, 2, 3, 4, 4, 5]
+output_list = unique_elements(input_list)
+print(output_list)",code
+Write a Python function to count the number of occurrences of each word in a given text string.,"Here is a Python function that counts the number of occurrences of each word in a given text string:
+
+```python
+import re
+from collections import Counter
+
+def count_word_occurrences(text):
+    words = re.findall(r'\w+', text.lower())
+    word_counts = Counter(words)
+    return word_counts
+
+# Example usage
+text = 'hello world hello'
+result = count_word_occurrences(text)
+print(result)
+```
+",code
+Implement a function in Python that converts a list of strings to lowercase.,"def convert_to_lowercase(mylist):
+  new_list = []
+  
+  for item in mylist:
+    new_list.append(item.lower())
+  
+  return new_list
+
+#Example usage:
+mylist = [""This"", ""Is"", ""A"", ""List""]
+print(convert_to_lowercase(mylist))
+
+#Output:
+['this', 'is', 'a', 'list']",code
+Write a Python function named 'merge_sort' that takes a list of numbers as input and returns the list sorted in ascending order using the merge sort algorithm.,"def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+
+    def merge(left, right):
+        result = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        result.extend(left[i:])
+        result.extend(right[j:])
+        return result
+
+    middle = len(arr) // 2
+    left = merge_sort(arr[:middle])
+    right = merge_sort(arr[middle:])
+
+    return merge(left, right)
+
+# Example usage:
+# unsorted_list = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+# sorted_list = merge_sort(unsorted_list)
+# print(sorted_list)",code
+Implement a function in Python that takes a string as input and returns the reversed string.,"def reverse_string(input_string):
+    return input_string[::-1]",code
+Write a Python script to download a file from a given URL and save it locally.,"import urllib.request
+
+url = 'http://www.example.com/file.txt'
+file_name = 'file.txt'
+
+urllib.request.urlretrieve(url, file_name)",code
+Write a Python function that takes a list of integers as input and returns the sum of all odd numbers in the list.,"def sum_odd_numbers(input_list):
+    sum_odd = 0
+    for num in input_list:
+        if num % 2 != 0:
+            sum_odd += num
+    return sum_odd",code
