@@ -73,6 +73,7 @@ def get_vllm(prompt, schema):
         cnt+=1
         output = None
         completion = client.chat.completions.create(
+            # model="TheBloke/Llama-2-7b-Chat-AWQ",
             model="Meta-Llama-3-8B-Instruct/",
             messages=[
                 {"role": "system", "content": f"You are a helpful assistant designed to output response in JSON."},
@@ -92,6 +93,43 @@ def get_vllm(prompt, schema):
             print(f"gpt output {completion}")
     return output
 
+import openai
+client = openai.AzureOpenAI(
+    azure_endpoint="https://gpt-i18n.byteintl.net/gpt/openapi/online/v2/crawl",
+    api_version="2023-03-15-preview",
+    api_key="ZTdRdW0x9nTlFtjGVOdEC9UTVrwplMXp"
+)
+def get_gpt_lbs(prompt, format):
+    cnt=0
+    output = None
+    while cnt!=2:
+        cnt+=1
+        completion = client.chat.completions.create(
+            extra_headers={"X-TT-LOGID": "cyqyong1231241241"},  
+            model="gpt-3.5-turbo-0125",
+            messages=[
+                {"role": "system", "content": f"You are a helpful assistant designed to output JSON. The format is: {format}"},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=512,
+            frequency_penalty=1.0,
+            response_format = {"type": "json_object"}
+        )
+        try: 
+            output = completion.choices[0].message.content
+            break
+        except Exception as e:
+            print(f"gpt error {e}")
+            print(f"gpt output: {completion}\n")
+            try: 
+                print(completion.__dict__)
+            except:
+                print(completion)
+            time.sleep(1)
+            continue
+    return output
+
 def get_gpt(prompt, format):
     data = {
         "model": "gpt-3.5-turbo-0125",
@@ -99,14 +137,14 @@ def get_gpt(prompt, format):
             {"role": "system", "content": f"You are a helpful assistant designed to output JSON. The format is: {format}"},
             {"role": "user", "content": prompt}
         ],
-        "temperature": 1,
+        "temperature": 0.7,
         "top_p": 1,
         "n": 1,
         "stream": False,
         "stop": None,
         "max_tokens": 512,
         "presence_penalty": 0,
-        "frequency_penalty": 0,
+        "frequency_penalty": 1.0,
         "user": None,
         "response_format": {"type": "json_object"}
     }
@@ -147,12 +185,12 @@ def generate_instruction(prompt, client_data, instruction_format=instruction_for
     while cnt!=2:
         cnt+=1
         try:
-            # instruction = json.loads(get_gpt(prompt,instruction_format))["Instruction"]
-            instruction = get_vllm(prompt, instruction_schema)["Instruction"]
+            instruction = json.loads(get_gpt_lbs(prompt,instruction_format))["Instruction"]
+            # instruction = get_vllm(prompt, instruction_schema)["Instruction"]
             break
         except:
             print("generate instruction error")
-            # time.sleep(1)
+            time.sleep(1)
             continue
         # if compute_sim(instruction, client_data)>0.7: 
         #     print(f"too similar {instruction}")
@@ -165,15 +203,15 @@ def generate_response(prompt, response_format=response_format):
     output = None
     while cnt!=2:
         cnt+=1
-        # output = get_gpt(prompt,response_format)
-        output = get_vllm(prompt,response_schema)
+        output = get_gpt_lbs(prompt,response_format)
+        # output = get_vllm(prompt,response_schema)
         try:
-            # output = json.loads(output)["Response"]
-            output = output["Response"]
+            output = json.loads(output)["Response"]
+            # output = output["Response"]
             break
         except:
             print(output)
-            # time.sleep(1)
+            time.sleep(1)
     return output
 
 response_format = """
@@ -200,14 +238,13 @@ parser.add_argument("--domain",type=str,default="code")
 parser.add_argument("--port",type=int,default=8000)
 args = parser.parse_args()
 
-from openai import OpenAI
-client = OpenAI(
-    base_url=f"http://localhost:{args.port}/v1",
-    api_key="damn"
-)
+# from openai import OpenAI
+# client = OpenAI(
+#     base_url=f"http://localhost:{args.port}/v1/",
+#     api_key="damn"
+# )
 
 gen_num = 1000
-
 clients_data = construct_client_data(args)
 for i in range(10):
     clients_data[i].save_to_disk(f"/mnt/bn/data-tns-live-llm/leon/datasets/fed_data/gen_{args.domain}_base_{i}.parquet")
@@ -221,27 +258,29 @@ for k in range(10):
         instructions.append(random.sample(client_k_data["instruction"],4))
         response_examples.append(client_k_data.select(random.sample(range(len(client_k_data)),2)))
 
-    # gen_instructions = []
-    # gen_responses = []
-    # for i in tqdm(range(gen_num)):
-    #     tmp = instruction_prompt.format(*instructions[i])
-    #     instruction = generate_instruction(tmp,client_k_data,instruction_format)
-    #     prompt = format_response_prompt(instruction,response_examples[i])
-    #     response = generate_response(prompt)
-    #     gen_instructions.append(instruction)
-    #     gen_responses.append(response)
-
-    def generate_data(index):
-        tmp = instruction_prompt.format(*instructions[index])
+    gen_instructions = []
+    gen_responses = []
+    for i in tqdm(range(gen_num)):
+        tmp = instruction_prompt.format(*instructions[i])
         instruction = generate_instruction(tmp,client_k_data,instruction_format)
-        prompt = format_response_prompt(instruction,response_examples[index])
+        prompt = format_response_prompt(instruction,response_examples[i])
         response = generate_response(prompt)
-        return instruction, response
+        gen_instructions.append(instruction)
+        gen_responses.append(response)
 
-    with multiprocessing.Pool(4) as pool:
-        results = list(tqdm(pool.imap(generate_data, range(gen_num)), total=gen_num))
-    gen_instructions, gen_responses = zip(*results)
+    # def generate_data(index):
+    #     tmp = instruction_prompt.format(*instructions[index])
+    #     instruction = generate_instruction(tmp,client_k_data,instruction_format)
+    #     prompt = format_response_prompt(instruction,response_examples[index])
+    #     response = generate_response(prompt)
+    #     return instruction, response
+
+    # with multiprocessing.Pool(4) as pool:
+    #     results = list(tqdm(pool.imap(generate_data, range(gen_num)), total=gen_num))
+    # gen_instructions, gen_responses = zip(*results)
     
+    gen_instructions = [json.dumps(instruction) for instruction in gen_instructions]
+    gen_response = [json.dumps(response) for response in gen_responses]
     df = pd.DataFrame({
         "instruction": gen_instructions,
         "response": gen_responses,
