@@ -12,6 +12,8 @@ sys.path.append("/mnt/bn/data-tns-live-llm/leon/Cherry_LLM")
 from niid_data.utils import process_sft_dataset
 import requests
 import json
+from vllm_utils import vllm_run
+import asyncio
 
 def construct_client_data(args):
     if args.domain == "code":
@@ -61,9 +63,9 @@ response_schema = """{
 }"""
 
 def get_vllm(prompt, schema):
-    num_tokens=0
+    min_tokens=0
     if "Response" in schema: 
-        num_tokens=50
+        min_tokens=50
         max_tokens = 512
     else:
         max_tokens = 256
@@ -82,39 +84,33 @@ def get_vllm(prompt, schema):
             frequency_penalty=1.0,
             max_tokens=max_tokens,
             extra_body={
-                "guided_json": schema
+                "guided_json": schema,
+                "min_tokens": min_tokens
             }
         )
         try:
-            output = json.loads(completion.choices[0].message.content)
+            output = completion.choices[0].message.content
             break
         except Exception as e:
             print(f"gpt error {e}")
             print(f"gpt output {completion}")
     return output
 
-import openai
-client = openai.AzureOpenAI(
-    azure_endpoint="https://gpt-i18n.byteintl.net/gpt/openapi/online/v2/crawl",
-    api_version="2023-03-15-preview",
-    api_key="ZTdRdW0x9nTlFtjGVOdEC9UTVrwplMXp"
-)
-def get_gpt_lbs(prompt, format):
+def get_moonshot(prompt, format):
     cnt=0
     output = None
     while cnt!=2:
         cnt+=1
         completion = client.chat.completions.create(
-            extra_headers={"X-TT-LOGID": "cyqyong1231241241"},  
-            model="gpt-3.5-turbo-0125",
+            model="moonshot-v1-8k",
             messages=[
-                {"role": "system", "content": f"You are a helpful assistant designed to output JSON. The format is: {format}"},
+                {"role": "system", "content": f"You are a helpful assistant designed to output JSON. The format is: {format}"}, 
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7,
             max_tokens=512,
             frequency_penalty=1.0,
-            response_format = {"type": "json_object"}
+            response_format={"type": "json_object"},
         )
         try: 
             output = completion.choices[0].message.content
@@ -176,7 +172,7 @@ rouge = evaluate.load('rouge')
 def compute_sim(instruction, client_data):
     return rouge.compute(predictions=[instruction], references=[client_data["instruction"]],rouge_types=['rougeL'])["rougeL"]
 
-instruction_prompt = """You are asked to come up with instructions. These instructions will be given to a GPT model and we will evaluate the GPT model for completing the instructions. Don't repeat instructions in examples. Here are some examples: Instruction 1: {} Instruction 2: {} Instruction 3: {} Instruction 4: {} Provide a new instruction below:"""
+instruction_prompt = """You are asked to come up with instructions. Don't repeat instructions in examples. Here are some examples: Instruction 1: {} Instruction 2: {} Provide a new instruction below:"""
 
 instruction_format = "{Instruction: instruction}"
 def generate_instruction(prompt, client_data, instruction_format=instruction_format):
@@ -184,14 +180,19 @@ def generate_instruction(prompt, client_data, instruction_format=instruction_for
     instruction = client_data["instruction"][0]
     while cnt!=2:
         cnt+=1
+        if args.api_method == "vllm":
+            instruction = get_vllm(prompt, instruction_schema)
+        elif args.api_method == "moonshot":
+            instruction = get_moonshot(prompt,instruction_format)
+        else: 
+            instruction = get_gpt(prompt,instruction_format)
         try:
-            instruction = json.loads(get_gpt_lbs(prompt,instruction_format))["Instruction"]
-            # instruction = get_vllm(prompt, instruction_schema)["Instruction"]
+            instruction = json.loads(instruction)["Instruction"]
             break
-        except:
-            print("generate instruction error")
+        except Exception as e:
+            print(f"generate instruction error {e}")
+            print(instruction)
             time.sleep(1)
-            continue
         # if compute_sim(instruction, client_data)>0.7: 
         #     print(f"too similar {instruction}")
         #     continue
@@ -203,11 +204,14 @@ def generate_response(prompt, response_format=response_format):
     output = None
     while cnt!=2:
         cnt+=1
-        output = get_gpt_lbs(prompt,response_format)
-        # output = get_vllm(prompt,response_schema)
+        if args.api_method == "vllm":
+            output = get_vllm(prompt,response_schema)
+        elif args.api_method == "moonshot":
+            output = get_moonshot(prompt,response_format)
+        else:
+            output = get_gpt(prompt,response_format)
         try:
             output = json.loads(output)["Response"]
-            # output = output["Response"]
             break
         except:
             print(output)
@@ -216,9 +220,6 @@ def generate_response(prompt, response_format=response_format):
 
 response_format = """
 Example 1: 
-    Instruction: {}
-    Response: {}
-Example 2: 
     Instruction: {}
     Response: {}
 
@@ -236,15 +237,24 @@ import multiprocessing
 parser = argparse.ArgumentParser()
 parser.add_argument("--domain",type=str,default="code")
 parser.add_argument("--port",type=int,default=8000)
+parser.add_argument("--api_method",type=str,default="vllm")
+parser.add_argument("--parallel",type=int,default=0)
 args = parser.parse_args()
 
-# from openai import OpenAI
-# client = OpenAI(
-#     base_url=f"http://localhost:{args.port}/v1/",
-#     api_key="damn"
-# )
+from openai import OpenAI
 
-gen_num = 1000
+if args.api_method == "moonshot":
+    client = OpenAI(
+        api_key="sk-Nl2yxo0Ic9ZJ0zFf3qWdypuoQ6Nd2xnsCp7wfojlW9OyOYmq", 
+        base_url="https://api.moonshot.cn/v1",
+    )
+elif args.api_method == "vllm":
+    client = OpenAI(
+        base_url=f"http://localhost:{args.port}/v1/",
+        api_key="damn"
+    )
+
+gen_num = 100
 clients_data = construct_client_data(args)
 for i in range(10):
     clients_data[i].save_to_disk(f"/mnt/bn/data-tns-live-llm/leon/datasets/fed_data/gen_{args.domain}_base_{i}.parquet")
@@ -255,38 +265,47 @@ for k in range(10):
     response_examples = []
     client_k_data = clients_data[k]
     for i in range(gen_num):
-        instructions.append(random.sample(client_k_data["instruction"],4))
-        response_examples.append(client_k_data.select(random.sample(range(len(client_k_data)),2)))
+        instructions.append(random.sample(client_k_data["instruction"],2))
+        response_examples.append(client_k_data.select(random.sample(range(len(client_k_data)),1)))
 
-    gen_instructions = []
-    gen_responses = []
-    for i in tqdm(range(gen_num)):
-        tmp = instruction_prompt.format(*instructions[i])
-        instruction = generate_instruction(tmp,client_k_data,instruction_format)
-        prompt = format_response_prompt(instruction,response_examples[i])
-        response = generate_response(prompt)
-        gen_instructions.append(instruction)
-        gen_responses.append(response)
-
-    # def generate_data(index):
-    #     tmp = instruction_prompt.format(*instructions[index])
-    #     instruction = generate_instruction(tmp,client_k_data,instruction_format)
-    #     prompt = format_response_prompt(instruction,response_examples[index])
-    #     response = generate_response(prompt)
-    #     return instruction, response
-
-    # with multiprocessing.Pool(4) as pool:
-    #     results = list(tqdm(pool.imap(generate_data, range(gen_num)), total=gen_num))
-    # gen_instructions, gen_responses = zip(*results)
+    if args.parallel:
+        instructions_formatted = [instruction_prompt.format(*instruction) for instruction in instructions]
+        instruction_result = asyncio.run(
+            vllm_run(
+                api_url=f"http://localhost:{args.port}/v1/completions",
+                model_id="NousResearch/Meta-Llama-3-8B-Instruct",
+                input_requests=instructions_formatted,
+                format=instruction_schema
+            ))
+        gen_instructions = [json.loads(res.generated_text)["Instruction"] for res in instruction_result]
+        response_formatted = [format_response_prompt(instruction,response_examples[i]) for i,instruction in zip(range(gen_num),gen_instructions)]
+        response_result = asyncio.run(
+            vllm_run(
+                api_url=f"http://localhost:{args.port}/v1/completions",
+                model_id="NousResearch/Meta-Llama-3-8B-Instruct",
+                input_requests=response_formatted,
+                format=response_schema
+            ))
+        gen_responses = [json.loads(res.generated_text)["Response"] for res in response_result]
+    else:
+        gen_instructions = []
+        gen_responses = []
+        for i in tqdm(range(gen_num)):
+            tmp = instruction_prompt.format(*instructions[i])
+            instruction = generate_instruction(tmp,client_k_data,instruction_format)
+            prompt = format_response_prompt(instruction,response_examples[i])
+            response = generate_response(prompt)
+            gen_instructions.append(instruction)
+            gen_responses.append(response)
     
-    gen_instructions = [json.dumps(instruction) for instruction in gen_instructions]
-    gen_response = [json.dumps(response) for response in gen_responses]
+    # gen_instructions = [json.dumps(instruction) for instruction in gen_instructions]
+    # gen_response = [json.dumps(response) for response in gen_responses]
     df = pd.DataFrame({
         "instruction": gen_instructions,
         "response": gen_responses,
         "label": args.domain  
     })
-    df = df.dropna(subset=['instruction', 'response'])
+    # df = df.dropna(subset=['instruction', 'response'])
 
     # df.to_csv(f"/mnt/bn/data-tns-live-llm/leon/Cherry_LLM/generate_instruction/{args.domain}_{k}.csv")
     tmp_dataset = datasets.Dataset.from_pandas(df)
@@ -294,30 +313,3 @@ for k in range(10):
     client_k_data.to_csv(f"/mnt/bn/data-tns-live-llm/leon/Cherry_LLM/generate_instruction/{args.domain}_{k}.csv")
     client_k_data.save_to_disk(f"/mnt/bn/data-tns-live-llm/leon/datasets/fed_data/gen_{args.domain}_{k}.parquet")
     print(len(client_k_data))
-
-
-
-
-
-
-
-
-# def process_item(args):
-#     i, data = args    
-#     tmp = instruction_prompt.format(*instructions[i])
-#     instruction = generate_instruction(tmp, data, instruction_format)
-#     prompt = format_response_prompt(instruction, response_examples[i])
-#     response = generate_response(prompt)
-#     return instruction, response
-
-# instructions = []
-# response_examples = []
-# for i in range(gen_num):
-#     instructions.append(random.sample(clients_data[k]["instruction"], 4))
-#     response_examples.append(clients_data[k].select(random.sample(range(len(clients_data[k])), 2)))
-
-# with Pool(processes=5) as pool: 
-#     arguments = [(i, clients_data[k]) for i in range(gen_num)]
-#     results = pool.map(process_item, arguments)
-
-# gen_instructions, gen_responses = zip(*results) 

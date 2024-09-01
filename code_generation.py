@@ -6,7 +6,7 @@ import os
 from peft import PeftModelForCausalLM
 from vllm import LLM, SamplingParams
 
-base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed/"
+base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed"
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_name_or_path",type=str,default=None,)
 parser.add_argument("--vllm",type=int,default=1)

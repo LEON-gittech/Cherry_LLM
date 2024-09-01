@@ -25,7 +25,7 @@ pip install seqeval
 # pip install benepar spacy
 # python3 -m spacy download en_core_web_md
 pip install --force-reinstall "numpy<2.0.0"
-pip install -U transformers peft
+pip install peft transformers==4.43.2
 pip uninstall -y flash-attn
 pip install vllm
 pip install openai

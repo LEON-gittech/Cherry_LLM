@@ -22,8 +22,8 @@ import transformers
 import utils
 from torch.utils.data import Dataset
 from transformers import Trainer, BitsAndBytesConfig, AutoTokenizer
-from unsloth import FastLanguageModel 
-from unsloth import is_bfloat16_supported
+# from unsloth import FastLanguageModel 
+# from unsloth import is_bfloat16_supported
 import os
 from peft import (
     LoraConfig,
@@ -39,6 +39,7 @@ sys.path.append("/opt/tiger/Cherry_LLM")
 from template import get_formatting_prompts_func
 from datasets import load_dataset, load_from_disk
 os.environ["TOKENIZERS_PARALLELISM"]="false"
+import random
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -74,6 +75,7 @@ class ModelArguments:
 class DataArguments:
     data_path: str = field(default=None, metadata={"help": "Path to the training data."})
     dataset_name: str = field(default="alpaca")
+    percentage: float = field(default=1.0)
 
 @dataclass
 class BitsAndBytesArguments:
@@ -159,7 +161,7 @@ def preprocess(
 class SupervisedDataset(Dataset):
     """Dataset for supervised fine-tuning."""
 
-    def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer):
+    def __init__(self, data_path: str, tokenizer: transformers.PreTrainedTokenizer, percentage: float):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         print(data_path)
@@ -176,6 +178,13 @@ class SupervisedDataset(Dataset):
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output","response":"output"}
             list_data_dict = list_data_dict.rename_columns(rename_dict)
         else: list_data_dict = utils.jload(data_path)
+
+        if percentage!=1:
+            # print(len(list_data_dict))
+            data_size = int(len(list_data_dict)*percentage)
+            # print(data_size)
+            selected_idxs = random.sample(range(len(list_data_dict)), data_size)
+            list_data_dict = list_data_dict.select(selected_idxs)
 
         logging.warning("Formatting inputs...")
         prompt_input, prompt_no_input = PROMPT_DICT["prompt_input"], PROMPT_DICT["prompt_no_input"]
@@ -220,7 +229,7 @@ class DataCollatorForSupervisedDataset(object):
 
 def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer, data_args) -> Dict:
     """Make dataset and collator for supervised fine-tuning."""
-    train_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path)
+    train_dataset = SupervisedDataset(tokenizer=tokenizer, data_path=data_args.data_path, percentage=data_args.percentage)
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
     return dict(train_dataset=train_dataset, eval_dataset=None, data_collator=data_collator)
 
@@ -245,13 +254,14 @@ def get_quant_model(model_args, training_args, script_args):
         r=32,
         lora_alpha=64,
         lora_dropout=0,
-        target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
+        target_modules=["q_proj", "o_proj", "k_proj", "v_proj"],
         bias="none",
         task_type="CAUSAL_LM",
     )
 
     model = get_peft_model(model, peft_config)
     # print(model)
+    model.train()
     model.print_trainable_parameters()
     return model, tokenizer
 
@@ -363,14 +373,19 @@ def train():
     
     trainer.train()
 
-    if not training_args.trl:
-        model.save_pretrained(training_args.output_dir)
-        tokenizer.save_pretrained(training_args.output_dir)
-        if training_args.merge:
-            model.save_pretrained_merged(training_args.output_dir+"_merged", tokenizer, save_method = "merged_16bit",)
-    else:
+    if training_args.trl:
         trainer.save_state()
         trainer.save_model(output_dir=training_args.output_dir)
+    else:
+        if training_args.unsloth:
+            model.save_pretrained(training_args.output_dir)
+            tokenizer.save_pretrained(training_args.output_dir)
+        else:
+            trainer.save_state()
+            trainer.save_model(output_dir=training_args.output_dir)
+
+        if training_args.merge:
+            model.save_pretrained_merged(training_args.output_dir+"_merged", tokenizer, save_method = "merged_16bit",)
 
 if __name__ == "__main__":
     train()
