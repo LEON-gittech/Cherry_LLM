@@ -22,8 +22,8 @@ import transformers
 import utils
 from torch.utils.data import Dataset
 from transformers import Trainer, BitsAndBytesConfig, AutoTokenizer
-# from unsloth import FastLanguageModel 
-# from unsloth import is_bfloat16_supported
+from unsloth import FastLanguageModel 
+from unsloth import is_bfloat16_supported
 import os
 from peft import (
     LoraConfig,
@@ -39,6 +39,7 @@ sys.path.append("/opt/tiger/Cherry_LLM")
 from template import get_formatting_prompts_func
 from datasets import load_dataset, load_from_disk
 os.environ["TOKENIZERS_PARALLELISM"]="false"
+os.environ["WANDB_DISABLED"] = "true"
 import random
 
 IGNORE_INDEX = -100
@@ -94,6 +95,7 @@ class TrainingArguments(transformers.TrainingArguments):
     trl: int = field(default=0)
     quantization: Optional[int] = field(default=1)
     merge: int = field(default=0)
+    bge: int = field(default=0)
 
 
 def smart_tokenizer_and_embedding_resize(
@@ -165,6 +167,7 @@ class SupervisedDataset(Dataset):
         super(SupervisedDataset, self).__init__()
         logging.warning("Loading data...")
         print(data_path)
+        list_data_dict = None
         if os.path.isdir(data_path):   
             list_data_dict = load_from_disk(data_path)
             try:
@@ -178,6 +181,9 @@ class SupervisedDataset(Dataset):
             rename_dict = {'inputs_pretokenized':"instruction","targets_pretokenized":"output","response":"output"}
             list_data_dict = list_data_dict.rename_columns(rename_dict)
         else: list_data_dict = utils.jload(data_path)
+        tmp_instruct = list_data_dict['instruction'][0]
+        tmp_output = list_data_dict['output'][0]
+        print(f"Example instructions: {tmp_instruct} outputs: {tmp_output}")
 
         if percentage!=1:
             # print(len(list_data_dict))
@@ -302,8 +308,7 @@ def get_unsloth_model(model_args, training_args, script_args):
         model = FastLanguageModel.get_peft_model(
             model,
             r = 32,
-            target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                            "gate_proj", "up_proj", "down_proj",],
+            target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",],
             lora_alpha = 64,
             lora_dropout = 0, # Supports any, but = 0 is optimized
             bias = "none",    # Supports any, but = "none" is optimized
@@ -363,6 +368,16 @@ def train():
             tokenizer=tokenizer,
             model=model,
         )
+
+    if training_args.bge:
+        special_tokens_dict = dict()
+        special_tokens_dict["sep_token"] = "[SEP]"
+        smart_tokenizer_and_embedding_resize(
+            special_tokens_dict=special_tokens_dict,
+            tokenizer=tokenizer,
+            model=model,
+        )
+        print("added [SEP]")
 
     if not training_args.trl:
         data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args)

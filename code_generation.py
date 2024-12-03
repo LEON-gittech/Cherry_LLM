@@ -6,14 +6,18 @@ import os
 from peft import PeftModelForCausalLM
 from vllm import LLM, SamplingParams
 
-base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed"
+# base_path = "/mnt/bn/data-tns-live-llm/leon/datasets/fed/"
+# base_path = "/mnt/bn/merlin-datavolume-tsy/leon/checkpoints/fed"
+base_path = "/mnt/bn/merlin-datavolume-tsy/leon/checkpoints/fed_setting_C"
 parser = argparse.ArgumentParser()
 parser.add_argument("--model_name_or_path",type=str,default=None,)
 parser.add_argument("--vllm",type=int,default=1)
 args = parser.parse_args()
 
 if args.vllm:
-    model = LLM(model=os.path.join(base_path, args.model_name_or_path), tensor_parallel_size=1, dtype=torch.bfloat16, trust_remote_code=True, enable_lora=False, max_model_len=2048, gpu_memory_utilization=0.7)
+    model, tokenizer = FastLanguageModel.from_pretrained(os.path.join(base_path, args.model_name_or_path), dtype = torch.bfloat16, load_in_4bit=True)
+    model.save_pretrained_merged(os.path.join(base_path, args.model_name_or_path+"_merged"), tokenizer, save_method = "merged_16bit",)
+    model = LLM(model=os.path.join(base_path, args.model_name_or_path+"_merged"), tensor_parallel_size=1, dtype=torch.bfloat16, trust_remote_code=True, enable_lora=False, max_model_len=2048, gpu_memory_utilization=0.8)
 
     stop_tokens = ["USER:", "ASSISTANT:",  "### Instruction:", "Response:", 
                 "\n\nProblem", "\nProblem", "Problem:", "<|eot_id|>", "####"]

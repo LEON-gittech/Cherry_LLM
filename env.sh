@@ -5,13 +5,13 @@ pip install accelerate
 sudo apt install -y ranger htop
 pip install trl
 pip install "unsloth[cu121-ampere] @ git+https://github.com/unslothai/unsloth.git"
-rm -rf /home/tiger/.local/lib/python3.9/site-packages/unsloth/
+# pip install "unsloth[cu121-ampere] @ git+https://github.com/unslothai/unsloth.git"
+rm -rf /home/tiger/.local/lib/python3.9/site-packages/unsloth*
 cp -r /mnt/bn/data-tns-live-llm/leon/unsloth /home/tiger/.local/lib/python3.9/site-packages/unsloth/
-pip install torch torchvision torchaudio
-pip install promptsource
+# pip install promptsource
 pip install sentence-transformers
 pip install matplotlib
-pip install pygwalker
+# pip install pygwalker
 pip install evaluate
 pip install nltk rouge_score
 pip install FlagEmbedding
@@ -25,12 +25,13 @@ pip install seqeval
 # pip install benepar spacy
 # python3 -m spacy download en_core_web_md
 pip install --force-reinstall "numpy<2.0.0"
-pip install peft transformers==4.43.2
 pip uninstall -y flash-attn
 pip install vllm
 pip install openai
 pip install latex2sympy2
 pip install httpx==0.23.3
+pip install peft transformers==4.43.2 torch==2.1.* torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install -e /mnt/bn/data-tns-live-llm/leon/human-eval
 
 # ——————————————————————————————————github cli————————————————————————————————————————
 (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \

@@ -31,6 +31,7 @@ pip install vllm
 pip install openai
 pip install latex2sympy2
 pip install httpx==0.23.3
+pip install -e /mnt/bn/data-tns-live-llm/leon/human-eval
 
 # ——————————————————————————————————github cli————————————————————————————————————————
 (type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \

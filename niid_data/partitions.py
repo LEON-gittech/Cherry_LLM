@@ -85,7 +85,7 @@ def dynamic_batch_fill(label_index_tracker, label_index_matrix,
 
 
 def label_skew_process(label_vocab, label_assignment, client_num, alpha,
-                       data_length):
+                       data_length, seed=42):
     """
     params
     -------------------------------------------------------------------
@@ -99,6 +99,7 @@ def label_skew_process(label_vocab, label_assignment, client_num, alpha,
     partition_result : 2d array list of partition index of each client
     ------------------------------------------------------------------
     """
+    np.random.seed(seed)
     label_index_matrix = [[] for _ in label_vocab]
     label_proportion = []
     partition_result = [[] for _ in range(client_num)]
