@@ -99,7 +99,7 @@ from tqdm import tqdm
 
 from openai import OpenAI
 
-client = OpenAI(api_key="sk-f593092a899348a1ab875ae7c4e24713", base_url="https://api.deepseek.com")
+client = OpenAI(api_key="", base_url="https://api.deepseek.com")
 
 instructions = processed_data[0]["instruction"]
 responses = processed_data[0]["response"]
